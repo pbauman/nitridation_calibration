@@ -1,0 +1,128 @@
+# Options related to all Physics
+[Physics]
+
+enabled_physics = 'ReactingLowMachNavierStokes'
+
+[./Chemistry]
+
+species   = 'N2 N C CN'
+chem_file = './nitridation.xml'
+mixture   = 'air4sp'
+
+[../Transport]
+
+viscosity = '1.0e-4'
+thermal_conductivity = '.04'
+Lewis_number = '1.4'
+
+# Options for Incompressible Navier-Stokes physics
+[../ReactingLowMachNavierStokes]
+
+species_FE_family = 'LAGRANGE'
+V_FE_family       = 'LAGRANGE'
+P_FE_family       = 'LAGRANGE'
+T_FE_family       = 'LAGRANGE'
+
+species_order = 'SECOND'
+V_order       = 'SECOND'
+T_order       = 'SECOND'
+P_order       = 'FIRST'
+
+# Thermodynamic pressure
+p0 = '100' #[Pa]
+
+# Gravity vector
+g = '0.0 0.0' #[m/s^2]
+
+chemistry_library      = 'cantera'
+transport_library      = 'grins_constant'
+thermodynamics_library = 'cantera'
+
+# Boundary ids:
+# inflow = 1
+# top & bottom = 2
+# specimen = 3
+# outflow = 4
+
+vel_bc_ids = '1 2 3'
+vel_bc_types = 'parabolic_profile no_slip no_slip'
+
+parabolic_profile_var_1 = 'u'
+parabolic_profile_fix_1 = 'v'
+
+# c = -U0/y0^2, f = U0
+# y0 = 0.0015
+parabolic_profile_coeffs_1 = '0.0 0.0 26666.67 0.0 0.0 40'
+
+temp_bc_ids = '1 2 3'
+temp_bc_types = 'isothermal isothermal isothermal'
+
+T_wall_1 = '1273'
+T_wall_2 = '1273'
+T_wall_3 = '1273'
+
+species_bc_ids = '1'
+species_bc_types = 'prescribed_species'
+bound_species_1 = '0.78 0.22 0.0 0.0'
+
+enable_thermo_press_calc = 'false'
+pin_pressure = 'false'
+
+[]
+
+[restart-options]
+
+#restart_file = 'cavity.xdr'
+
+# Mesh related options
+[mesh-options]
+mesh_option = 'read_mesh_from_file'
+mesh_filename = 'test.exo'
+
+# Options for tiem solvers
+[unsteady-solver]
+transient = 'false' 
+
+#Linear and nonlinear solver options
+[linear-nonlinear-solver]
+max_nonlinear_iterations = 100 
+max_linear_iterations = 2500
+
+verify_analytic_jacobians = 0.0
+
+initial_linear_tolerance = 1.0e-10
+
+use_numerical_jacobians_only = 'true'
+
+# Visualization options
+[vis-options]
+output_vis = true
+
+vis_output_file_prefix = 'nitridation' 
+
+output_residual = 'false'
+
+output_format = 'ExodusII xdr'
+
+# Options for print info to the screen
+[screen-options]
+
+system_name = 'Nitridation'
+
+print_equation_system_info = true
+print_mesh_info = true
+print_log_info = true
+solver_verbose = true
+solver_quiet = false
+
+print_element_jacobians = 'false'
+
+[../VariableNames]
+
+Temperature = 'T'
+u_velocity = 'u'
+v_velocity = 'v'
+w_velocity = 'w'
+pressure = 'p'
+
+[]
