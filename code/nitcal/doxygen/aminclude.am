@@ -3,7 +3,7 @@
 # dependencies here.
 #-----------------------------------
 
-PECOS_extra_dependencies = doxygen/var.page 
+PECOS_extra_dependencies = doxygen/nitcal.page 
 			   doxygen/txt_common/about.page \
 			   doxygen/txt_common/gpl.page \
                            doxygen/txt_common/lgpl.page \
