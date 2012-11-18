@@ -3,11 +3,15 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
 AC_INIT(nitcal, 0.0.0, pbauman@ices.utexas.edu)
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER(config.h)
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CANONICAL_TARGET()
-AM_INIT_AUTOMAKE([silent-rules])
+AM_INIT_AUTOMAKE([dist-bzip2 tar-ustar 1.11 no-define])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES(yes)]) # use silent rules where available - automake 1.11
+
 LT_INIT
+
 
 dnl Release versioning
 AX_SPLIT_VERSION
@@ -68,6 +72,16 @@ else
    CXXFLAGS="-O0 -g -Wall"
 fi
 
+dnl---------------------------------------------------------
+dnl Add libMesh flags manually if it's not a libtool build
+dnl---------------------------------------------------------
+if test "x$LIBMESH_LIBTOOL" == "x1"; then
+  LIBNITCAL_LIBS='$(top_builddir)/src/libnitcal.la'
+else
+  LIBNITCAL_LIBS='$(top_builddir)/src/libnitcal.la $(LIBMESH_LDFLAGS)'                                                                                                                                                                       
+fi
+AC_SUBST(LIBNITCAL_LIBS)
+
 dnl----------------
 dnl Check for boost
 dnl----------------
@@ -105,7 +119,7 @@ DX_XML_FEATURE(OFF)
 DX_PDF_FEATURE(ON)
 DX_PS_FEATURE(OFF)
 
-DX_INIT_DOXYGEN(VAR, doxygen/var.dox, docs/doxygen )
+DX_INIT_DOXYGEN(VAR, doxygen/nitcal.dox, docs/doxygen )
 
 
 dnl-------------------
@@ -113,7 +127,10 @@ dnl Generate makefiles
 dnl-------------------
 AC_OUTPUT( Makefile \
            src/Makefile \
-           test/Makefile  )
+           test/Makefile \
+           doxygen/Makefile \
+           doxygen/txt_common/about.page \
+           doxygen/nitcal.dox )
 
 #           doxygen/Makefile \
 #           doxygen/txt_common/about.page )

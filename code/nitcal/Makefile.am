@@ -2,10 +2,10 @@
 include $(top_srcdir)/doxygen/aminclude.am
 
 AUTOMAKE_OPTIONS = foreign
-ACLOCAL_AMFLAGS  = -I m4
+ACLOCAL_AMFLAGS  = -I m4 -I m4/common
 
 SUBDIRS          = src test
-EXTRA_DIST       = CHANGES LICENSE COPYING 
+EXTRA_DIST       = AUTHORS CHANGES LICENSE COPYING 
 
 #examplesdir      = $(prefix)/examples
 #examples_DATA    = $(top_srcdir)/examples/*

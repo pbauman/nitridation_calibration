@@ -1,0 +1,9 @@
+[BoundaryConditions]
+
+[./TubeWall]
+
+# Locaton of thermocouples along tube wall (m)
+tc_locs = '0.0 0.244 0.324 0.639 0.709 0.869' 
+
+# Temperature vals for above locs (K) - at 1273K
+wall_temps = '298.0 350.0 1273.0 1273.0 525.0 400.0' 

@@ -26,48 +26,47 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
-#ifndef NITCAL_BC_FACTORY_H
-#define NITCAL_BC_FACTORY_H
+#ifndef NITCAL_TUBE_TWALL_H
+#define NITCAL_TUBE_TWALL_H
 
-#include <string>
+// C++
+#include <vector>
 
 // libMesh
 #include "getpot.h"
-#include "equation_systems.h"
-#include "system.h"
-#include "zero_function.h"
+#include "libmesh_common.h"
+#include "point.h"
+#include "function_base.h"
 
-// GRINS
-#include "bc_types.h"
-#include "bc_factory.h"
-
-// NitridationCalibration
-#include "nitcal_catalytic_wall.h"
-#include "tube_twall.h"
 
 namespace NitridationCalibration
 {
-  //! Object for constructing NitridationCalibration specific boundary condition function objects.
-  class BoundaryConditionsFactory : public GRINS::BoundaryConditionsFactory
+
+  class TubeTempBC : public libMesh::FunctionBase<Real>
   {
   public:
-    
-    BoundaryConditionsFactory( const GetPot& input );
 
-    virtual ~BoundaryConditionsFactory();
-    
-    //! Builds the NitridationCalibration::
-    virtual std::multimap< GRINS::PhysicsName, GRINS::DBCContainer > build_dirichlet( );
+    TubeTempBC( const GetPot& input );
+    virtual ~TubeTempBC();
 
-    //! Builds the NitridationCalibration::
-    virtual std::map< GRINS::PhysicsName, GRINS::NBCContainer > build_neumann( libMesh::EquationSystems& es );
+    virtual libMesh::AutoPtr<libMesh::FunctionBase<Real> > clone() const;
+
+    virtual Real operator()(const libMesh::Point& p, const Real time=0.);
+
+    virtual void operator()(const libMesh::Point& p, const Real time, 
+			    libMesh::DenseVector<Real>& output);
 
   protected:
 
-    const GetPot& _input;
+    Real linear_interp( const Real x ) const;
+    Real spline_interp( const Real ) const
+    { libmesh_not_implemented(); }
 
-  }; // class BoundaryConditionsFactory
+    std::vector<Real> _wall_tc_locs;
+    std::vector<Real> _wall_temps;
+
+  };
 
 } // namespace NitridationCalibration
 
-#endif //NITCAL_BC_FACTORY_H
+#endif //NITCAL_TUBE_TWALL_H

@@ -6,7 +6,7 @@ BUILT_SOURCES   = .license.stamp
 
 bin_PROGRAMS    = nitfp
 
-noinst_LTLIBRARIES = libnitcal.la
+lib_LTLIBRARIES = libnitcal.la
 
 #--------------------------------------------------
 # List of directories with source and include files
@@ -34,7 +34,7 @@ include_HEADERS = $(boundary_conditions_INC)
 
 nitfp_SOURCES = $(top_srcdir)/src/apps/nitfp.C
 
-var2d_LDADD = libnitcal.la
+nitfp_LDADD = libnitcal.la
 
 libnitcal_la_SOURCES = $(boundary_conditions_SRC)
 
@@ -60,10 +60,7 @@ endif
 
 .license.stamp: $(top_srcdir)/LICENSE
 	$(top_srcdir)/src/common/lic_utils/update_license.pl $(top_srcdir)/LICENSE \
-        var2d.C  $(physics_SRC) $(physics_INC) \
 	$(boundary_conditions_INC) $(boundary_conditions_SRC) \
-        $(solver_SRC) $(solver_INC) \
-        $(matprops_SRC) $(matprops_INC)
 	echo 'updated source license headers' >$@
 
 EXTRA_DIST = common

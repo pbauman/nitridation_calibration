@@ -15,6 +15,9 @@
 // libMesh
 #include "parallel.h"
 
+// NitCal
+#include "nitcal_bc_factory.h"
+
 // Function for getting initial temperature field
 Real initial_values( const Point& p, const Parameters &params, 
 		     const std::string& system_name, const std::string& unknown_name );
@@ -40,7 +43,7 @@ int main(int argc, char* argv[])
  
   GRINS::SimulationBuilder sim_builder;
 
-  NitCal::BoundaryConditionsFactory bc_factory( libMesh_inputfile );
+  std::tr1::shared_ptr<GRINS::BoundaryConditionsFactory> bc_factory( new NitridationCalibration::BoundaryConditionsFactory(libMesh_inputfile) );
 
   sim_builder.attach_bc_factory( bc_factory );
 
