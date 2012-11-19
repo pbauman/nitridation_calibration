@@ -14,6 +14,7 @@
 
 // GRINS
 #include "math_constants.h"
+#include "grins_physics_names.h"
 #include "neumann_func_obj.h"
 #include "chemical_mixture.h"
 
@@ -24,7 +25,8 @@ namespace NitridationCalibration
   {
   public:
 
-    CatalyticWall( const GetPot& input, GRINS::VariableIndex T_var, 
+    CatalyticWall( const GetPot& input, 
+		   GRINS::VariableIndex T_var, 
 		   const std::vector<GRINS::VariableIndex>& species_vars,
 		   GRINS::VariableIndex species, 
 		   unsigned int species_index,

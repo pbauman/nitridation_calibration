@@ -11,7 +11,8 @@
 namespace NitridationCalibration
 {
 
-  CatalyticWall::CatalyticWall( const GetPot& input, GRINS::VariableIndex T_var, 
+  CatalyticWall::CatalyticWall( const GetPot& input, 
+				GRINS::VariableIndex T_var, 
 				const std::vector<GRINS::VariableIndex>& species_vars,
 				GRINS::VariableIndex species, 
 				unsigned int species_index,
@@ -20,7 +21,7 @@ namespace NitridationCalibration
     : GRINS::NeumannFuncObj(),
       _T_var(T_var),
       _species_vars(species_vars),
-      _p0( input("Physics/"+reacting_low_mach_navier_stokes+"/p0", 0.0 ) ),
+      _p0( input("Physics/"+GRINS::reacting_low_mach_navier_stokes+"/p0", 0.0 ) ),
       _s_var(species),
       _s_index(species_index),
       _chem_mixture(chem_mixture),
@@ -39,7 +40,7 @@ namespace NitridationCalibration
     // Get temperature at the quadrature point
     const Real T = context.side_value(_T_var, qp );
     
-    const unsigned int n_species = _chem_mixture.species_list.size();
+    const unsigned int n_species = _chem_mixture.species_list().size();
     std::vector<Real> mass_fractions( n_species );
     for( unsigned int s = 0 ; s < n_species; s++ )
       {
