@@ -66,6 +66,13 @@ namespace NitridationCalibration
 
     const GetPot& _input;
 
+    std::vector<std::string> _species_names;
+
+    const std::string _T_var_name;
+    const std::string _system_name;
+
+    GRINS::ChemicalMixture* _chem_mixture;
+
   }; // class BoundaryConditionsFactory
 
 } // namespace NitridationCalibration
