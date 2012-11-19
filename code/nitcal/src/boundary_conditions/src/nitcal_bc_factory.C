@@ -102,6 +102,8 @@ namespace NitridationCalibration
 
     std::map< GRINS::PhysicsName, GRINS::NBCContainer > nbc;
 
+    nbc.insert( std::make_pair(GRINS::reacting_low_mach_navier_stokes, nbc_container) );
+
     return nbc;
   }
 
