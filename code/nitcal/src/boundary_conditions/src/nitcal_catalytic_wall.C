@@ -17,7 +17,8 @@ namespace NitridationCalibration
 				unsigned int species_index,
 				const GRINS::ChemicalMixture& chem_mixture,
 				Real gamma )
-    : _T_var(T_var),
+    : GRINS::NeumannFuncObj(),
+      _T_var(T_var),
       _species_vars(species_vars),
       _p0( input("Physics/"+reacting_low_mach_navier_stokes+"/p0", 0.0 ) ),
       _s_var(species),

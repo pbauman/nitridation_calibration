@@ -18,12 +18,14 @@ boundary_conditions_incdir = $(top_srcdir)/src/boundary_conditions/include
 # List of source files to build dynamic library
 #----------------------------------------------
 boundary_conditions_SRC = $(boundary_conditions_srcdir)/nitcal_bc_factory.C \
+                          $(boundary_conditions_srcdir)/nitcal_catalytic_wall.C \
                           $(boundary_conditions_srcdir)/tube_twall.C
 
 #----------------------------
 #INCLUDES we want distributed
 #----------------------------
 boundary_conditions_INC = $(boundary_conditions_incdir)/nitcal_bc_factory.h \
+                          $(boundary_conditions_incdir)/nitcal_catalytic_wall.h \
                           $(boundary_conditions_incdir)/tube_twall.h
 
 include_HEADERS = $(boundary_conditions_INC)
