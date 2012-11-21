@@ -48,7 +48,7 @@ libnitcal_la_LIBADD = $(GRINS_PREFIX)/lib/libgrins.la $(LIBMESH_LIBDIR)/libmesh.
 AM_CPPFLAGS = -I$(boundary_conditions_incdir)
 
 AM_CPPFLAGS += $(BOOST_CPPFLAGS) \
-               $(LIBMESH_INCLUDE) \
+               $(LIBMESH_CPPFLAGS) \
                $(GRINS_CPPFLAGS)
 
 
