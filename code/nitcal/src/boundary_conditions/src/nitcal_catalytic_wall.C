@@ -1,4 +1,24 @@
 //-----------------------------------------------------------------------bl-
+//--------------------------------------------------------------------------
+// 
+// NitCal - Nitridation Calibration 
+//
+// Copyright (C) 2012 The PECOS Development Team
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the Version 2 GNU General
+// Public License as published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this library; if not, write to the Free Software
+// Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA
+// 02110-1301 USA
+//
 //-----------------------------------------------------------------------el-
 //
 // $Id$
@@ -49,14 +69,14 @@ namespace NitridationCalibration
 
     const Real rho = _p0/(_chem_mixture.R(mass_fractions)*T);
 
-    return omega_dot( rho*mass_fractions[_s_var], _chem_mixture.R(_s_index),
+    return omega_dot( rho*mass_fractions[1], _chem_mixture.R(_s_index),
 		      T, _chem_mixture.M(_s_index) );
   }
   
   Real CatalyticWall::normal_derivative( const libMesh::FEMContext& /*context*/, 
 					 const unsigned int /*qp*/ )
   {
-    libmesh_not_implemented();
+    //libmesh_not_implemented();
     return 0.0;
   }
 

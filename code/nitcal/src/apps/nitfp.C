@@ -53,6 +53,8 @@ int main(int argc, char* argv[])
   //FIXME: We need to move this to within the Simulation object somehow...
   std::string restart_file = libMesh_inputfile( "restart-options/restart_file", "none" );
 
+  NitridationCalibration::TubeTempBC* wall_temp;
+  
   if( restart_file == "none" )
     {
       // Asssign initial temperature value
@@ -68,16 +70,25 @@ int main(int argc, char* argv[])
       Real& w_N = params.set<Real>( "w_N" );
       w_N = libMesh_inputfile( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0, 1 );
 
+      wall_temp = new NitridationCalibration::TubeTempBC( libMesh_inputfile );
+      NitridationCalibration::TubeTempBC*& dummy = params.set<NitridationCalibration::TubeTempBC*>( "wall_temp" );
+      dummy = wall_temp;
+
       system.project_solution( initial_values, NULL, params );
     }
 
 
   grins.run();
 
+  if( restart_file == "none" )
+    {
+      delete wall_temp;
+    }
+
   return 0;
 }
 
-Real initial_values( const Point&, const Parameters &params, 
+Real initial_values( const Point& p, const Parameters &params, 
 		     const std::string& , const std::string& unknown_name )
 {
   Real value = 0.0;
@@ -89,7 +100,14 @@ Real initial_values( const Point&, const Parameters &params,
     value = params.get<Real>("w_N");
 
   else if( unknown_name == "T" )
-    value = 1200;
+    {
+      value = (*params.get<NitridationCalibration::TubeTempBC*>( "wall_temp" ))(p);
+      //value = 1200.0;
+    }
+
+  else if( unknown_name == "u" )
+    //value = 40.0;
+  value = 0.0;
 
   else
     value = 0.0;

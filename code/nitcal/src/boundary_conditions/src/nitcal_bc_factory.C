@@ -44,7 +44,6 @@ namespace NitridationCalibration
         _species_names[i] = input( "Physics/Chemistry/species", "DIE!", i );
       }
 
-    
     _chem_mixture = new GRINS::ChemicalMixture( _species_names );
 
     return;
@@ -58,13 +57,25 @@ namespace NitridationCalibration
 
   std::multimap< GRINS::PhysicsName, GRINS::DBCContainer > BoundaryConditionsFactory::build_dirichlet( )
   {
+    GRINS::DBCContainer cont;
+    cont.add_var_name( "T" );
+    cont.add_bc_id( 2 );
+    std::tr1::shared_ptr<libMesh::FunctionBase<Real> > tube_temp( new TubeTempBC( _input ) );
+    cont.set_func( tube_temp );
+
+
     std::multimap< GRINS::PhysicsName, GRINS::DBCContainer > dbc;
+
+    dbc.insert( std::make_pair(GRINS::reacting_low_mach_navier_stokes,cont) );
 
     return dbc;
   }
 
   std::map< GRINS::PhysicsName, GRINS::NBCContainer > BoundaryConditionsFactory::build_neumann( libMesh::EquationSystems& es )
   {
+    /*
+    std::cout << "hello! factorY!" << std::endl;
+
     const libMesh::System& system = es.get_system(_system_name);
 
     const GRINS::VariableIndex T_var = system.variable_number( _T_var_name );
@@ -84,6 +95,8 @@ namespace NitridationCalibration
     const Real gamma_CN = _input( "Physics/BoundaryConditions/CatalyticWall/gamma_CN", -1.0 );
     const Real gamma_N = -gamma_CN;
 
+    std::cout << "gamma_CN = " << gamma_CN << std::endl;
+
     std::tr1::shared_ptr<GRINS::NeumannFuncObj> N_wall( new CatalyticWall(_input, T_var, species_vars, N_var, N_index, *_chem_mixture, gamma_N) );
 
     std::tr1::shared_ptr<GRINS::NeumannFuncObj> CN_wall( new CatalyticWall(_input,T_var, species_vars, CN_var, CN_index, *_chem_mixture, gamma_CN) );
@@ -97,12 +110,12 @@ namespace NitridationCalibration
     const GRINS::BoundaryID wall_id = _input( "Physics/BoundaryConditions/CatalyticWall/catalytic_wall_id", -1 );
 
     GRINS::NBCContainer nbc_container;
-    nbc_container.insert( GRINS::NBCContainerPair( wall_id, N_map ) );
     nbc_container.insert( GRINS::NBCContainerPair( wall_id, CN_map ) );
-
+    nbc_container.insert( GRINS::NBCContainerPair( wall_id, N_map ) );
+    */
     std::map< GRINS::PhysicsName, GRINS::NBCContainer > nbc;
 
-    nbc.insert( std::make_pair(GRINS::reacting_low_mach_navier_stokes, nbc_container) );
+    //nbc.insert( std::make_pair(GRINS::reacting_low_mach_navier_stokes, nbc_container) );
 
     return nbc;
   }

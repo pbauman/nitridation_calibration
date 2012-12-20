@@ -53,6 +53,8 @@ namespace NitridationCalibration
 
     virtual Real operator()(const libMesh::Point& p, const Real time=0.);
 
+    virtual Real operator()(const libMesh::Point& p, const Real time=0.) const;
+
     virtual void operator()(const libMesh::Point& p, const Real time, 
 			    libMesh::DenseVector<Real>& output);
 
@@ -64,6 +66,10 @@ namespace NitridationCalibration
 
     std::vector<Real> _wall_tc_locs;
     std::vector<Real> _wall_temps;
+
+  private:
+
+    TubeTempBC();
 
   };
 

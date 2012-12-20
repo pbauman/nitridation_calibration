@@ -76,6 +76,13 @@ namespace NitridationCalibration
     return this->linear_interp( x );
   }
 
+  Real TubeTempBC::operator()( const libMesh::Point& p, const Real ) const
+  {
+    const Real& x = p(0);
+
+    return this->linear_interp( x );
+  }
+
   void TubeTempBC::operator()( const Point& p, const Real time, 
 			       DenseVector<Real>& output )
   {
@@ -92,10 +99,15 @@ namespace NitridationCalibration
     // Find the bin
     unsigned int index = -1;
 
+    //std::cout << "size = " <<  _wall_tc_locs.size() << std::endl;
+    //std::cout << "size = " << _wall_temps.size() << std::endl;
+    //std::cout << "x = " << x << std::endl;
+
     // This is a stupid linear search. Should do a binary search.
     for( unsigned int i = 1; i < _wall_tc_locs.size(); i++ )
       {
-	if( x < _wall_tc_locs[i] ) 
+	//std::cout << "i = " << i << ", wall loc = " << _wall_tc_locs[i] << std::endl;
+	if( x <= _wall_tc_locs[i] ) 
 	  {
 	    index = i;
 	    break;

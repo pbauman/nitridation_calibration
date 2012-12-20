@@ -40,7 +40,7 @@ nitfp_LDADD = libnitcal.la
 
 libnitcal_la_SOURCES = $(boundary_conditions_SRC)
 
-libnitcal_la_LIBADD = $(GRINS_PREFIX)/lib/libgrins.la $(LIBMESH_LIBDIR)/libmesh.la
+libnitcal_la_LIBADD = $(GRINS_PREFIX)/lib/libgrins.la $(LIBMESH_LIBDIR)/libmesh_$(LIBMESH_METHOD).la
 
 #--------------------------------------
 #Local Directories to include for build
