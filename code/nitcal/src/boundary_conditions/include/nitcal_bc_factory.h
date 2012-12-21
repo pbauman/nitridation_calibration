@@ -38,8 +38,8 @@
 #include "zero_function.h"
 
 // GRINS
-#include "bc_types.h"
-#include "bc_factory.h"
+#include "grins/bc_types.h"
+#include "grins/bc_factory.h"
 
 // NitridationCalibration
 #include "nitcal_catalytic_wall.h"

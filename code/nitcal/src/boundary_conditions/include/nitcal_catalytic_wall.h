@@ -33,10 +33,10 @@
 #include "getpot.h"
 
 // GRINS
-#include "math_constants.h"
-#include "grins_physics_names.h"
-#include "neumann_func_obj.h"
-#include "chemical_mixture.h"
+#include "grins/math_constants.h"
+#include "grins/grins_physics_names.h"
+#include "grins/neumann_func_obj.h"
+#include "grins/chemical_mixture.h"
 
 namespace NitridationCalibration
 {

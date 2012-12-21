@@ -10,7 +10,7 @@
 #include <iostream>
 
 // GRINS
-#include "simulation.h"
+#include "grins/simulation.h"
 
 // libMesh
 #include "parallel.h"
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
   //FIXME: We need to move this to within the Simulation object somehow...
   std::string restart_file = libMesh_inputfile( "restart-options/restart_file", "none" );
 
-  NitridationCalibration::TubeTempBC* wall_temp;
+  std::tr1::shared_ptr<NitridationCalibration::TubeTempBC> wall_temp;
   
   if( restart_file == "none" )
     {
@@ -70,20 +70,14 @@ int main(int argc, char* argv[])
       Real& w_N = params.set<Real>( "w_N" );
       w_N = libMesh_inputfile( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0, 1 );
 
-      wall_temp = new NitridationCalibration::TubeTempBC( libMesh_inputfile );
-      NitridationCalibration::TubeTempBC*& dummy = params.set<NitridationCalibration::TubeTempBC*>( "wall_temp" );
+      wall_temp.reset( new NitridationCalibration::TubeTempBC( libMesh_inputfile ) );
+      std::tr1::shared_ptr<NitridationCalibration::TubeTempBC>& dummy = params.set<std::tr1::shared_ptr<NitridationCalibration::TubeTempBC> >( "wall_temp" );
       dummy = wall_temp;
 
       system.project_solution( initial_values, NULL, params );
     }
 
-
   grins.run();
-
-  if( restart_file == "none" )
-    {
-      delete wall_temp;
-    }
 
   return 0;
 }
@@ -101,7 +95,7 @@ Real initial_values( const Point& p, const Parameters &params,
 
   else if( unknown_name == "T" )
     {
-      value = (*params.get<NitridationCalibration::TubeTempBC*>( "wall_temp" ))(p);
+      value = (*params.get<std::tr1::shared_ptr<NitridationCalibration::TubeTempBC> >( "wall_temp" ))(p);
       //value = 1200.0;
     }
 
