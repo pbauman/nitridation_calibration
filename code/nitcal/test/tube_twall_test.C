@@ -100,7 +100,7 @@ int main()
 
   }
 
-  libMesh::AutoPtr<libMesh::FunctionBase<Real> > tube_clone = tube.clone();
+  libMesh::AutoPtr<libMesh::FunctionBase<libMesh::Real> > tube_clone = tube.clone();
 
   {
 

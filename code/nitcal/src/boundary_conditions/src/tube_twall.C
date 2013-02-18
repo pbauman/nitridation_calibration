@@ -32,7 +32,7 @@ namespace NitridationCalibration
 {
 
   TubeTempBC::TubeTempBC( const GetPot& input )
-    : libMesh::FunctionBase<Real>()
+    : libMesh::FunctionBase<libMesh::Real>()
   {
     unsigned int tc_size = input.vector_variable_size( "BoundaryConditions/TubeWall/tc_locs" );
 
@@ -64,27 +64,27 @@ namespace NitridationCalibration
     return;
   }
 
-  libMesh::AutoPtr<libMesh::FunctionBase<Real> > TubeTempBC::clone() const
+  libMesh::AutoPtr<libMesh::FunctionBase<libMesh::Real> > TubeTempBC::clone() const
   {
-    return libMesh::AutoPtr<libMesh::FunctionBase<Real> >( new TubeTempBC(*this) );
+    return libMesh::AutoPtr<libMesh::FunctionBase<libMesh::Real> >( new TubeTempBC(*this) );
   }
 
-  Real TubeTempBC::operator()( const libMesh::Point& p, const Real )
+  libMesh::Real TubeTempBC::operator()( const libMesh::Point& p, const libMesh::Real )
   {
-    const Real& x = p(0);
+    const libMesh::Real& x = p(0);
 
     return this->linear_interp( x );
   }
 
-  Real TubeTempBC::operator()( const libMesh::Point& p, const Real ) const
+  libMesh::Real TubeTempBC::operator()( const libMesh::Point& p, const libMesh::Real ) const
   {
-    const Real& x = p(0);
+    const libMesh::Real& x = p(0);
 
     return this->linear_interp( x );
   }
 
-  void TubeTempBC::operator()( const Point& p, const Real time, 
-			       DenseVector<Real>& output )
+  void TubeTempBC::operator()( const libMesh::Point& p, const libMesh::Real time, 
+			       libMesh::DenseVector<libMesh::Real>& output )
   {
     for( unsigned int i = 0; i < output.size(); i++ )
       {
@@ -94,7 +94,7 @@ namespace NitridationCalibration
     return;
   }
   
-  Real TubeTempBC::linear_interp( const Real x ) const
+  libMesh::Real TubeTempBC::linear_interp( const libMesh::Real x ) const
   {
     // Find the bin
     unsigned int index = -1;
@@ -117,11 +117,11 @@ namespace NitridationCalibration
     libmesh_assert( index != static_cast<unsigned int>(-1) );
 
     // Interpolate
-    const Real x0 = _wall_tc_locs[index-1];
-    const Real x1 = _wall_tc_locs[index];
+    const libMesh::Real x0 = _wall_tc_locs[index-1];
+    const libMesh::Real x1 = _wall_tc_locs[index];
 
-    const Real T0 = _wall_temps[index-1];
-    const Real T1 = _wall_temps[index];
+    const libMesh::Real T0 = _wall_temps[index-1];
+    const libMesh::Real T1 = _wall_temps[index];
 
     return T0 + (T1-T0)/(x1-x0)*(x-x0);
   }

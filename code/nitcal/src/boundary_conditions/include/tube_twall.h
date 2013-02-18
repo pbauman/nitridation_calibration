@@ -33,39 +33,39 @@
 #include <vector>
 
 // libMesh
-#include "getpot.h"
-#include "libmesh_common.h"
-#include "point.h"
-#include "function_base.h"
+#include "libmesh/getpot.h"
+#include "libmesh/libmesh_common.h"
+#include "libmesh/point.h"
+#include "libmesh/function_base.h"
 
 
 namespace NitridationCalibration
 {
 
-  class TubeTempBC : public libMesh::FunctionBase<Real>
+  class TubeTempBC : public libMesh::FunctionBase<libMesh::Real>
   {
   public:
 
     TubeTempBC( const GetPot& input );
     virtual ~TubeTempBC();
 
-    virtual libMesh::AutoPtr<libMesh::FunctionBase<Real> > clone() const;
+    virtual libMesh::AutoPtr<libMesh::FunctionBase<libMesh::Real> > clone() const;
 
-    virtual Real operator()(const libMesh::Point& p, const Real time=0.);
+    virtual libMesh::Real operator()(const libMesh::Point& p, const libMesh::Real time=0.);
 
-    virtual Real operator()(const libMesh::Point& p, const Real time=0.) const;
+    virtual libMesh::Real operator()(const libMesh::Point& p, const libMesh::Real time=0.) const;
 
-    virtual void operator()(const libMesh::Point& p, const Real time, 
-			    libMesh::DenseVector<Real>& output);
+    virtual void operator()(const libMesh::Point& p, const libMesh::Real time, 
+			    libMesh::DenseVector<libMesh::Real>& output);
 
   protected:
 
-    Real linear_interp( const Real x ) const;
-    Real spline_interp( const Real ) const
+    libMesh::Real linear_interp( const libMesh::Real x ) const;
+    libMesh::Real spline_interp( const libMesh::Real ) const
     { libmesh_not_implemented(); }
 
-    std::vector<Real> _wall_tc_locs;
-    std::vector<Real> _wall_temps;
+    std::vector<libMesh::Real> _wall_tc_locs;
+    std::vector<libMesh::Real> _wall_temps;
 
   private:
 

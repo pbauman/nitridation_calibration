@@ -32,17 +32,17 @@
 #include <string>
 
 // libMesh
-#include "getpot.h"
-#include "equation_systems.h"
-#include "system.h"
-#include "zero_function.h"
+#include "libmesh/getpot.h"
+#include "libmesh/equation_systems.h"
+#include "libmesh/system.h"
+#include "libmesh/zero_function.h"
 
 // GRINS
 #include "grins/bc_types.h"
 #include "grins/bc_factory.h"
 
 // NitridationCalibration
-#include "nitcal_catalytic_wall.h"
+//#include "nitcal_catalytic_wall.h"
 #include "tube_twall.h"
 
 namespace NitridationCalibration
@@ -59,9 +59,6 @@ namespace NitridationCalibration
     //! Builds the NitridationCalibration::
     virtual std::multimap< GRINS::PhysicsName, GRINS::DBCContainer > build_dirichlet( );
 
-    //! Builds the NitridationCalibration::
-    virtual std::map< GRINS::PhysicsName, GRINS::NBCContainer > build_neumann( libMesh::EquationSystems& es );
-
   protected:
 
     const GetPot& _input;
@@ -70,8 +67,6 @@ namespace NitridationCalibration
 
     const std::string _T_var_name;
     const std::string _system_name;
-
-    GRINS::ChemicalMixture* _chem_mixture;
 
   }; // class BoundaryConditionsFactory
 

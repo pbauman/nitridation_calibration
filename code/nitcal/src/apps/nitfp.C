@@ -11,9 +11,10 @@
 
 // GRINS
 #include "grins/simulation.h"
+#include "grins/simulation_builder.h"
 
 // libMesh
-#include "parallel.h"
+#include "libmesh/parallel.h"
 
 // NitCal
 #include "nitcal_bc_factory.h"
