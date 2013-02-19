@@ -8,46 +8,30 @@ bin_PROGRAMS    = nitfp
 
 lib_LTLIBRARIES = libnitcal.la
 
-#--------------------------------------------------
-# List of directories with source and include files
-#--------------------------------------------------
-boundary_conditions_srcdir = $(top_srcdir)/src/boundary_conditions/src
-boundary_conditions_incdir = $(top_srcdir)/src/boundary_conditions/include
+libnitcal_la_SOURCES  = boundary_conditions/src/nitcal_bc_factory.C
+libnitcal_la_SOURCES += boundary_conditions/src/tube_twall.C
 
-#----------------------------------------------
-# List of source files to build dynamic library
-#----------------------------------------------
-boundary_conditions_SRC = $(boundary_conditions_srcdir)/nitcal_bc_factory.C \
-                          $(boundary_conditions_srcdir)/tube_twall.C
+include_HEADERS  = boundary_conditions/include/nitcal_bc_factory.h
+include_HEADERS += boundary_conditions/include/tube_twall.h
 
-#----------------------------
-#INCLUDES we want distributed
-#----------------------------
-boundary_conditions_INC = $(boundary_conditions_incdir)/nitcal_bc_factory.h \
-                          $(boundary_conditions_incdir)/tube_twall.h
-
-include_HEADERS = $(boundary_conditions_INC)
+libnitcal_la_LIBADD = $(GRINS_PREFIX)/lib/libgrins.la $(LIBMESH_LIBDIR)/libmesh_$(LIBMESH_METHOD).la
 
 #------------------------------------
 # Source for stand alone program 
 #------------------------------------
 
-nitfp_SOURCES = $(top_srcdir)/src/apps/nitfp.C
+nitfp_SOURCES = apps/nitfp.C
 
 nitfp_LDADD = libnitcal.la
-
-libnitcal_la_SOURCES = $(boundary_conditions_SRC)
-
-libnitcal_la_LIBADD = $(GRINS_PREFIX)/lib/libgrins.la $(LIBMESH_LIBDIR)/libmesh_$(LIBMESH_METHOD).la
 
 #--------------------------------------
 #Local Directories to include for build
 #--------------------------------------
-AM_CPPFLAGS = -I$(boundary_conditions_incdir)
+AM_CPPFLAGS  = -I$(top_srcdir)/src/boundary_conditions/include
 
-AM_CPPFLAGS += $(BOOST_CPPFLAGS) \
-               $(LIBMESH_CPPFLAGS) \
-               $(GRINS_CPPFLAGS)
+AM_CPPFLAGS += $(BOOST_CPPFLAGS)
+AM_CPPFLAGS += $(LIBMESH_CPPFLAGS)
+AM_CPPFLAGS += $(GRINS_CPPFLAGS)
 
 
 if CODE_COVERAGE_ENABLED
@@ -60,7 +44,7 @@ endif
 
 .license.stamp: $(top_srcdir)/LICENSE
 	$(top_srcdir)/src/common/lic_utils/update_license.pl $(top_srcdir)/LICENSE \
-	$(boundary_conditions_INC) $(boundary_conditions_SRC)
+	$(top_srcdir)/src/boundary_conditions/include/*.h $(top_srcdir)/src/boundary_conditions/src/*.C
 	echo 'updated source license headers' >$@
 
 EXTRA_DIST = common
