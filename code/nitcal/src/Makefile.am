@@ -61,7 +61,9 @@ endif
 
 .license.stamp: $(top_srcdir)/LICENSE
 	$(top_srcdir)/src/common/lic_utils/update_license.pl $(top_srcdir)/LICENSE \
-	$(top_srcdir)/src/boundary_conditions/include/*.h $(top_srcdir)/src/boundary_conditions/src/*.C
+        $(top_srcdir)/src/apps/*.C \
+	$(top_srcdir)/src/boundary_conditions/include/*.h $(top_srcdir)/src/boundary_conditions/src/*.C \
+	$(top_srcdir)/src/qoi/include/*.h $(top_srcdir)/src/qoi/src/*.C
 	echo 'updated source license headers' >$@
 
 EXTRA_DIST = common
