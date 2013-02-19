@@ -26,61 +26,30 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
-#ifndef NITCAL_MASS_LOSS_H
-#define NITCAL_MASS_LOSS_H
-
-// C++
-#include <set>
-#include <vector>
+#ifndef NITCAL_QOI_FACTORY_H
+#define NITCAL_QOI_FACTORY_H
 
 // GRINS
-#include "grins/qoi_base.h"
-
-namespace GRINS
-{
-  template<class Mixture>
-  class ReactingLowMachNavierStokes;
-}
+#include "grins/qoi_factory.h"
 
 namespace NitridationCalibration
 {
-
-  template<class Mixture>
-  class MassLoss : public GRINS::QoIBase
+  class QoIFactory : public GRINS::QoIFactory
   {
   public:
 
-    MassLoss( const GetPot& input );
-    ~MassLoss();
-
-    virtual libMesh::AutoPtr<libMesh::DifferentiableQoI> clone();
-
-    virtual void side_qoi( DiffContext& context, const QoISet& qoi_indices );
-
-    virtual void init( const GetPot& input, const GRINS::MultiphysicsSystem& system );
+    QoIFactory();
+    
+    virtual ~QoIFactory();
 
   protected:
 
-    //! List of boundary ids for which we want to compute this QoI
-    std::set<libMesh::boundary_id_type> _bc_ids;
-
-    std::vector<GRINS::VariableIndex> _species_vars;
-
-    GRINS::VariableIndex _T_var;
-
-    const GRINS::ReactingLowMachNavierStokes<Mixture>* _physics;
-
-    unsigned int _CN_index;
-
-    //! Scales mass flux to mass loss in kg
-    libMesh::Real _factor;
-
-  private:
-
-    MassLoss();
+    virtual void add_qoi( const GetPot& input,
+			  const std::string& qoi_name,
+			  std::tr1::shared_ptr<GRINS::QoIBase>& qoi );
 
   };
 
 } // end namespace NitridationCalibration
 
-#endif // NITCAL_MASS_LOSS_H
+#endif // NITCAL_QOI_FACTORY_H

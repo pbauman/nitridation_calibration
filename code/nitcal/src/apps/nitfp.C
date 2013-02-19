@@ -38,6 +38,7 @@
 
 // NitCal
 #include "nitcal_bc_factory.h"
+#include "qoi_factory.h"
 
 // Function for getting initial temperature field
 Real initial_values( const Point& p, const Parameters &params, 
@@ -68,6 +69,10 @@ int main(int argc, char* argv[])
 
   sim_builder.attach_bc_factory( bc_factory );
 
+  std::tr1::shared_ptr<GRINS::QoIFactory> qoi_factory( new NitridationCalibration::QoIFactory );
+
+  sim_builder.attach_qoi_factory( qoi_factory );
+  
   GRINS::Simulation grins( libMesh_inputfile,
 			   sim_builder );
 

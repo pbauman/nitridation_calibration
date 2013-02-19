@@ -17,6 +17,7 @@ libnitcal_la_SOURCES  = boundary_conditions/src/nitcal_bc_factory.C
 libnitcal_la_SOURCES += boundary_conditions/src/tube_twall.C
 
 # qoi
+libnitcal_la_SOURCES += qoi/src/qoi_factory.C
 libnitcal_la_SOURCES += qoi/src/mass_loss.C
 
 #----------------------------------------
@@ -28,6 +29,7 @@ include_HEADERS  = boundary_conditions/include/nitcal_bc_factory.h
 include_HEADERS += boundary_conditions/include/tube_twall.h
 
 # qoi
+include_HEADERS += qoi/include/qoi_factory.h
 include_HEADERS += qoi/include/mass_loss.h
 
 libnitcal_la_LIBADD = $(GRINS_PREFIX)/lib/libgrins.la $(LIBMESH_LIBDIR)/libmesh_$(LIBMESH_METHOD).la

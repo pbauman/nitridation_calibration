@@ -38,6 +38,7 @@
 #include "grins/constant_transport.h"
 #include "grins/cached_values.h"
 #include "grins/variable_name_defaults.h"
+#include "grins/math_constants.h"
 
 // libMesh
 #include "libmesh/quadrature.h"
@@ -68,6 +69,15 @@ namespace NitridationCalibration
 	_bc_ids.insert( input("QoI/MassLoss/bc_ids", -1, i ) );
       }
 
+    libMesh::Real radius = input("QoI/MassLoss/radius", 0.0 );
+
+    libMesh::Real length = input("QoI/MassLoss/length", 0.0 );
+
+    libMesh::Real delta_t = input("QoI/MassLoss/delta_t", 0.0 );
+
+    // delta_t*total_area = delta_t*( 2*(cap areas) + length surface area )
+    this->_factor = delta_t*( GRINS::Constants::two_pi*radius*radius + GRINS::Constants::two_pi*radius*length );
+
     return;
   }
 
@@ -95,6 +105,7 @@ namespace NitridationCalibration
 
     this->_T_var = system.variable_number(T_var_name);
 
+    _species_vars.resize( _physics->gas_mixture().chem_mixture().n_species() );
     for( unsigned int s = 0; s < _physics->gas_mixture().chem_mixture().n_species(); s++ )
       {
 	std::string var_name = "w_"+_physics->gas_mixture().chem_mixture().species_inverse_name_map().find(_physics->gas_mixture().chem_mixture().species_list()[s])->second;
@@ -194,7 +205,7 @@ namespace NitridationCalibration
 		libMesh::Gradient grad_Y_CN;
 		c.side_gradient( _species_vars[_CN_index], qp, grad_Y_CN );
 
-		qoi += rho*D_CN*grad_Y_CN*normals[qp]*JxW[qp];
+		qoi += _factor*rho*D_CN*grad_Y_CN*normals[qp]*JxW[qp];
 
 	      } // quadrature loop
 
