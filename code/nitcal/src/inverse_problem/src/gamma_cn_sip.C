@@ -59,8 +59,9 @@ namespace NitridationCalibration
   template<class Vec,class Mat>
   void GammaCNSIP<Vec,Mat>::create_param_domain()
   {
+    // These are assuming normalized values
     const double min = 0.0;
-    const double max = 0.1;
+    const double max = 10.0;
 
     Vec param_mins( this->_param_space->zeroVector() );
     param_mins[0] = min;

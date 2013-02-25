@@ -44,6 +44,8 @@ namespace NitridationCalibration
     double _constant;
 
     double _data_mass_loss;
+    
+    double _gamma_nom;
 
   };
 

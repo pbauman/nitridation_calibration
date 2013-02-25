@@ -56,6 +56,8 @@ namespace NitridationCalibration
 
     _data_mass_loss = input( "GammaCNInverseProblem/mass_loss", 0.0 );
 
+    _gamma_nom = input( "GammaCNInverseProblem/gamma_nominal_value", 1.0e-3 );
+
     return;
   }
 
@@ -70,7 +72,7 @@ namespace NitridationCalibration
   {
     libmesh_assert_equal_to( params.size(), 1 );
     
-    _interface.set_gamma_CN( params[0] );
+    _interface.set_gamma_CN( params[0]*_gamma_nom );
 
     if( this->m_env.fullRank() == 0 )
     {
