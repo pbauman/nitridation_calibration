@@ -93,7 +93,7 @@ AX_PATH_GRINS(0.2.0,yes)
 #----------------
 # Check for QUESO
 #----------------
-AX_PATH_QUESO_NEW(0.45.0, yes)
+AX_PATH_QUESO_NEW(0.45.0, no)
 
 
 dnl---------------------------------------------------------

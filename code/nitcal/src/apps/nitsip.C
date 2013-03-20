@@ -28,18 +28,21 @@
 
 // C++
 #include <string>
+#include <iostream>
 
 // NitCal
 #include "gamma_cn_sip.h"
 #include "gamma_cn_likelihood.h"
 
+#ifdef HAVE_QUESO
 // QUESO
 #include "uqGslVector.h"
 #include "uqGslMatrix.h"
+#endif // HAVE_QUESO
 
 int main(int argc, char* argv[])
 {
-
+#ifdef HAVE_QUESO
   // Check command line count.
   if( argc < 3 )
     {
@@ -84,6 +87,12 @@ int main(int argc, char* argv[])
   delete env;
 
   MPI_Finalize();
+
+#else
+
+  std::cout << "Must have linked against a valid QUESO installation for this program to run." << std::endl;
+
+#endif //HAVE_QUESO
   
   return 0;
 }

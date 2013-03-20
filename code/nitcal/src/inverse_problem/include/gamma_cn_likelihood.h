@@ -9,6 +9,8 @@
 #ifndef NITCAL_GAMMA_CN_LIKELIHOOD_H
 #define NITCAL_GAMMA_CN_LIKELIHOOD_H
 
+#ifdef HAVE_QUESO
+
 #include "likelihood_base.h"
 #include "simulation_interface.h"
 
@@ -50,5 +52,7 @@ namespace NitridationCalibration
   };
 
 } // end namespace NitridationCalibration
+
+#endif // HAVE_QUESO
 
 #endif // NITCAL_GAMMA_CN_LIKELIHOOD_H

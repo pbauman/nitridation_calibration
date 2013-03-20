@@ -6,6 +6,8 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
+#ifdef HAVE_QUESO
+
 // This class
 #include "likelihood_base.h"
 
@@ -118,3 +120,5 @@ namespace NitridationCalibration
   template class LikelihoodBase<uqGslVectorClass,uqGslMatrixClass>;
 
 } // end namespace NitridationCalibration
+
+#endif // HAVE_QUESO

@@ -6,6 +6,8 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
+#ifdef HAVE_QUESO
+
 // This class
 #include "gamma_cn_sip.h"
 
@@ -116,3 +118,5 @@ namespace NitridationCalibration
   template class GammaCNSIP<uqGslVectorClass,uqGslMatrixClass>;
 
 } // end namespace NitridationCalibration
+
+#endif // HAVE_QUESO

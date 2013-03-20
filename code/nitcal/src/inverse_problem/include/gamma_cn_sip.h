@@ -9,6 +9,8 @@
 #ifndef NITCAL_GAMMA_CN_BASE_H
 #define NITCAL_GAMMA_CN_BASE_H
 
+#ifdef HAVE_QUESO
+
 #include "sip_base.h"
 
 namespace NitridationCalibration
@@ -40,5 +42,7 @@ namespace NitridationCalibration
   };
 
 } // end namespace NitridationCalibration
+
+#endif // HAVE_QUESO
 
 #endif // NITCAL_GAMMA_CN_BASE_H

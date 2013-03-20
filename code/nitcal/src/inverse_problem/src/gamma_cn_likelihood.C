@@ -6,6 +6,8 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
+#ifdef HAVE_QUESO
+
 // C++
 #include <cmath>
 
@@ -123,3 +125,5 @@ namespace NitridationCalibration
   template class GammaCNLikelihood<uqGslVectorClass,uqGslMatrixClass>;
 
 } // end namespace NitridationCalibration
+
+#endif // HAVE_QUESO

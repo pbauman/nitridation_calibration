@@ -9,6 +9,8 @@
 #ifndef NITCAL_SIP_BASE_H
 #define NITCAL_SIP_BASE_H
 
+#ifdef HAVE_QUESO
+
 #include "uqStatisticalInverseProblem.h"
 
 namespace NitridationCalibration
@@ -99,5 +101,7 @@ namespace NitridationCalibration
   }
 
 } // end namespace NitridationCalibration
+
+#endif // HAVE_QUESO
 
 #endif // NITCAL_SIP_BASE_H

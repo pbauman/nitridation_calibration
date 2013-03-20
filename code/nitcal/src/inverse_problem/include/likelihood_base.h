@@ -9,6 +9,8 @@
 #ifndef NITCAL_LIKELIHOOD_BASE_H
 #define NITCAL_LIKELIHOOD_BASE_H
 
+#ifdef HAVE_QUESO
+
 // QUESO
 #include "uqScalarFunction.h"
 
@@ -66,5 +68,7 @@ namespace NitridationCalibration
   };
 
 } // end namespace NitridationCalibration
+
+#endif // HAVE_QUESO
 
 #endif // NITCAL_LIKELIHOOD_BASE_H

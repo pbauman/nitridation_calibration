@@ -52,7 +52,11 @@ include_HEADERS += inverse_problem/include/gamma_cn_likelihood.h
 include_HEADERS += qoi/include/qoi_factory.h
 include_HEADERS += qoi/include/mass_loss.h
 
-libnitcal_la_LIBADD = $(GRINS_PREFIX)/lib/libgrins.la $(LIBMESH_LIBDIR)/libmesh_$(LIBMESH_METHOD).la $(QUESO_PREFIX)/lib/libqueso.la
+libnitcal_la_LIBADD = $(GRINS_PREFIX)/lib/libgrins.la $(LIBMESH_LIBDIR)/libmesh_$(LIBMESH_METHOD).la
+
+if QUESO_ENABLED
+   libnitcal_la_LIBADD += $(QUESO_PREFIX)/lib/libqueso.la
+endif
 
 #------------------------------------
 # Source for nitfp
@@ -69,7 +73,7 @@ likelihood_test_SOURCES = apps/likelihood_test.C
 likelihood_test_LDADD = libnitcal.la
 
 #------------------------------------
-# Source for nitfp
+# Source for nitsip
 #------------------------------------
 
 nitsip_SOURCES = apps/nitsip.C
