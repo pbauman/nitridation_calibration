@@ -4,7 +4,10 @@ BUILT_SOURCES   = .license.stamp
 # Programs and libraries we want to build
 #----------------------------------------
 
-bin_PROGRAMS    = nitfp likelihood_test nitsip
+bin_PROGRAMS  = nitfp
+bin_PROGRAMS += likelihood_test
+bin_PROGRAMS += nitsip
+bin_PROGRAMS += reaction_energy_test
 
 lib_LTLIBRARIES = libnitcal.la
 
@@ -78,6 +81,13 @@ likelihood_test_LDADD = libnitcal.la
 
 nitsip_SOURCES = apps/nitsip.C
 nitsip_LDADD = libnitcal.la
+
+#------------------------------------
+# Source for reaction_energy_test
+#------------------------------------
+
+reaction_energy_test_SOURCES = apps/reaction_energy_test.C
+reaction_energy_test_LDADD = libnitcal.la
 
 #--------------------------------------
 #Local Directories to include for build
