@@ -57,12 +57,14 @@ AC_PROG_FC
 dnl----------------
 dnl Libmesh Config
 dnl----------------
-AX_PATH_LIBMESH_NEW(0.8.0, yes)
+AX_PATH_LIBMESH_NEW(0.9.0, yes)
 
 AC_ARG_ENABLE([libmesh-flags],
-               AC_HELP_STRING([--enable-libmesh-flags],[enable use of libmesh cxxflags for CXXFLAGS]),
+               AC_HELP_STRING([--disable-libmesh-flags],[disable use of libmesh cxxflags for CXXFLAGS]),
+               USE_LIBMESH_CXX_FLAGS=0
+               AC_DEFINE(USE_LIBMESH_CXX_FLAGS,0,[Define if libmesh cxxflags enabled]),
                USE_LIBMESH_CXX_FLAGS=1
-               AC_DEFINE(USE_LIBMESH_CXX_FLAGS,1,[Define if libmesh cxxflags enabled]),[])
+               AC_DEFINE(USE_LIBMESH_CXX_FLAGS,1,[Define if libmesh cxxflags enabled]))
 
 
 if test "$USE_LIBMESH_CXX_FLAGS" = "1"; then
@@ -71,6 +73,10 @@ else
  dnl TODO: WE NEED TO DISTINGUISH BETWEEN COMPILERS IN A BETTER WAY
    CXXFLAGS="-O0 -g -Wall"
 fi
+
+dnl -Wall warnings, -Wall the time.
+AX_CXXFLAGS_WARN_ALL
+
 
 dnl---------------------------------------------------------
 dnl Add libMesh flags manually if it's not a libtool build
@@ -88,7 +94,7 @@ dnl----------------
 BOOST_REQUIRE([1.39.0])
 
 
-AX_PATH_GRINS(0.2.0,yes)
+AX_PATH_GRINS(0.4.0,yes)
 
 #----------------
 # Check for QUESO
