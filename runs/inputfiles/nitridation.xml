@@ -59,8 +59,9 @@
       <products>C:1 N:1</products>
     </reaction>
 
-    
+ 
     <!-- reaction 0012    -->
+    <!--
     <reaction reversible="yes" id="0012">
       <equation>N2 + C [=] CN + N</equation>
       <rateCoeff>
@@ -73,6 +74,7 @@
       <reactants>N2:1 C:1</reactants>
       <products>CN:1 N:1</products>
     </reaction>    
+   -->
 
   </reactionData>
 
