@@ -71,14 +71,14 @@ namespace NitridationCalibration
 
   libMesh::Real TubeTempBC::operator()( const libMesh::Point& p, const libMesh::Real )
   {
-    const libMesh::Real& x = p(0);
+    const libMesh::Real& x = p(1);
 
     return this->linear_interp( x );
   }
 
   libMesh::Real TubeTempBC::operator()( const libMesh::Point& p, const libMesh::Real ) const
   {
-    const libMesh::Real& x = p(0);
+    const libMesh::Real& x = p(1);
 
     return this->linear_interp( x );
   }

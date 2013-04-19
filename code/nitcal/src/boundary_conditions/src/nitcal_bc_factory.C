@@ -13,7 +13,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // General Public License for more details.
-//
+ //
 // You should have received a copy of the GNU General Public License
 // along with this library; if not, write to the Free Software
 // Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA
@@ -47,9 +47,10 @@ namespace NitridationCalibration
 
   std::multimap< GRINS::PhysicsName, GRINS::DBCContainer > BoundaryConditionsFactory::build_dirichlet( )
   {
+    
     GRINS::DBCContainer cont;
     cont.add_var_name( "T" );
-    cont.add_bc_id( 2 );
+    cont.add_bc_id( 4 );
     std::tr1::shared_ptr<libMesh::FunctionBase<libMesh::Real> > tube_temp( new TubeTempBC( _input ) );
     cont.set_func( tube_temp );
 
