@@ -8,6 +8,7 @@ bin_PROGRAMS  = nitfp
 bin_PROGRAMS += likelihood_test
 bin_PROGRAMS += nitsip
 bin_PROGRAMS += reaction_energy_test
+bin_PROGRAMS += likelihood_sampling
 
 lib_LTLIBRARIES = libnitcal.la
 
@@ -88,6 +89,13 @@ nitsip_LDADD = libnitcal.la
 
 reaction_energy_test_SOURCES = apps/reaction_energy_test.C
 reaction_energy_test_LDADD = libnitcal.la
+
+#------------------------------------
+# Source for likelihood_sampling
+#------------------------------------
+
+likelihood_sampling_SOURCES = apps/likelihood_sampling.C
+likelihood_sampling_LDADD = libnitcal.la
 
 #--------------------------------------
 #Local Directories to include for build
