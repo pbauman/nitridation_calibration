@@ -35,10 +35,10 @@ int main()
   
   NitridationCalibration::TubeTempBC tube(input);
 
-  libMesh::Point p0( 0.10 );
-  libMesh::Point p1( 0.30 );
-  libMesh::Point p2( 0.70 );
-  libMesh::Point p3( 0.80 );
+  libMesh::Point p0( 0.0, 0.10 );
+  libMesh::Point p1( 0.0, 0.30 );
+  libMesh::Point p2( 0.0, 0.70 );
+  libMesh::Point p3( 0.0, 0.80 );
   
   const double tol = 1.0e-15;
 
