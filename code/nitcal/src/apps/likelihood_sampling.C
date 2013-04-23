@@ -93,19 +93,25 @@ int main(int argc, char* argv[])
           }
         catch(...)
           {
-            std::cout << "Caught exception for evaluating likelihood for parameter = " << param[0] << std::endl;
-            errors.open( "error_params.dat", std::ios::app );
-            errors << std::scientific << std::setprecision(16) << param[0] << std::endl;
-            errors.close();
+            if( env->fullRank() == 0 )
+              {
+                std::cout << "Caught exception for evaluating likelihood for parameter = " << param[0] << std::endl;
+                errors.open( "error_params.dat", std::ios::app );
+                errors << std::scientific << std::setprecision(16) << param[0] << std::endl;
+                errors.close();
+              }
 
             param[0] += 0.01;
             continue;
           }
 
-        values.open( "likelihood_values.dat", std::ios::app );
-        values << std::scientific << std::setprecision(16)
-               << param[0] << " " << likelihood_value << std::endl;
-        values.close();
+        if( env->fullRank() == 0 )
+          {
+            values.open( "likelihood_values.dat", std::ios::app );
+            values << std::scientific << std::setprecision(16)
+                   << param[0] << " " << likelihood_value << std::endl;
+            values.close();
+          }
         
         param[0] += 0.01;
       }
