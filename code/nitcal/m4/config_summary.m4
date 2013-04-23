@@ -44,20 +44,35 @@ echo Boost......................... : $BOOST_ROOT
 # masa optional check:
 echo
 echo Optional Features:
-if test "$HAVE_GRVY" = "0"; then
-  echo '   'Link with GRVY................ : no
+if test "x$HAVE_GSL" = "x1"; then
+  echo '   'Link with GSL................. : $GSL_PREFIX
 else
-  echo '   'Link with GRVY................ :$GRVY_PREFIX
+  echo '   'Link with GSL................. : no
+fi
+if test "x$HAVE_GLPK" = "x1"; then
+  echo '   'Link with GLPK................ : $GLPK_PREFIX
+else
+  echo '   'Link with GLPK................ : no
+fi
+if test "$HAVE_QUESO" = "1"; then
+  echo '   'Link with QUESO............... : $QUESO_PREFIX
+else
+  echo '   'Link with QUESO............... : no
+fi
+if test "x$HAVE_GRVY" = "x1"; then
+  echo '   'Link with GRVY................ : $GRVY_PREFIX
+else
+  echo '   'Link with GRVY................ : no
 fi
 if test "x$USE_GRVY_TIMERS" = "x1"; then
   echo '   'Use GRVY timers............... : yes
 else
   echo '   'Use GRVY timers............... : no
 fi
-if test "$HAVE_MASA" = "0"; then
-  echo '   'Link with MASA................ : no
-else
+if test "$xHAVE_MASA" = "x1"; then
   echo '   'Link with MASA................ : $MASA_PREFIX
+else
+  echo '   'Link with MASA................ : no
 fi
 if test "$HAVE_GCOV_TOOLS" = "0"; then
   echo '   'Enable gcov code coverage..... : no
