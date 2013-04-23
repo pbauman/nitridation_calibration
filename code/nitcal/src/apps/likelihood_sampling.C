@@ -33,11 +33,11 @@
 #include <fstream>
 
 // NitCal
-#include "config.h"
+#include "nitcal_config.h"
 #include "gamma_cn_sip.h"
 #include "gamma_cn_likelihood.h"
 
-#ifdef HAVE_QUESO
+#ifdef NITCAL_HAVE_QUESO
 // QUESO
 #include "uqGslVector.h"
 #include "uqGslMatrix.h"
@@ -45,7 +45,7 @@
 
 int main(int argc, char* argv[])
 {
-#ifdef HAVE_QUESO
+#ifdef NITCAL_HAVE_QUESO
   // Check command line count.
   if( argc < 3 )
     {
@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     std::ofstream values;
     std::ofstream errors;
 
-    double param = 0.01;
+    std::vector<double> param( 1, 0.01);
 
     for( unsigned int s = 0; s < 200; s++ )
       {
@@ -93,21 +93,21 @@ int main(int argc, char* argv[])
           }
         catch(...)
           {
-            std::cout << "Caught exception for evaluating likelihood for parameter = " << param << std::endl;
-            errors.open( "error_params.dat" << std::ios::app );
-            errors << << std::scientific << std::setprecision(16) << param << std::end;
+            std::cout << "Caught exception for evaluating likelihood for parameter = " << param[0] << std::endl;
+            errors.open( "error_params.dat", std::ios::app );
+            errors << std::scientific << std::setprecision(16) << param[0] << std::endl;
             errors.close();
 
-            param += 0.01;
+            param[0] += 0.01;
             continue;
           }
 
         values.open( "likelihood_values.dat", std::ios::app );
         values << std::scientific << std::setprecision(16)
-               << param << " " << likelihood_value << std::endl;
+               << param[0] << " " << likelihood_value << std::endl;
         values.close();
         
-        params += 0.01;
+        param[0] += 0.01;
       }
   }
   //************************************************
@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
 
   std::cout << "Must have linked against a valid QUESO installation for this program to run." << std::endl;
 
-#endif //HAVE_QUESO
+#endif //NITCAL_HAVE_QUESO
 
   return 0;
 }

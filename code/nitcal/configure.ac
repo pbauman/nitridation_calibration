@@ -4,7 +4,11 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.61)
 AC_INIT(nitcal, 0.0.0, pbauman@ices.utexas.edu)
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_HEADER(config.h)
+
+AC_CONFIG_HEADER(nitcal_config.h.tmp)
+dnl Prefixes everything in the temporary file with FINS_
+AX_PREFIX_CONFIG_H(nitcal_config.h,NITCAL,nitcal_config.h.tmp)
+
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CANONICAL_TARGET()
 AM_INIT_AUTOMAKE([dist-bzip2 tar-ustar 1.11 no-define])

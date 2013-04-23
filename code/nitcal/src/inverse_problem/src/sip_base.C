@@ -6,7 +6,9 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
-#ifdef HAVE_QUESO
+#include "nitcal_config.h"
+
+#ifdef NITCAL_HAVE_QUESO
 
 // C++
 #include <cmath>
@@ -153,4 +155,4 @@ namespace NitridationCalibration
   
 } // end namespace NitridationCalibration
 
-#endif // HAVE_QUESO
+#endif // NITCAL_HAVE_QUESO

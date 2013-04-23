@@ -6,7 +6,9 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
-#ifdef HAVE_QUESO
+#include "nitcal_config.h"
+
+#ifdef NITCAL_HAVE_QUESO
 
 // This class
 #include "likelihood_base.h"
@@ -121,4 +123,4 @@ namespace NitridationCalibration
 
 } // end namespace NitridationCalibration
 
-#endif // HAVE_QUESO
+#endif // NITCAL_HAVE_QUESO

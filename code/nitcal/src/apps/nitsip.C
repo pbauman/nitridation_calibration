@@ -26,6 +26,8 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
+#include "nitcal_config.h"
+
 // C++
 #include <string>
 #include <iostream>
@@ -34,7 +36,7 @@
 #include "gamma_cn_sip.h"
 #include "gamma_cn_likelihood.h"
 
-#ifdef HAVE_QUESO
+#ifdef NITCAL_HAVE_QUESO
 // QUESO
 #include "uqGslVector.h"
 #include "uqGslMatrix.h"
@@ -42,7 +44,7 @@
 
 int main(int argc, char* argv[])
 {
-#ifdef HAVE_QUESO
+#ifdef NITCAL_HAVE_QUESO
   // Check command line count.
   if( argc < 3 )
     {
@@ -92,7 +94,7 @@ int main(int argc, char* argv[])
 
   std::cout << "Must have linked against a valid QUESO installation for this program to run." << std::endl;
 
-#endif //HAVE_QUESO
+#endif //NITCAL_HAVE_QUESO
   
   return 0;
 }

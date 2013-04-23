@@ -49,6 +49,9 @@ MAINTAINERCLEANFILES = aclocal.m4                               \
                        Makefile.in                              \
                        src/Makefile.in                          \
                        test/Makefile.in                         
+MAINTAINERCLEANFILES += nitcal_config.h
+MAINTAINERCLEANFILES += nitcal_config.h.tmp.in
+MAINTAINERCLEANFILES += _configs.sed
 
 #MOSTLYCLEANFILES     = $(DX_CLEANFILES)
 
