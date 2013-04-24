@@ -26,7 +26,11 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
+// This class
 #include "nitcal_bc_factory.h"
+
+// NitCal
+#include "inlet_profile.h"
 
 namespace NitridationCalibration
 {
@@ -48,16 +52,22 @@ namespace NitridationCalibration
   std::multimap< GRINS::PhysicsName, GRINS::DBCContainer > BoundaryConditionsFactory::build_dirichlet( )
   {
     
-    GRINS::DBCContainer cont;
-    cont.add_var_name( "T" );
-    cont.add_bc_id( 4 );
+    GRINS::DBCContainer T_cont;
+    T_cont.add_var_name( "T" );
+    T_cont.add_bc_id( 4 );
     std::tr1::shared_ptr<libMesh::FunctionBase<libMesh::Real> > tube_temp( new TubeTempBC( _input ) );
-    cont.set_func( tube_temp );
+    T_cont.set_func( tube_temp );
 
+    GRINS::DBCContainer v_cont;
+    v_cont.add_var_name( "v" );
+    v_cont.add_bc_id( 1 );
+    std::tr1::shared_ptr<libMesh::FunctionBase<libMesh::Real> > v_inlet( new InletProfile( _input ) );
+    v_cont.set_func( v_inlet );
 
     std::multimap< GRINS::PhysicsName, GRINS::DBCContainer > dbc;
 
-    dbc.insert( std::make_pair(GRINS::reacting_low_mach_navier_stokes,cont) );
+    dbc.insert( std::make_pair(GRINS::reacting_low_mach_navier_stokes, T_cont) );
+    dbc.insert( std::make_pair(GRINS::reacting_low_mach_navier_stokes, v_cont) );
 
     return dbc;
   }
