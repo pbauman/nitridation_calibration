@@ -7,7 +7,7 @@ sigma = '2.0e-8' # [kg]
 
 mass_loss = '2.45e-6' # [kg]
 
-gamma_nominal_value = '1.93e-3' 
+gamma_nominal_value = '2.23e-3' 
 
 []
 
@@ -20,6 +20,12 @@ tc_locs = '0.0 0.244 0.324 0.639 0.709 0.869'
 
 # Temperature vals for above locs (K) - at 1273K
 wall_temps = '298.0 350.0 1273.0 1273.0 525.0 400.0'
+
+[../InletProfile]
+
+mdot = '16.5' # [mg/s]
+
+p_inlet = '600' # [Pa]
 
 []
 
@@ -68,7 +74,7 @@ T_order       = 'SECOND'
 P_order       = 'FIRST'
 
 # Thermodynamic pressure
-p0 = '530.62' #[Pa]
+p0 = '530.6' #[Pa]
 
 # Gravity vector
 g = '0.0 0.0' #[m/s^2]
@@ -85,14 +91,9 @@ thermodynamics_library = 'grins_cea'
 # outflow = 5
 
 vel_bc_ids = '1 2 3 4'
-vel_bc_types = 'parabolic_profile axisymmetric no_slip no_slip'
+vel_bc_types = 'general_velocity axisymmetric no_slip no_slip'
 
-parabolic_profile_var_1 = 'v'
-parabolic_profile_fix_1 = 'u'
-
-# a = -U0/r0^2, f = U0
-# r0 = 0.011
-parabolic_profile_coeffs_1 = '-48380.9917355372 0.0 0.0 0.0 0.0 5.8541' 
+general_velocity_fix_1 = 'u'
 
 temp_bc_ids = '1 2 3 4'
 temp_bc_types = 'isothermal axisymmetric isothermal general_isothermal'
@@ -106,7 +107,7 @@ species_bc_types = 'prescribed_mole_fracs catalytic_wall'
 bound_species_1 = '0.596 0.404 0.0 0.0'
 
 wall_catalytic_reactions_3 = 'N->CN'
-gamma_N_3 = '1.93e-3'
+gamma_N_3 = '${GammaCNInverseProblem/gamma_nominal_value}'
 
 # This is currently a dummy.
 gamma_CN_3 = '${Physics/ReactingLowMachNavierStokes/gamma_N_3}'
