@@ -31,6 +31,7 @@
 
 // GRINS
 #include "grins/chemical_mixture.h"
+#include "grins/math_constants.h"
 
 namespace NitridationCalibration
 {
@@ -38,24 +39,30 @@ namespace NitridationCalibration
     : _r0_sq( input( "BoundaryConditions/InletProfile/r0", 0.011 )*input( "BoundaryConditions/InletProfile/r0", 0.011 ) ),
       _C(-1.0)
   {
-    if( !input.have_variable( "BoundaryConditions/InletProfile/Q" ) )
+    if( !input.have_variable( "BoundaryConditions/InletProfile/mdot" ) )
       {
-        std::cerr << "Error: Must specify input volume flow rate Q!" << std::endl;
+        std::cerr << "Error: Must specify input mass flow rate mdot!" << std::endl;
         libmesh_error();
       }
 
-    // We're expecting this in sccm (cm^3/min)
-    libMesh::Real Q = input( "BoundaryConditions/InletProfile/Q", 0.0 );
+    // We're expecting this in mg/s
+    libMesh::Real mdot = input( "BoundaryConditions/InletProfile/mdot", 0.0 );
 
-    // Convert Q to m^3/s
-    Q /= (100*100*100*60);
+    // convert to kg/s
+    mdot /= 1.0e6;
 
-    /* Now, covert to mass flux. According to 
-       http://www.massflow-online.com/faqs/what-do-lnmin-lsmin-slm-and-sccm-stand-for
-       conditions for sccm are 0 degrees C and 1 atm. */
+    std::cout << "mdot = " << mdot << std::endl;
 
-    libMesh::Real P = 101325;
-    libMesh::Real T = 273.15;
+    if( !input.have_variable( "BoundaryConditions/InletProfile/p_inlet" ) )
+      {
+        std::cerr << "Error: Must specify pressure at inlet!" << std::endl;
+        libmesh_error();
+      }
+
+    libMesh::Real P = input("BoundaryConditions/InletProfile/p_inlet", 600);
+    libMesh::Real T = input("BoundaryConditions/TubeWall/wall_temps", 298, 0);
+
+    std::cout << "P = " << P << ", T = " << T << std::endl;
 
     unsigned int n_species = input.vector_variable_size( "Physics/Chemistry/species" );
     std::vector<std::string> species_names( n_species );
@@ -66,22 +73,16 @@ namespace NitridationCalibration
 
     GRINS::ChemicalMixture chem_mixture( species_names );
 
-    /*
-    std::vector<libMesh::Real> X( n_species );
-    for( unsigned int s = 0; s < n_species; s++ )
-      {
-        X[s] = input( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0 );
-      }
-    */
-
     //libMesh::Real R = chem_mixture.R_from_X( X ); ;
     //libMesh::Real R = chem_mixture.R( chem_mixture.species_name_map().find(std::string("N2"))->second );
     libMesh::Real R = chem_mixture.R( 0 );
     libMesh::Real rho = P/(R*T);
 
-    Q *= rho;
+    std::cout << "R = " << R << ", rho = " << rho << std::endl;
 
-    _C = 2.0*Q/_r0_sq/GRINS::Constants::pi;
+    _C = mdot/rho*2.0/_r0_sq/GRINS::Constants::pi;
+
+    std::cout << "C = " << _C << std::endl;
 
     return;
   }
