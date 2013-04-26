@@ -51,7 +51,7 @@ namespace NitridationCalibration
     // convert to kg/s
     mdot /= 1.0e6;
 
-    std::cout << "mdot = " << mdot << std::endl;
+    //std::cout << "mdot = " << mdot << std::endl;
 
     if( !input.have_variable( "BoundaryConditions/InletProfile/p_inlet" ) )
       {
@@ -62,7 +62,7 @@ namespace NitridationCalibration
     libMesh::Real P = input("BoundaryConditions/InletProfile/p_inlet", 600);
     libMesh::Real T = input("BoundaryConditions/TubeWall/wall_temps", 298, 0);
 
-    std::cout << "P = " << P << ", T = " << T << std::endl;
+    //std::cout << "P = " << P << ", T = " << T << std::endl;
 
     unsigned int n_species = input.vector_variable_size( "Physics/Chemistry/species" );
     std::vector<std::string> species_names( n_species );
@@ -73,16 +73,22 @@ namespace NitridationCalibration
 
     GRINS::ChemicalMixture chem_mixture( species_names );
 
-    //libMesh::Real R = chem_mixture.R_from_X( X ); ;
-    //libMesh::Real R = chem_mixture.R( chem_mixture.species_name_map().find(std::string("N2"))->second );
-    libMesh::Real R = chem_mixture.R( 0 );
+    std::vector<libMesh::Real> X( n_species );
+	
+    for( unsigned int s = 0; s < n_species; s++ )
+      {
+        X[s] = input( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0 );
+      }
+
+    libMesh::Real R = chem_mixture.R_from_X( X ); ;
+
     libMesh::Real rho = P/(R*T);
 
-    std::cout << "R = " << R << ", rho = " << rho << std::endl;
+    //std::cout << "R = " << R << ", rho = " << rho << std::endl;
 
     _C = mdot/rho*2.0/_r0_sq/GRINS::Constants::pi;
 
-    std::cout << "C = " << _C << std::endl;
+    //std::cout << "C = " << _C << std::endl;
 
     return;
   }
