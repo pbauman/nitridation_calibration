@@ -147,12 +147,8 @@ AC_OUTPUT( Makefile \
            src/Makefile \
            test/Makefile \
            doxygen/Makefile \
-           doxygen/txt_common/about.page \
+           doxygen/txt_common/about_vpath.page \
            doxygen/nitcal.dox )
-
-#           doxygen/Makefile \
-#           doxygen/txt_common/about.page )
-
 
 dnl------------------------------
 dnl Final summary
