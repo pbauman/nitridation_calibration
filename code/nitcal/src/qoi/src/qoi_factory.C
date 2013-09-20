@@ -32,11 +32,6 @@
 // NitCal
 #include "mass_loss.h"
 
-// GRINS
-#include "grins/ideal_gas_mixture.h"
-#include "grins/grins_kinetics.h"
-#include "grins/cea_thermo.h"
-#include "grins/constant_transport.h"
 
 namespace NitridationCalibration
 {
