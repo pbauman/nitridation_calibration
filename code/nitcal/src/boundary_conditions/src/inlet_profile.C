@@ -30,8 +30,11 @@
 #include "inlet_profile.h"
 
 // GRINS
-#include "grins/chemical_mixture.h"
 #include "grins/math_constants.h"
+
+// Antioch
+#include "antioch/physical_constants.h"
+#include "antioch/chemical_mixture.h"
 
 namespace NitridationCalibration
 {
@@ -71,7 +74,7 @@ namespace NitridationCalibration
 	species_names[s] = input( "Physics/Chemistry/species", "DIE!", s );
       }
 
-    GRINS::ChemicalMixture chem_mixture( species_names );
+    Antioch::ChemicalMixture<libMesh::Real> chem_mixture( species_names );
 
     std::vector<libMesh::Real> X( n_species );
 	
@@ -80,7 +83,13 @@ namespace NitridationCalibration
         X[s] = input( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0 );
       }
 
-    libMesh::Real R = chem_mixture.R_from_X( X ); ;
+    libMesh::Real M = 0.0;
+    for( unsigned int s = 0; s < n_species; s++ )
+      {
+        M += X[s]*chem_mixture.M(s);
+      }
+
+    libMesh::Real R = Antioch::Constants::R_universal<libMesh::Real>()/M;
 
     libMesh::Real rho = P/(R*T);
 

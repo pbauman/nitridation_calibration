@@ -14,6 +14,9 @@
 #include "grins/bc_handling_base.h"
 #include "grins/catalytic_wall.h"
 
+// Antioch
+#include "antioch/chemical_mixture.h"
+
 namespace NitridationCalibration
 {
   NitridationSimulation::NitridationSimulation( const GetPot& input,
@@ -42,7 +45,7 @@ namespace NitridationCalibration
       std::tr1::shared_ptr< GRINS::NeumannFuncObj > raw_func =
 	bc_handler->get_neumann_bound_func( bc_id, var_id );
 
-      GRINS::CatalyticWall* func = libmesh_cast_ptr<GRINS::CatalyticWall*>( raw_func.get() );
+      GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* func = libmesh_cast_ptr<GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* >( raw_func.get() );
 
       func->set_gamma( gamma );
     }
@@ -55,7 +58,7 @@ namespace NitridationCalibration
       std::tr1::shared_ptr< GRINS::NeumannFuncObj > raw_func =
 	bc_handler->get_neumann_bound_func( bc_id, var_id );
 
-      GRINS::CatalyticWall* func = libmesh_cast_ptr<GRINS::CatalyticWall*>( raw_func.get() );
+      GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* func = libmesh_cast_ptr<GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* >( raw_func.get() );
 
       func->set_gamma( -gamma );
     }
