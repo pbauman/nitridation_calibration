@@ -47,16 +47,23 @@ int main(int argc, char* argv[])
 {
 #ifdef NITCAL_HAVE_QUESO
   // Check command line count.
-  if( argc < 3 )
+  if( argc < 6 )
     {
       // TODO: Need more consistent error handling.
-      std::cerr << "Error: Must specify libMesh and QUESO input files." << std::endl;
+      std::cerr << "Error: Must specify libMesh and QUESO input files and" << std::endl
+                << "       min, max, and number of increments" << std::endl;
       exit(1); // TODO: something more sophisticated for parallel runs?
     }
 
   // libMesh input file should be first argument
   std::string libMesh_input_filename = argv[1];
   std::string QUESO_input = argv[2];
+
+  double min = atof(argv[3]);
+  double max = atof(argv[4]);
+  unsigned int n_increments = atoi(argv[5]);
+
+  std::cout << "min = " << min << ", max = " << max << ", n_increments = " << n_increments << std::endl;
 
   //************************************************
   // Initialize environments
@@ -80,9 +87,11 @@ int main(int argc, char* argv[])
     std::ofstream values;
     std::ofstream errors;
 
-    std::vector<double> param( 1, 0.01);
+    std::vector<double> param( 1, min);
 
-    for( unsigned int s = 0; s < 200; s++ )
+    double increment = (max-min)/n_increments;
+    
+    for( unsigned int s = 0; s < n_increments+1; s++ )
       {
         double likelihood_value = 0.0;
         likelihood.update_parameters(param);
@@ -101,7 +110,7 @@ int main(int argc, char* argv[])
                 errors.close();
               }
 
-            param[0] += 0.01;
+            param[0] += increment;
             continue;
           }
 
@@ -113,7 +122,7 @@ int main(int argc, char* argv[])
             values.close();
           }
         
-        param[0] += 0.01;
+        param[0] += increment;
       }
   }
   //************************************************

@@ -48,7 +48,7 @@ namespace NitridationCalibration
     _sigma = input( "GammaCNInverseProblem/sigma", 0.0 );
     _sigma_sq = _sigma*_sigma;
 
-    _constant = std::log(GRINS::Constants::two_pi*_sigma_sq);
+    _constant = std::log(std::sqrt(GRINS::Constants::two_pi)*_sigma);
 
 
     if( !input.have_variable( "GammaCNInverseProblem/mass_loss" ) )
@@ -80,7 +80,7 @@ namespace NitridationCalibration
 
     if( this->m_env.fullRank() == 0 )
     {
-      std::cout << "gamma = " << params[0] << std::endl;
+      std::cout << "param = " << params[0] << ", gamma = " << params[0]*_gamma_nom << std::endl;
     }
 
     return;
