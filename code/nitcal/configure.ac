@@ -82,6 +82,27 @@ dnl -Wall warnings, -Wall the time.
 AX_CXXFLAGS_WARN_ALL
 
 
+dnl--------------------------
+dnl Even if no dependency needed it,
+dnl C++11 makes our asserts nicer,
+dnl so let's try and enable it.
+dnl--------------------------
+AC_ARG_ENABLE(cxx11,
+              AC_HELP_STRING([--enable-cxx11],
+                             [build with C++11 support]),
+              [case "${enableval}" in
+                yes)  enablecxx11=yes ;;
+                 no)  enablecxx11=no ;;
+                  *)  AC_MSG_ERROR(bad value ${enableval} for --enable-cxx11) ;;
+               esac],
+               [enablecxx11=optional])
+
+if (test x$enablecxx11 = xyes); then
+  AX_CXX_COMPILE_STDCXX_11(noext, mandatory)
+elif (test x$enablecxx11 = xoptional); then
+  AX_CXX_COMPILE_STDCXX_11(noext, optional)
+fi
+
 dnl---------------------------------------------------------
 dnl Add libMesh flags manually if it's not a libtool build
 dnl---------------------------------------------------------
@@ -97,6 +118,7 @@ dnl Check for boost
 dnl----------------
 BOOST_REQUIRE([1.39.0])
 
+AX_PATH_ANTIOCH(0.0.5,yes)
 
 AX_PATH_GRINS(0.4.0,yes)
 

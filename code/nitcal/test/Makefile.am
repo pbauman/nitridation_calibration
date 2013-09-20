@@ -3,11 +3,17 @@ BUILT_SOURCES   = .license.stamp
 check_PROGRAMS  = tube_twall_test
 
 AM_CPPFLAGS  = -I$(top_srcdir)/src/boundary_conditions/include
+AM_CPPFLAGS += -I$(top_srcdir)/src/interface/include
+AM_CPPFLAGS += -I$(top_srcdir)/src/inverse_problem/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/qoi/include
 
 AM_CPPFLAGS += $(BOOST_CPPFLAGS)
+AM_CPPFLAGS += $(ANTIOCH_CPPFLAGS)
 AM_CPPFLAGS += $(LIBMESH_CPPFLAGS)
 AM_CPPFLAGS += $(GRINS_CPPFLAGS)
+AM_CPPFLAGS += $(QUESO_CPPFLAGS)
+AM_CPPFLAGS += $(GSL_CPPFLAGS)
+AM_CPPFLAGS += $(GLPK_CPPFLAGS)
 
 AM_LDFLAGS = $(LIBNITCAL_LIBS)
 
