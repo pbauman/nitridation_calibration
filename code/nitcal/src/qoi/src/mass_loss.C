@@ -31,12 +31,7 @@
 
 // GRINS
 #include "grins/multiphysics_sys.h"
-#include "grins/ideal_gas_mixture.h"
-#include "grins/reacting_low_mach_navier_stokes.h"
-#include "grins/grins_kinetics.h"
-#include "grins/cea_thermo.h"
-#include "grins/constant_transport.h"
-#include "grins/cached_values.h"
+#include "grins/reacting_low_mach_navier_stokes_base.h"
 #include "grins/variable_name_defaults.h"
 #include "grins/math_constants.h"
 
@@ -45,13 +40,23 @@
 
 namespace NitridationCalibration
 {
-
-  template<class Mixture>
-  MassLoss<Mixture>::MassLoss( const GetPot& input )
-    : QoIBase()
+  MassLoss::MassLoss( const GetPot& input )
+    : QoIBase(),
+      _physics(NULL),
+      _chem_mixture(NULL)
   {
     this->assemble_qoi_sides = true;
     this->assemble_qoi_elements = false;
+
+    unsigned int n_species = input.vector_variable_size("Physics/Chemistry/species");
+    std::vector<std::string> species_list(n_species);
+
+    for( unsigned int s = 0; s < n_species; s++ )
+      {
+        species_list[s] = input( "Physics/Chemistry/species", "DIE!", s );
+      }
+
+    _chem_mixture =  new Antioch::ChemicalMixture<libMesh::Real>( species_list );
 
     // Read boundary ids for which we want to compute
     int num_bcs =  input.vector_variable_size("QoI/MassLoss/bc_ids");
@@ -75,29 +80,26 @@ namespace NitridationCalibration
 
     libMesh::Real delta_t = input("QoI/MassLoss/delta_t", 0.0 );
 
-    // delta_t*total_area = delta_t*( 2*(cap areas) + length surface area )
+    // delta_t*total_area = delta_t*( 2*(cap areas) + length*surface area )
     this->_factor = delta_t*( GRINS::Constants::two_pi*radius*radius + GRINS::Constants::two_pi*radius*length );
 
     return;
   }
 
-  template<class Mixture>
-  MassLoss<Mixture>::~MassLoss()
+  MassLoss::~MassLoss()
   {
     return;
   }
 
-  template<class Mixture>
-  libMesh::AutoPtr<libMesh::DifferentiableQoI> MassLoss<Mixture>::clone()
+  libMesh::AutoPtr<libMesh::DifferentiableQoI> MassLoss::clone()
   {
     return libMesh::AutoPtr<libMesh::DifferentiableQoI>( new MassLoss( *this ) );
   }
 
-  template<class Mixture>
-  void MassLoss<Mixture>::init( const GetPot& input, const GRINS::MultiphysicsSystem& system )
+  void MassLoss::init( const GetPot& input, const GRINS::MultiphysicsSystem& system )
   {
     std::tr1::shared_ptr<GRINS::Physics> base_physics = system.get_physics( GRINS::reacting_low_mach_navier_stokes );
-    _physics = libmesh_cast_ptr<const GRINS::ReactingLowMachNavierStokes<Mixture>* >( base_physics.get() );
+    _physics = libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBase* >( base_physics.get() );
     
     // Grab temperature variable index
     std::string T_var_name = input("Physics/VariableNames/Temperature",
@@ -105,20 +107,21 @@ namespace NitridationCalibration
 
     this->_T_var = system.variable_number(T_var_name);
 
-    _species_vars.resize( _physics->gas_mixture().chem_mixture().n_species() );
-    for( unsigned int s = 0; s < _physics->gas_mixture().chem_mixture().n_species(); s++ )
+    const unsigned int n_species = _physics->n_species();
+
+    _species_vars.resize( n_species );
+    for( unsigned int s = 0; s < n_species; s++ )
       {
-	std::string var_name = "w_"+_physics->gas_mixture().chem_mixture().species_inverse_name_map().find(_physics->gas_mixture().chem_mixture().species_list()[s])->second;
+	std::string var_name = "w_"+_chem_mixture->chemical_species()[s]->species();
 	_species_vars[s] = system.variable_number( var_name );
       }
 
-    _CN_index = _physics->gas_mixture().chem_mixture().active_species_name_map().find(std::string("CN"))->second;
+    _CN_index = _chem_mixture->active_species_name_map().find(std::string("CN"))->second;
     
     return;
   }
 
-  template<class Mixture>
-  void MassLoss<Mixture>::side_qoi( libMesh::DiffContext& context, const libMesh::QoISet& )
+  void MassLoss::side_qoi( libMesh::DiffContext& context, const libMesh::QoISet& )
   {
     libMesh::FEMContext &c = libmesh_cast_ref<libMesh::FEMContext&>(context);
 
@@ -132,80 +135,43 @@ namespace NitridationCalibration
 
 	    const std::vector<libMesh::Real> &JxW = side_fe->get_JxW();
 
-	    unsigned int n_qpoints = (c.get_side_qrule())->n_points();
+	    unsigned int n_qpoints = c.get_side_qrule().n_points();
 
 	    const std::vector<libMesh::Point>& normals = side_fe->get_normals();
 	    
-	    libMesh::Number& qoi = c.elem_qoi[0];
+	    libMesh::Number& qoi = c.get_qois()[0];
 
-	    GRINS::CachedValues cache;
-	    
-	    // Build up cache
-	    {
-	      std::vector<libMesh::Real> T;
-	      T.resize(n_qpoints);
+            const unsigned int n_species = _physics->n_species();
 
-	      std::vector<std::vector<libMesh::Real> > Y;
-	      Y.resize( n_qpoints );
+            std::vector<libMesh::Real> Y, D;
+            Y.resize(n_species);
+            D.resize(n_species);
 
-	      std::vector<libMesh::Real> rho;
-	      rho.resize(n_qpoints);
+            for (unsigned int qp = 0; qp != n_qpoints; qp++)
+              {
+                const libMesh::Real T =  c.side_value(_T_var, qp);
+                
+                for( unsigned int s = 0; s < n_species; s++ )
+                  {
+                    c.side_value( _species_vars[s], qp, Y[s] );
+                  }
+                
+                const libMesh::Real p0 = _physics->get_p0_steady_side(c, qp);
+                
+                const libMesh::Real R = _chem_mixture->R( Y );
 
-	      // Build up cache
-	      for (unsigned int qp = 0; qp != n_qpoints; qp++)
-		{
-		  T[qp] =  c.side_value(_T_var, qp);
+                const libMesh::Real rho = _physics->rho(T, p0, R);
 
-		  for( unsigned int s = 0; s < _physics->gas_mixture().chem_mixture().n_species(); s++ )
-		    {
-		      Y[qp].resize(_physics->gas_mixture().chem_mixture().n_species());
+                const libMesh::Real cp = _physics->cp_mix( T, Y );
 
-		      c.side_value( _species_vars[s], qp, Y[qp][s] );
-		    }
+                const libMesh::Real k = _physics->k( T, Y );
 
-		  const libMesh::Real p0 = _physics->get_p0_steady_side(c, qp);
-
-		  rho[qp] = _physics->rho(T[qp], p0, Y[qp]);
-		}
-
-	      cache.set_values( GRINS::Cache::TEMPERATURE, T );
-	      cache.set_vector_values( GRINS::Cache::MASS_FRACTIONS, Y );
-	      cache.set_values( GRINS::Cache::MIXTURE_DENSITY, rho );
-
-	      std::vector<libMesh::Real> cp;
-	      cp.resize(n_qpoints);
-
-	      for (unsigned int qp = 0; qp != n_qpoints; qp++)
-		{
-		  cp[qp] = _physics->gas_mixture().cp( cache, qp );
-		}
-	      cache.set_values( GRINS::Cache::MIXTURE_SPECIFIC_HEAT_P, cp );
-	      
-
-	      std::vector<std::vector<libMesh::Real> > D;
-	      D.resize(n_qpoints);
-	      for (unsigned int qp = 0; qp != n_qpoints; qp++)
-		{
-		  for( unsigned int s = 0; s < _physics->gas_mixture().chem_mixture().n_species(); s++ )
-		    {
-		      D[qp].resize(_physics->gas_mixture().chem_mixture().n_species());
-		      _physics->gas_mixture().D( cache, qp, D[qp] );
-		    }
-		}
-
-	      cache.set_vector_values( GRINS::Cache::DIFFUSION_COEFFS, D );
-	    }
-
-	    // Loop over quadrature points  
-	    for (unsigned int qp = 0; qp != n_qpoints; qp++)
-	      {
-		const libMesh::Real& rho = cache.get_cached_values(GRINS::Cache::MIXTURE_DENSITY)[qp];
-		const libMesh::Real& D_CN = cache.get_cached_vector_values(GRINS::Cache::DIFFUSION_COEFFS)[qp][_CN_index];
+                _physics->D( rho, cp, k, D );
 		
-		libMesh::Gradient grad_Y_CN;
-		c.side_gradient( _species_vars[_CN_index], qp, grad_Y_CN );
+		libMesh::Gradient grad_Y;
+		c.side_gradient( _species_vars[_CN_index], qp, grad_Y );
 
-		qoi += _factor*rho*D_CN*grad_Y_CN*normals[qp]*JxW[qp];
+		qoi += _factor*rho*D[_CN_index]*grad_Y*normals[qp]*JxW[qp];
 
 	      } // quadrature loop
 
@@ -214,8 +180,5 @@ namespace NitridationCalibration
 
     return;
   }
-
-  //Instantiate
-  template class MassLoss< GRINS::IdealGasMixture<GRINS::CEAThermodynamics,GRINS::ConstantTransport,GRINS::Kinetics> >;
 
 } // end namespace NitridationCalibration

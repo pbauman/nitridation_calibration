@@ -36,16 +36,17 @@
 // GRINS
 #include "grins/qoi_base.h"
 
+// Antioch
+#include "antioch/vector_utils.h"
+#include "antioch/chemical_mixture.h"
+
 namespace GRINS
 {
-  template<class Mixture>
-  class ReactingLowMachNavierStokes;
+  class ReactingLowMachNavierStokesBase;
 }
 
 namespace NitridationCalibration
 {
-
-  template<class Mixture>
   class MassLoss : public GRINS::QoIBase
   {
   public:
@@ -68,12 +69,14 @@ namespace NitridationCalibration
 
     GRINS::VariableIndex _T_var;
 
-    const GRINS::ReactingLowMachNavierStokes<Mixture>* _physics;
+    GRINS::ReactingLowMachNavierStokesBase* _physics;
 
     unsigned int _CN_index;
 
     //! Scales mass flux to mass loss in kg
     libMesh::Real _factor;
+
+    Antioch::ChemicalMixture<libMesh::Real>* _chem_mixture;
 
   private:
 

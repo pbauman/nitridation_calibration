@@ -52,22 +52,7 @@ namespace NitridationCalibration
   {
     if( qoi_name == "MassLoss" )
       {
-	std::string chem_lib = input( "Physics/"+GRINS::reacting_low_mach_navier_stokes+"/chemistry_library", "cantera" );
-	std::string thermo_lib = input( "Physics/"+GRINS::reacting_low_mach_navier_stokes+"/thermodynamics_library", "cantera" );
-	std::string transport_lib = input( "Physics/"+GRINS::reacting_low_mach_navier_stokes+"/transport_library", "cantera" );
-
-	if( chem_lib == "grins" && thermo_lib == "grins_cea" && transport_lib == "grins_constant" )
-	  {
-	    qoi.reset( new MassLoss<GRINS::IdealGasMixture< GRINS::CEAThermodynamics,GRINS::ConstantTransport,GRINS::Kinetics > >( input ) );
-	  }
-	else
-	  {
-	    std::cerr << "Invalid options for chemistry, thermo, and/or transport for MassLoss QoI:" << std::endl
-		      << "requested chemistry lib = " << chem_lib << std::endl
-		      << "requested thermo lib    = " << thermo_lib << std::endl
-		      << "requested transport lib = " << transport_lib << std::endl;
-	    libmesh_error();
-	  }
+        qoi.reset( new MassLoss( input ) );
       }
     
     else
