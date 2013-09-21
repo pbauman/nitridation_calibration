@@ -7,7 +7,7 @@ sigma = '2.0e-8' # [kg]
 
 mass_loss = '2.45e-6' # [kg]
 
-gamma_nominal_value = '2.23e-3' 
+gamma_nominal_value = '4.5e-3' 
 
 []
 
@@ -56,7 +56,7 @@ mixture   = 'air4sp'
 
 [../Transport]
 
-viscosity = '1.0e-4'
+viscosity = '1.0e-5'
 thermal_conductivity = '.04'
 Lewis_number = '1.4'
 
@@ -101,8 +101,11 @@ temp_bc_types = 'isothermal axisymmetric isothermal general_isothermal'
 T_wall_1 = '298'
 T_wall_3 = '1273'
 
-species_bc_ids = '1 3' 
-species_bc_types = 'prescribed_mole_fracs catalytic_wall'
+#species_bc_ids = '1 3'
+#species_bc_types = 'prescribed_mole_fracs catalytic_wall'
+
+species_bc_ids = '1 3 4' 
+species_bc_types = 'prescribed_mole_fracs catalytic_wall catalytic_wall'
 
 bound_species_1 = '0.596 0.404 0.0 0.0'
 
@@ -112,6 +115,11 @@ gamma_N_3 = '${GammaCNInverseProblem/gamma_nominal_value}'
 # This is currently a dummy.
 gamma_CN_3 = '${Physics/ReactingLowMachNavierStokes/gamma_N_3}'
 
+wall_catalytic_reactions_4 = 'N->N2'
+gamma_N_4 = '1.0e-4'
+
+# This is currently a dummy.
+gamma_N2_4 = '${Physics/ReactingLowMachNavierStokes/gamma_N_4}'
 
 enable_thermo_press_calc = 'false'
 pin_pressure = 'false'
@@ -158,7 +166,8 @@ output_residual = 'false'
 
 output_format = 'ExodusII xdr'
 
-output_vars = 'cp_mix h_s rho_mix mole_fractions omega_dot'
+#output_vars = 'cp_mix h_s rho_mix mole_fractions omega_dot'
+output_vars = 'mole_fractions'
 
 # Options for print info to the screen
 [screen-options]
