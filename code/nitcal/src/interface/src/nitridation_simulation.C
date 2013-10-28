@@ -47,7 +47,10 @@ namespace NitridationCalibration
 
       GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* func = libmesh_cast_ptr<GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* >( raw_func.get() );
 
-      func->set_gamma( gamma );
+      std::vector<libMesh::Real> params;
+      params.push_back( gamma );
+
+      func->set_catalycity_params( params );
     }
 
     // N part
@@ -60,7 +63,10 @@ namespace NitridationCalibration
 
       GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* func = libmesh_cast_ptr<GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* >( raw_func.get() );
 
-      func->set_gamma( -gamma );
+      std::vector<libMesh::Real> params;
+      params.push_back( -gamma );
+
+      func->set_catalycity_params( params );
     }
 
     return;
