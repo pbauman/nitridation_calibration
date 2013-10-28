@@ -123,7 +123,7 @@ namespace NitridationCalibration
 
   void MassLoss::side_qoi( libMesh::DiffContext& context, const libMesh::QoISet& )
   {
-    libMesh::FEMContext &c = libmesh_cast_ref<libMesh::FEMContext&>(context);
+    GRINS::AssemblyContext& c = libmesh_cast_ref<GRINS::AssemblyContext&>(context);
 
     for( std::set<libMesh::boundary_id_type>::const_iterator id = _bc_ids.begin();
 	 id != _bc_ids.end(); id++ )
