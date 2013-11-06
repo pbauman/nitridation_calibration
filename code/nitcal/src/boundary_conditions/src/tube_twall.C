@@ -99,15 +99,18 @@ namespace NitridationCalibration
     // Find the bin
     unsigned int index = -1;
 
-    //std::cout << "size = " <<  _wall_tc_locs.size() << std::endl;
-    //std::cout << "size = " << _wall_temps.size() << std::endl;
-    //std::cout << "x = " << x << std::endl;
+    /*
+    std::cout << "size = " <<  _wall_tc_locs.size() << std::endl;
+    std::cout << "size = " << _wall_temps.size() << std::endl;
+    std::cout << "x = " << x << std::endl;
+    */
 
     // This is a stupid linear search. Should do a binary search.
     for( unsigned int i = 1; i < _wall_tc_locs.size(); i++ )
       {
 	//std::cout << "i = " << i << ", wall loc = " << _wall_tc_locs[i] << std::endl;
-	if( x <= _wall_tc_locs[i] ) 
+	if( (x <= _wall_tc_locs[i]) ||
+            (std::fabs( x -_wall_tc_locs[i])/_wall_tc_locs[i] < 1.0e-6)  ) 
 	  {
 	    index = i;
 	    break;
