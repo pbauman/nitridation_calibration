@@ -94,7 +94,7 @@ namespace NitridationCalibration
   double NitridationSimulation::computed_mass_loss()
   {
     _multiphysics_system->assemble_qoi( libMesh::QoISet( *_multiphysics_system ) );
-    return this->get_qoi(0);
+    return this->get_qoi_value(0);
   }
 
 } // end namespace NitridationCalibration
