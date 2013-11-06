@@ -46,7 +46,7 @@ namespace NitridationCalibration
 
     virtual void add_qoi( const GetPot& input,
 			  const std::string& qoi_name,
-			  std::tr1::shared_ptr<GRINS::QoIBase>& qoi );
+			  std::tr1::shared_ptr<GRINS::CompositeQoI>& qois );
 
   };
 

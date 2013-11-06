@@ -32,6 +32,8 @@
 // NitCal
 #include "mass_loss.h"
 
+// GRINS
+#include "grins/qoi_base.h"
 
 namespace NitridationCalibration
 {
@@ -48,16 +50,17 @@ namespace NitridationCalibration
 
   void QoIFactory::add_qoi( const GetPot& input,
 			    const std::string& qoi_name,
-			    std::tr1::shared_ptr<GRINS::QoIBase>& qoi )
+			    std::tr1::shared_ptr<GRINS::CompositeQoI>& qois )
   {
-    if( qoi_name == "MassLoss" )
+    if( qoi_name == std::string("MassLoss") )
       {
-        qoi.reset( new MassLoss( input ) );
+        GRINS::QoIBase* qoi = new MassLoss( std::string("MassLoss") );
+        qois->add_qoi(*qoi);
       }
     
     else
       {
-	GRINS::QoIFactory::add_qoi( input, qoi_name, qoi );
+	GRINS::QoIFactory::add_qoi( input, qoi_name, qois );
       }
 
     return;
