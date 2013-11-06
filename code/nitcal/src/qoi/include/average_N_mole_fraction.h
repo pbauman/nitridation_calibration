@@ -32,14 +32,20 @@
 // GRINS
 #include "grins/qoi_base.h"
 
+// Antioch
+#include "antioch/vector_utils.h"
+#include "antioch/chemical_mixture.h"
+
 namespace NitridationCalibration
 {
 
   class AverageNMoleFraction : public GRINS::QoIBase
   {
+  public:
+
     AverageNMoleFraction( const std::string& qoi_name );
 
-    ~AverageNMoleFraction();
+    virtual ~AverageNMoleFraction();
 
     virtual GRINS::QoIBase* clone() const;
 
@@ -61,6 +67,10 @@ namespace NitridationCalibration
     std::vector<GRINS::VariableIndex> _species_vars;
 
     unsigned int _N_index;
+
+    Antioch::ChemicalMixture<libMesh::Real>* _chem_mixture;
+
+    libMesh::Real _factor;
 
   };
 
