@@ -95,7 +95,8 @@ namespace NitridationCalibration
     libMesh::Real delta_t = input("QoI/MassLoss/delta_t", 0.0 );
 
     // delta_t*total_area = delta_t*( 2*(cap areas) + length*surface area )
-    this->_factor = delta_t*( GRINS::Constants::two_pi*radius*radius + GRINS::Constants::two_pi*radius*length );
+    //this->_factor = delta_t*( GRINS::Constants::two_pi*radius*radius + GRINS::Constants::two_pi*radius*length );
+    this->_factor = delta_t*GRINS::Constants::two_pi;
 
     std::tr1::shared_ptr<GRINS::Physics> base_physics = system.get_physics( GRINS::reacting_low_mach_navier_stokes );
     _physics = libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBase* >( base_physics.get() );
@@ -134,23 +135,25 @@ namespace NitridationCalibration
   void MassLoss::side_qoi( GRINS::AssemblyContext& context,
                            const unsigned int qoi_index )
   {
-    GRINS::AssemblyContext& c = libmesh_cast_ref<GRINS::AssemblyContext&>(context);
-
     for( std::set<libMesh::boundary_id_type>::const_iterator id = _bc_ids.begin();
 	 id != _bc_ids.end(); id++ )
       {
-	if( c.has_side_boundary_id( (*id) ) )
+	if( context.has_side_boundary_id( (*id) ) )
 	  {
+            GRINS::VariableIndex CN_var = this->_species_vars[_CN_index];
+
 	    FEBase* side_fe;
-	    c.get_side_fe<libMesh::Real>(this->_species_vars[_CN_index], side_fe);
+	    context.get_side_fe<libMesh::Real>(CN_var, side_fe);
 
 	    const std::vector<libMesh::Real> &JxW = side_fe->get_JxW();
 
-	    unsigned int n_qpoints = c.get_side_qrule().n_points();
+	    unsigned int n_qpoints = context.get_side_qrule().n_points();
+
+            const std::vector<libMesh::Point>& qpoint = side_fe->get_xyz();
 
 	    const std::vector<libMesh::Point>& normals = side_fe->get_normals();
 	    
-	    libMesh::Number& qoi = c.get_qois()[qoi_index];
+	    libMesh::Number& qoi = context.get_qois()[qoi_index];
 
             const unsigned int n_species = _physics->n_species();
 
@@ -160,14 +163,16 @@ namespace NitridationCalibration
 
             for (unsigned int qp = 0; qp != n_qpoints; qp++)
               {
-                const libMesh::Real T =  c.side_value(_T_var, qp);
+                const libMesh::Real T =  context.side_value(_T_var, qp);
                 
+                const libMesh::Real r = qpoint[qp](0);
+
                 for( unsigned int s = 0; s < n_species; s++ )
                   {
-                    c.side_value( _species_vars[s], qp, Y[s] );
+                    context.side_value( _species_vars[s], qp, Y[s] );
                   }
                 
-                const libMesh::Real p0 = _physics->get_p0_steady_side(c, qp);
+                const libMesh::Real p0 = _physics->get_p0_steady_side(context, qp);
                 
                 const libMesh::Real R = _chem_mixture->R( Y );
 
@@ -180,9 +185,9 @@ namespace NitridationCalibration
                 _physics->D( rho, cp, k, D );
 		
 		libMesh::Gradient grad_Y;
-		c.side_gradient( _species_vars[_CN_index], qp, grad_Y );
+		context.side_gradient(CN_var, qp, grad_Y );
 
-		qoi += _factor*rho*D[_CN_index]*grad_Y*normals[qp]*JxW[qp];
+		qoi += _factor*rho*D[_CN_index]*grad_Y*normals[qp]*r*JxW[qp];
 
 	      } // quadrature loop
 

@@ -53,7 +53,7 @@ namespace NitridationCalibration
   public:
 
     MassLoss( const std::string& qoi_name );
-    ~MassLoss();
+    virtual ~MassLoss();
 
     virtual GRINS::QoIBase* clone() const;
 
