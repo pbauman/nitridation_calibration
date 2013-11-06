@@ -118,7 +118,7 @@ dnl Check for boost
 dnl----------------
 BOOST_REQUIRE([1.39.0])
 
-AX_PATH_ANTIOCH(0.0.5,yes)
+AX_PATH_ANTIOCH(0.0.8,yes)
 
 AX_PATH_GRINS(0.4.0,yes)
 
