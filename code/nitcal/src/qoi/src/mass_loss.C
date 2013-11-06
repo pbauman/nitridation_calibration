@@ -34,21 +34,35 @@
 #include "grins/reacting_low_mach_navier_stokes_base.h"
 #include "grins/variable_name_defaults.h"
 #include "grins/math_constants.h"
+#include "grins/assembly_context.h"
 
 // libMesh
 #include "libmesh/quadrature.h"
 
 namespace NitridationCalibration
 {
-  MassLoss::MassLoss( const GetPot& input )
-    : QoIBase(),
+  MassLoss::MassLoss( const std::string& qoi_name )
+    : QoIBase(qoi_name),
       _physics(NULL),
       _chem_mixture(NULL)
   {
-    this->assemble_qoi_sides = true;
-    this->assemble_qoi_elements = false;
+    return;
+  }
 
-    unsigned int n_species = input.vector_variable_size("Physics/Chemistry/species");
+  MassLoss::~MassLoss()
+  {
+    return;
+  }
+
+  GRINS::QoIBase* MassLoss::clone() const
+  {
+    return new MassLoss( *this );
+  }
+
+  void MassLoss::init( const GetPot& input, const GRINS::MultiphysicsSystem& system )
+  {
+    const unsigned int n_species = input.vector_variable_size("Physics/Chemistry/species");
+
     std::vector<std::string> species_list(n_species);
 
     for( unsigned int s = 0; s < n_species; s++ )
@@ -83,21 +97,6 @@ namespace NitridationCalibration
     // delta_t*total_area = delta_t*( 2*(cap areas) + length*surface area )
     this->_factor = delta_t*( GRINS::Constants::two_pi*radius*radius + GRINS::Constants::two_pi*radius*length );
 
-    return;
-  }
-
-  MassLoss::~MassLoss()
-  {
-    return;
-  }
-
-  libMesh::AutoPtr<libMesh::DifferentiableQoI> MassLoss::clone()
-  {
-    return libMesh::AutoPtr<libMesh::DifferentiableQoI>( new MassLoss( *this ) );
-  }
-
-  void MassLoss::init( const GetPot& input, const GRINS::MultiphysicsSystem& system )
-  {
     std::tr1::shared_ptr<GRINS::Physics> base_physics = system.get_physics( GRINS::reacting_low_mach_navier_stokes );
     _physics = libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBase* >( base_physics.get() );
     
@@ -106,8 +105,6 @@ namespace NitridationCalibration
 				   GRINS::T_var_name_default);
 
     this->_T_var = system.variable_number(T_var_name);
-
-    const unsigned int n_species = _physics->n_species();
 
     _species_vars.resize( n_species );
     for( unsigned int s = 0; s < n_species; s++ )
@@ -121,7 +118,21 @@ namespace NitridationCalibration
     return;
   }
 
-  void MassLoss::side_qoi( libMesh::DiffContext& context, const libMesh::QoISet& )
+  void MassLoss::init_context( GRINS::AssemblyContext& context )
+  {
+    libMesh::FEBase* CN_fe;
+
+    context.get_side_fe<libMesh::Real>(this->_species_vars[_CN_index], CN_fe);
+
+    CN_fe->get_phi();
+    CN_fe->get_dphi();
+    CN_fe->get_JxW();
+
+    return;
+  }
+
+  void MassLoss::side_qoi( GRINS::AssemblyContext& context,
+                           const unsigned int qoi_index )
   {
     GRINS::AssemblyContext& c = libmesh_cast_ref<GRINS::AssemblyContext&>(context);
 
@@ -139,7 +150,7 @@ namespace NitridationCalibration
 
 	    const std::vector<libMesh::Point>& normals = side_fe->get_normals();
 	    
-	    libMesh::Number& qoi = c.get_qois()[0];
+	    libMesh::Number& qoi = c.get_qois()[qoi_index];
 
             const unsigned int n_species = _physics->n_species();
 

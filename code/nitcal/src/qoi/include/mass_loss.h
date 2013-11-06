@@ -43,6 +43,7 @@
 namespace GRINS
 {
   class ReactingLowMachNavierStokesBase;
+  class AssemblyContext;
 }
 
 namespace NitridationCalibration
@@ -51,14 +52,21 @@ namespace NitridationCalibration
   {
   public:
 
-    MassLoss( const GetPot& input );
+    MassLoss( const std::string& qoi_name );
     ~MassLoss();
 
-    virtual libMesh::AutoPtr<libMesh::DifferentiableQoI> clone();
+    virtual GRINS::QoIBase* clone() const;
 
-    virtual void side_qoi( DiffContext& context, const QoISet& qoi_indices );
+    virtual bool assemble_on_interior() const;
+
+    virtual bool assemble_on_sides() const;
 
     virtual void init( const GetPot& input, const GRINS::MultiphysicsSystem& system );
+
+    virtual void init_context( GRINS::AssemblyContext& context );
+
+    virtual void side_qoi( GRINS::AssemblyContext& context,
+                           const unsigned int qoi_index );
 
   protected:
 
@@ -83,6 +91,18 @@ namespace NitridationCalibration
     MassLoss();
 
   };
+  
+  inline
+  bool MassLoss::assemble_on_interior() const
+  {
+    return false;
+  }
+
+  inline
+  bool MassLoss::assemble_on_sides() const
+  {
+    return true;
+  }
 
 } // end namespace NitridationCalibration
 
