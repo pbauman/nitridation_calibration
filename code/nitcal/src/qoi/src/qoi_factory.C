@@ -31,6 +31,7 @@
 
 // NitCal
 #include "mass_loss.h"
+#include "average_N_mole_fraction.h"
 
 // GRINS
 #include "grins/qoi_base.h"
@@ -55,6 +56,12 @@ namespace NitridationCalibration
     if( qoi_name == std::string("MassLoss") )
       {
         GRINS::QoIBase* qoi = new MassLoss( std::string("MassLoss") );
+        qois->add_qoi(*qoi);
+      }
+    
+    else if( qoi_name == std::string("AverageNMoleFraction") )
+      {
+        GRINS::QoIBase* qoi = new AverageNMoleFraction( std::string("AverageNMoleFraction") );
         qois->add_qoi(*qoi);
       }
     
