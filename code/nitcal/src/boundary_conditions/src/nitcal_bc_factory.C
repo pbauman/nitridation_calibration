@@ -54,7 +54,7 @@ namespace NitridationCalibration
     
     GRINS::DBCContainer T_cont;
     T_cont.add_var_name( "T" );
-    T_cont.add_bc_id( 4 );
+    T_cont.add_bc_id( 2 );
     std::tr1::shared_ptr<libMesh::FunctionBase<libMesh::Real> > tube_temp( new TubeTempBC( _input ) );
     T_cont.set_func( tube_temp );
 
