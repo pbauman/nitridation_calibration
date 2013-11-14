@@ -29,8 +29,12 @@
 // This class
 #include "qoi_factory.h"
 
+// Antioch
+#include "antioch/vector_utils_decl.h"
+
 // NitCal
 #include "mass_loss.h"
+#include "mass_loss_catalytic.h"
 #include "average_N_mole_fraction.h"
 
 // GRINS
@@ -65,6 +69,12 @@ namespace NitridationCalibration
         qois->add_qoi(*qoi);
       }
     
+    else if( qoi_name == std::string("MassLossCatalytic") )
+      {
+        GRINS::QoIBase* qoi = new MassLossCatalytic( std::string("MassLossCatalytic") );
+        qois->add_qoi(*qoi);
+      }
+
     else
       {
 	GRINS::QoIFactory::add_qoi( input, qoi_name, qois );

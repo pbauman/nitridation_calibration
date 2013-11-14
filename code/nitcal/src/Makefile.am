@@ -33,6 +33,7 @@ libnitcal_la_SOURCES += inverse_problem/src/gamma_cn_likelihood.C
 # qoi
 libnitcal_la_SOURCES += qoi/src/qoi_factory.C
 libnitcal_la_SOURCES += qoi/src/mass_loss.C
+libnitcal_la_SOURCES += qoi/src/mass_loss_catalytic.C
 libnitcal_la_SOURCES += qoi/src/average_N_mole_fraction.C
 
 #----------------------------------------
@@ -57,6 +58,7 @@ include_HEADERS += inverse_problem/include/gamma_cn_likelihood.h
 # qoi
 include_HEADERS += qoi/include/qoi_factory.h
 include_HEADERS += qoi/include/mass_loss.h
+include_HEADERS += qoi/include/mass_loss_catalytic.h
 include_HEADERS += qoi/include/average_N_mole_fraction.h
 
 libnitcal_la_LIBADD = $(GRINS_PREFIX)/lib/libgrins.la $(LIBMESH_LIBDIR)/libmesh_$(LIBMESH_METHOD).la
