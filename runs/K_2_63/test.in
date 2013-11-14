@@ -7,7 +7,7 @@ sigma = '2.0e-8' # [kg]
 
 mass_loss = '2.45e-6' # [kg]
 
-gamma_nominal_value = '2e-5' 
+gamma_nominal_value = '1e-3' 
 
 []
 
@@ -31,7 +31,7 @@ p_inlet = '600' # [Pa]
 
 [QoI]
 
-enabled_qois = 'MassLoss AverageNMoleFraction'
+enabled_qois = 'MassLoss MassLossCatalytic AverageNMoleFraction'
 
 [./MassLoss]
 
@@ -40,6 +40,12 @@ bc_ids = '3'
 radius = '0.0015875' #[m]
 length = '0.029' #[m]
 delta_t = '8160' #[s]
+
+[../MassLossCatalytic]
+
+bc_ids = '3'
+
+delta_t = '8160'
 
 [../AverageNMoleFraction]
 
@@ -115,7 +121,7 @@ T_wall_4 = '1273'
 species_bc_ids = '1 3 2' 
 species_bc_types = 'prescribed_mole_fracs catalytic_wall catalytic_wall'
 
-bound_species_1 = '0.596 0.404 0.0 0.0'
+bound_species_1 = '0.99596 0.00404 0.0 0.0'
 
 wall_catalytic_reactions_3 = 'N->CN'
 
@@ -129,10 +135,7 @@ wall_catalytic_reactions_2 = 'N->N2'
 #Ta_N_2 = '300'
 
 gamma_N_2_type = 'constant'
-gamma_N_2 = '2.0e-4'
-
-# This is currently a dummy.
-gamma_N2_4 = '${Physics/ReactingLowMachNavierStokes/gamma_N_4}'
+gamma_N_2 = '1.0e-4'
 
 enable_thermo_press_calc = 'false'
 pin_pressure = 'false'
@@ -148,7 +151,7 @@ pin_pressure = 'false'
 mesh_option = 'read_mesh_from_file'
 mesh_filename = 'K_2_63_axi_new.exo'
 
-#uniformly_refine = '1' 
+uniformly_refine = '2' 
 
 []
 
