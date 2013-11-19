@@ -12,7 +12,9 @@
 // GRINS
 #include "grins/simulation_builder.h"
 #include "grins/bc_handling_base.h"
-#include "grins/catalytic_wall.h"
+#include "grins/reacting_low_mach_navier_stokes_bc_handling.h"
+#include "grins/catalytic_wall_base.h"
+#include "grins/antioch_chemistry.h"
 
 // Antioch
 #include "antioch/chemical_mixture.h"
@@ -35,39 +37,21 @@ namespace NitridationCalibration
   {
     std::tr1::shared_ptr<GRINS::Physics> physics = this->_multiphysics_system->get_physics( GRINS::reacting_low_mach_navier_stokes );
 
-    GRINS::BCHandlingBase* bc_handler = physics->get_bc_handler();
+    GRINS::BCHandlingBase* bc_handler_base = physics->get_bc_handler();
 
-    // CN part
-    {
-      const unsigned int bc_id = 3;
-      const GRINS::VariableIndex var_id = _multiphysics_system->variable_number("w_CN");
+    GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>* bc_handler =
+      libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
+    
+    /*! \todo Need to generalize to more than 1 bc */
+    
+    const unsigned int bc_id = 3;
 
-      std::tr1::shared_ptr< GRINS::NeumannFuncObj > raw_func =
-	bc_handler->get_neumann_bound_func( bc_id, var_id );
+    GRINS::CatalyticWallBase<GRINS::AntiochChemistry>* func = bc_handler->get_catalytic_wall( bc_id );
 
-      GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* func = libmesh_cast_ptr<GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* >( raw_func.get() );
+    std::vector<libMesh::Real> params;
+    params.push_back( gamma );
 
-      std::vector<libMesh::Real> params;
-      params.push_back( gamma );
-
-      func->set_catalycity_params( params );
-    }
-
-    // N part
-    {
-      const unsigned int bc_id = 3;
-      const GRINS::VariableIndex var_id = this->_multiphysics_system->variable_number("w_N");
-
-      std::tr1::shared_ptr< GRINS::NeumannFuncObj > raw_func =
-	bc_handler->get_neumann_bound_func( bc_id, var_id );
-
-      GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* func = libmesh_cast_ptr<GRINS::CatalyticWall<Antioch::ChemicalMixture<libMesh::Real> >* >( raw_func.get() );
-
-      std::vector<libMesh::Real> params;
-      params.push_back( -gamma );
-
-      func->set_catalycity_params( params );
-    }
+    func->set_catalycity_params( params );
 
     return;
   }

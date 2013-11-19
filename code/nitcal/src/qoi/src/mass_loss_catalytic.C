@@ -36,6 +36,7 @@
 #include "grins/math_constants.h"
 #include "grins/assembly_context.h"
 #include "grins/bc_handling_base.h"
+#include "grins/reacting_low_mach_navier_stokes_bc_handling.h"
 
 // libMesh
 #include "libmesh/quadrature.h"
@@ -65,14 +66,6 @@ namespace NitridationCalibration
   {
     
     const unsigned int n_species = input.vector_variable_size("Physics/Chemistry/species");
-    /*
-    std::vector<std::string> species_list(n_species);
-
-    for( unsigned int s = 0; s < n_species; s++ )
-      {
-        species_list[s] = input( "Physics/Chemistry/species", "DIE!", s );
-      }
-    */
 
     _chem_mixture =  new GRINS::AntiochChemistry(input);
 
@@ -86,7 +79,8 @@ namespace NitridationCalibration
                   << "Found: " << num_bcs << std::endl;
         libmesh_error();
       }
-
+    
+     /*! \todo Need to generalize to more than 1 bc */
     if( num_bcs > 1 )
       {
         std::cerr << "Error: "+_qoi_name+" only support 1 bc_id at this time."
@@ -124,15 +118,14 @@ namespace NitridationCalibration
     _N_index = _chem_mixture->species_index(std::string("N"));
     _CN_index = _chem_mixture->species_index(std::string("CN"));
 
-    GRINS::VariableIndex CN_var = _species_vars[_CN_index];
+    GRINS::BCHandlingBase* bc_handler_base = base_physics->get_bc_handler();
 
-    GRINS::BCHandlingBase* bc_handler = base_physics->get_bc_handler();
-
-    // Here we can only deal with 1 boundary
-    /*! \todo Generalize to multiple boundaries */
-    std::tr1::shared_ptr<GRINS::NeumannFuncObj> base_func = bc_handler->get_neumann_bound_func( (*_bc_ids.begin()), CN_var );
-
-    _omega_dot = libmesh_cast_ptr<GRINS::CatalyticWall<GRINS::AntiochChemistry>*>( base_func.get() );
+    GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>* bc_handler =
+      libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
+    
+    /*! \todo Need to generalize to more than 1 bc */
+    GRINS::CatalyticWallBase<GRINS::AntiochChemistry>* base_wall_ptr  = bc_handler->get_catalytic_wall( (*_bc_ids.begin()) );
+    _omega_dot = libmesh_cast_ptr<GRINS::GasSolidCatalyticWall<GRINS::AntiochChemistry>*>( base_wall_ptr );
 
     return;
   }
@@ -191,14 +184,12 @@ namespace NitridationCalibration
                 const libMesh::Real R = _chem_mixture->R_mix( Y );
 
                 const libMesh::Real rho = _physics->rho(T, p0, R);
- 
-                const libMesh::Real rho_N = rho*Y[_N_index];
 
-                const libMesh::Real n_N = _chem_mixture->molar_density( _N_index, rho, Y[_N_index] )*1000;
-
-                const libMesh::Real omega_dot_CN = _omega_dot->omega_dot(rho_N,T);
+                const libMesh::Real mdot_C = _omega_dot->compute_reactant_solid_mass_consumption(rho,Y[_N_index],T);
 
                 /*
+                const libMesh::Real n_N = _chem_mixture->molar_density( _N_index, rho, Y[_N_index] )*1000;
+                const libMesh::Real omega_dot_CN = _omega_dot->omega_dot(rho_N,T);
                 std::cout << "rho_N = " << rho_N << std::endl;
                 std::cout << "n_N = " << n_N << std::endl;
                 std::cout << "T = " << T << std::endl;
@@ -208,7 +199,7 @@ namespace NitridationCalibration
                 std::cout << "omega_dot = " << omega_dot_CN << std::endl;
                 */
 
-                qoi += _factor*omega_dot_CN*r*JxW[qp];
+                qoi += _factor*mdot_C*r*JxW[qp];
 
               } // quadrature loop
 

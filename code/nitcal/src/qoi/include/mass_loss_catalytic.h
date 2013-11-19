@@ -39,7 +39,7 @@
 // GRINS
 #include "grins/qoi_base.h"
 #include "grins/antioch_chemistry.h"
-#include "grins/catalytic_wall.h"
+#include "grins/gas_solid_catalytic_wall.h"
 
 namespace GRINS
 {
@@ -88,7 +88,7 @@ namespace NitridationCalibration
 
     GRINS::AntiochChemistry* _chem_mixture;
 
-    GRINS::CatalyticWall<GRINS::AntiochChemistry>* _omega_dot;
+    GRINS::GasSolidCatalyticWall<GRINS::AntiochChemistry>* _omega_dot;
 
   private:
 
