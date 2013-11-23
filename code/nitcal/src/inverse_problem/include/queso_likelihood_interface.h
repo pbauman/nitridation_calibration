@@ -6,8 +6,8 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
-#ifndef NITCAL_LIKELIHOOD_BASE_H
-#define NITCAL_LIKELIHOOD_BASE_H
+#ifndef NITCAL_QUESO_LIKELIHOOD_INTERFACE_H
+#define NITCAL_QUESO_LIKELIHOOD_INTERFACE_H
 
 #include "nitcal_config.h"
 
@@ -20,15 +20,15 @@ namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
-  class LikelihoodBase : public uqBaseScalarFunctionClass<Vec,Mat>
+  class QuesoLikelihoodInterface : public uqBaseScalarFunctionClass<Vec,Mat>
   {
   public:
 
-    LikelihoodBase( const char* prefix, 
+    QuesoLikelihoodInterface( const char* prefix, 
 		    const uqVectorSetClass<Vec,Mat>& domain_set,
 		    const bool returns_ln);
 
-    virtual ~LikelihoodBase();
+    virtual ~QuesoLikelihoodInterface();
 
     double actualValue(const Vec& domainVector, 
 		       const Vec* domainDirection, 
@@ -63,7 +63,7 @@ namespace NitridationCalibration
 
   private:
 
-    LikelihoodBase();
+    QuesoLikelihoodInterface();
 
     void initialize();
 
@@ -73,4 +73,4 @@ namespace NitridationCalibration
 
 #endif // NITCAL_HAVE_QUESO
 
-#endif // NITCAL_LIKELIHOOD_BASE_H
+#endif // NITCAL_QUESO_LIKELIHOOD_INTERFACE_H

@@ -11,7 +11,7 @@
 #ifdef NITCAL_HAVE_QUESO
 
 // This class
-#include "likelihood_base.h"
+#include "queso_likelihood_interface.h"
 
 // QUESO
 #include "uqGslVector.h"
