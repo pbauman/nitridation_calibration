@@ -41,8 +41,6 @@ namespace NitridationCalibration
 
   protected:
 
-    SimulationInterface _interface;
-
     MassLossHelper _mass_loss;
     
     double _gamma_nom;

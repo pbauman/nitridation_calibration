@@ -25,8 +25,8 @@ namespace NitridationCalibration
   public:
 
     QuesoLikelihoodInterface( const char* prefix, 
-		    const uqVectorSetClass<Vec,Mat>& domain_set,
-		    const bool returns_ln);
+                              const uqVectorSetClass<Vec,Mat>& domain_set,
+                              const bool returns_ln);
 
     virtual ~QuesoLikelihoodInterface();
 
@@ -56,10 +56,6 @@ namespace NitridationCalibration
     // Users tells QUESO whether or not they're computing
     // log( likelihood_value )
     bool m_returns_ln;
-
-    // Silly variable to monitor sampling
-    // since this problem takes a bit.
-    mutable unsigned int _sample_count;
 
   private:
 

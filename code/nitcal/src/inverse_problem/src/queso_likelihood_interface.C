@@ -21,29 +21,28 @@ namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
-  LikelihoodBase<Vec,Mat>::LikelihoodBase( const char* prefix, 
-					   const uqVectorSetClass<Vec,Mat>& domain_set,
-					   const bool returns_ln )
+  QuesoLikelihoodInterface<Vec,Mat>::QuesoLikelihoodInterface( const char* prefix, 
+                                                               const uqVectorSetClass<Vec,Mat>& domain_set,
+                                                               const bool returns_ln )
     : uqBaseScalarFunctionClass<Vec,Mat>( prefix, domain_set ),
-      m_returns_ln( returns_ln ),
-      _sample_count(0)
+      m_returns_ln( returns_ln )
   {
     return;
   }
 
   template<class Vec,class Mat>
-  LikelihoodBase<Vec,Mat>::~LikelihoodBase()
+  QuesoLikelihoodInterface<Vec,Mat>::~QuesoLikelihoodInterface()
   {
     return;
   }
 
 
   template<class Vec,class Mat>
-  double LikelihoodBase<Vec,Mat>::actualValue( const Vec& domainVector, 
-					       const Vec* /*domainDirection*/, 
-					       Vec* /*gradVector*/, 
-					       Mat* /*hessianMatrix*/, 
-					       Vec* /*hessianEffect*/ ) const
+  double QuesoLikelihoodInterface<Vec,Mat>::actualValue( const Vec& domainVector, 
+                                                         const Vec* /*domainDirection*/, 
+                                                         Vec* /*gradVector*/, 
+                                                         Mat* /*hessianMatrix*/, 
+                                                         Vec* /*hessianEffect*/ ) const
   {
     //********************************************************************
     // Copy contents of domainVector to std::vector.
@@ -78,11 +77,11 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  double LikelihoodBase<Vec,Mat>::lnValue( const Vec& domainVector, 
-					   const Vec* /*domainDirection*/, 
-					   Vec* /*gradVector*/, 
-					   Mat* /*hessianMatrix*/, 
-					   Vec* /*hessianEffect*/  ) const
+  double QuesoLikelihoodInterface<Vec,Mat>::lnValue( const Vec& domainVector, 
+                                                     const Vec* /*domainDirection*/, 
+                                                     Vec* /*gradVector*/, 
+                                                     Mat* /*hessianMatrix*/, 
+                                                     Vec* /*hessianEffect*/  ) const
   {
     //********************************************************************
     // Copy contents of domainVector to std::vector.
@@ -119,7 +118,7 @@ namespace NitridationCalibration
   }
 
   // Instantiate GSL version of this class
-  template class LikelihoodBase<uqGslVectorClass,uqGslMatrixClass>;
+  template class QuesoLikelihoodInterface<uqGslVectorClass,uqGslMatrixClass>;
 
 } // end namespace NitridationCalibration
 

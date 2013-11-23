@@ -33,8 +33,7 @@ namespace NitridationCalibration
 						 const char* prefix, 
 						 const uqVectorSetClass<Vec,Mat>& domain_set,
 						 const bool returns_ln)
-    : LikelihoodBase<Vec,Mat>(prefix,domain_set,returns_ln),
-      _interface(argc,argv,mpi_comm, input_filename ),
+    : LikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,input_filename,prefix,domain_set,returns_ln),
       _mass_loss(input_filename)
   {
     GetPot input( input_filename );
@@ -55,7 +54,7 @@ namespace NitridationCalibration
   {
     libmesh_assert_equal_to( params.size(), 1 );
     
-    _interface.set_gamma_CN( params[0]*_gamma_nom );
+    this->_interface.set_gamma_CN( params[0]*_gamma_nom );
 
     if( this->m_env.fullRank() == 0 )
     {
@@ -68,12 +67,12 @@ namespace NitridationCalibration
   template<class Vec,class Mat>
   double GammaCNLikelihood<Vec,Mat>::evaluate_likelihood() const
   {
-    _interface.solve();
+    this->_interface.solve();
 
-    const double computed_mass_loss = _interface.computed_mass_loss();
+    const double computed_mass_loss = this->_interface.computed_mass_loss();
 
     // Reset initial guess for next time
-    _interface.reset_initial_guess();
+    this->_interface.reset_initial_guess();
 
     libMesh::Real likelihood_value = _mass_loss.likelihood_value(computed_mass_loss);
 
