@@ -29,6 +29,7 @@ libnitcal_la_SOURCES += inverse_problem/src/sip_base.C
 libnitcal_la_SOURCES += inverse_problem/src/gamma_cn_sip.C
 libnitcal_la_SOURCES += inverse_problem/src/likelihood_base.C
 libnitcal_la_SOURCES += inverse_problem/src/gamma_cn_likelihood.C
+libnitcal_la_SOURCES += inverse_problem/src/mass_loss_helper.C
 
 # qoi
 libnitcal_la_SOURCES += qoi/src/qoi_factory.C
@@ -54,6 +55,7 @@ include_HEADERS += inverse_problem/include/sip_base.h
 include_HEADERS += inverse_problem/include/gamma_cn_sip.h
 include_HEADERS += inverse_problem/include/likelihood_base.h
 include_HEADERS += inverse_problem/include/gamma_cn_likelihood.h
+include_HEADERS += inverse_problem/include/mass_loss_helper.h
 
 # qoi
 include_HEADERS += qoi/include/qoi_factory.h
