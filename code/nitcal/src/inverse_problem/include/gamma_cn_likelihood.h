@@ -15,6 +15,7 @@
 
 #include "likelihood_base.h"
 #include "simulation_interface.h"
+#include "mass_loss_helper.h"
 
 namespace NitridationCalibration
 {
@@ -42,12 +43,7 @@ namespace NitridationCalibration
 
     SimulationInterface _interface;
 
-    double _sigma;
-    double _sigma_sq;
-
-    double _constant;
-
-    double _data_mass_loss;
+    MassLossHelper _mass_loss;
     
     double _gamma_nom;
 

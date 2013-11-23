@@ -34,31 +34,10 @@ namespace NitridationCalibration
 						 const uqVectorSetClass<Vec,Mat>& domain_set,
 						 const bool returns_ln)
     : LikelihoodBase<Vec,Mat>(prefix,domain_set,returns_ln),
-      _interface(argc,argv,mpi_comm, input_filename )
+      _interface(argc,argv,mpi_comm, input_filename ),
+      _mass_loss(input_filename)
   {
     GetPot input( input_filename );
-
-    if( !input.have_variable( "GammaCNInverseProblem/sigma" ) )
-      {
-	std::cerr << "Error: Must specify sigma for inverse problem."
-		  << std::endl;
-	libmesh_error();
-      }
-
-    _sigma = input( "GammaCNInverseProblem/sigma", 0.0 );
-    _sigma_sq = _sigma*_sigma;
-
-    _constant = std::log(std::sqrt(GRINS::Constants::two_pi)*_sigma);
-
-
-    if( !input.have_variable( "GammaCNInverseProblem/mass_loss" ) )
-      {
-	std::cerr << "Error: Must specify mass_loss for inverse problem."
-		  << std::endl;
-	libmesh_error();
-      }
-
-    _data_mass_loss = input( "GammaCNInverseProblem/mass_loss", 0.0 );
 
     _gamma_nom = input( "GammaCNInverseProblem/gamma_nominal_value", 1.0e-3 );
 
@@ -96,20 +75,10 @@ namespace NitridationCalibration
     // Reset initial guess for next time
     _interface.reset_initial_guess();
 
-    double likelihood_value = 0.0;
-
-    double tmp = computed_mass_loss - _data_mass_loss;
-
-    double value = tmp*tmp/_sigma_sq;
-
-    likelihood_value += value;
-
-    likelihood_value += _constant;
+    libMesh::Real likelihood_value = _mass_loss.likelihood_value(computed_mass_loss);
 
     // Now sum over all the data sets distributed across the processors.
     //Parallel::sum(likelihood_value, Parallel::Communicator(this->m_env.subComm().Comm()));
-
-    likelihood_value =  -likelihood_value/2.0;
 
     if( this->m_env.fullRank() == 0 )
     {
