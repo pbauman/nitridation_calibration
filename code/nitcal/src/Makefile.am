@@ -31,6 +31,7 @@ libnitcal_la_SOURCES += inverse_problem/src/queso_likelihood_interface.C
 libnitcal_la_SOURCES += inverse_problem/src/likelihood_base.C
 libnitcal_la_SOURCES += inverse_problem/src/gamma_cn_likelihood.C
 libnitcal_la_SOURCES += inverse_problem/src/mass_loss_helper.C
+libnitcal_la_SOURCES += inverse_problem/src/average_N_helper.C
 
 # qoi
 libnitcal_la_SOURCES += qoi/src/qoi_factory.C
@@ -58,6 +59,7 @@ include_HEADERS += inverse_problem/include/queso_likelihood_interface.h
 include_HEADERS += inverse_problem/include/likelihood_base.h
 include_HEADERS += inverse_problem/include/gamma_cn_likelihood.h
 include_HEADERS += inverse_problem/include/mass_loss_helper.h
+include_HEADERS += inverse_problem/include/average_N_helper.h
 
 # qoi
 include_HEADERS += qoi/include/qoi_factory.h
