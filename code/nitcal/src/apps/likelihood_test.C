@@ -34,7 +34,7 @@
 
 // NitCal
 #include "gamma_cn_sip.h"
-#include "gamma_cn_likelihood.h"
+#include "constant_gamma_cn_likelihood.h"
 
 #ifdef NITCAL_HAVE_QUESO
 // QUESO
@@ -74,8 +74,8 @@ int main(int argc, char* argv[])
 
     const uqBaseScalarFunctionClass<uqGslVectorClass,uqGslMatrixClass>& raw_likelihood = sip.get_likelihood_func();
 
-    const NitridationCalibration::GammaCNLikelihood<uqGslVectorClass,uqGslMatrixClass>& likelihood = 
-      libmesh_cast_ref<const NitridationCalibration::GammaCNLikelihood<uqGslVectorClass,uqGslMatrixClass>& >( raw_likelihood );
+    const NitridationCalibration::ConstantGammaCNLikelihood<uqGslVectorClass,uqGslMatrixClass>& likelihood = 
+      libmesh_cast_ref<const NitridationCalibration::ConstantGammaCNLikelihood<uqGslVectorClass,uqGslMatrixClass>& >( raw_likelihood );
 
     std::vector<double> param( 1, 0.0 );
 

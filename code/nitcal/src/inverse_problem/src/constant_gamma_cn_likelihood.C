@@ -14,7 +14,7 @@
 #include <cmath>
 
 // This class
-#include "gamma_cn_likelihood.h"
+#include "constant_gamma_cn_likelihood.h"
 
 // GRINS
 #include "grins/math_constants.h"
@@ -26,13 +26,13 @@
 namespace NitridationCalibration
 {
   template<class Vec,class Mat>
-  GammaCNLikelihood<Vec,Mat>::GammaCNLikelihood( int argc,
-						 char** argv,
-						 MPI_Comm mpi_comm,
-						 const std::string& input_filename,
-						 const char* prefix, 
-						 const uqVectorSetClass<Vec,Mat>& domain_set,
-						 const bool returns_ln)
+  ConstantGammaCNLikelihood<Vec,Mat>::ConstantGammaCNLikelihood( int argc,
+                                                                 char** argv,
+                                                                 MPI_Comm mpi_comm,
+                                                                 const std::string& input_filename,
+                                                                 const char* prefix, 
+                                                                 const uqVectorSetClass<Vec,Mat>& domain_set,
+                                                                 const bool returns_ln)
     : LikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,input_filename,prefix,domain_set,returns_ln),
       _mass_loss(input_filename)
   {
@@ -44,13 +44,13 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  GammaCNLikelihood<Vec,Mat>::~GammaCNLikelihood()
+  ConstantGammaCNLikelihood<Vec,Mat>::~ConstantGammaCNLikelihood()
   {
     return;
   }
 
   template<class Vec,class Mat>
-  void GammaCNLikelihood<Vec,Mat>::update_parameters( const std::vector<double>& params ) const
+  void ConstantGammaCNLikelihood<Vec,Mat>::update_parameters( const std::vector<double>& params ) const
   {
     libmesh_assert_equal_to( params.size(), 1 );
     
@@ -65,7 +65,7 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  double GammaCNLikelihood<Vec,Mat>::evaluate_likelihood() const
+  double ConstantGammaCNLikelihood<Vec,Mat>::evaluate_likelihood() const
   {
     this->_interface.solve();
 
@@ -92,7 +92,7 @@ namespace NitridationCalibration
   }
 
   // Instantiate GSL version of this class
-  template class GammaCNLikelihood<uqGslVectorClass,uqGslMatrixClass>;
+  template class ConstantGammaCNLikelihood<uqGslVectorClass,uqGslMatrixClass>;
 
 } // end namespace NitridationCalibration
 

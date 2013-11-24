@@ -14,7 +14,7 @@
 #include "gamma_cn_sip.h"
 
 // NitCal
-#include "gamma_cn_likelihood.h"
+#include "constant_gamma_cn_likelihood.h"
 
 // QUESO
 #include "uqGslVector.h"
@@ -108,10 +108,10 @@ namespace NitridationCalibration
 					      const std::string& input_filename)
   {
     this->_likelihood = 
-      new GammaCNLikelihood<Vec,Mat>(argc, argv, mpi_comm, input_filename,
-				     "like_",
-				     *(this->_param_domain),
-				     true ); // the routine computes [ln(function)]
+      new ConstantGammaCNLikelihood<Vec,Mat>(argc, argv, mpi_comm, input_filename,
+                                             "like_",
+                                             *(this->_param_domain),
+                                             true ); // the routine computes [ln(function)]
 
     return;
   }
