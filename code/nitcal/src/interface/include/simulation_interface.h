@@ -25,6 +25,8 @@ namespace NitridationCalibration
 
     void set_gamma_CN( const double gamma ) const;
 
+    void set_gamma_N_params( const std::vector<double>& gamma_N_params ) const;
+
     void reset_initial_guess() const;
 
     void solve() const;

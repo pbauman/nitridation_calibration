@@ -91,6 +91,26 @@ namespace NitridationCalibration
     return;
   }
 
+  void NitridationSimulation::set_gamma_N_params( const std::vector<double>& gamma_N_params )
+  {
+    std::tr1::shared_ptr<GRINS::Physics> physics = this->_multiphysics_system->get_physics( GRINS::reacting_low_mach_navier_stokes );
+
+    GRINS::BCHandlingBase* bc_handler_base = physics->get_bc_handler();
+
+    GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>* bc_handler =
+      libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
+    
+    /*! \todo Need to generalize to more than 1 bc */
+    
+    const unsigned int bc_id = 2;
+
+    GRINS::CatalyticWallBase<GRINS::AntiochChemistry>* func = bc_handler->get_catalytic_wall( bc_id );
+
+    func->set_catalycity_params( gamma_N_params );
+
+    return;
+  }
+
   void NitridationSimulation::reset_initial_guess( const NumericVector<libMesh::Real>& solution )
   {
     (*((this->_multiphysics_system)->solution)) = solution;

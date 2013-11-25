@@ -92,6 +92,12 @@ namespace NitridationCalibration
     return;
   }
 
+  void SimulationInterface::set_gamma_N_params( const std::vector<double>& gamma_N_params ) const
+  {
+    _simulation->set_gamma_N_params(gamma_N_params);
+    return;
+  }
+
   void SimulationInterface::reset_initial_guess() const
   {
     _simulation->reset_initial_guess( *_cached_initial_guess );

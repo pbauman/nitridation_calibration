@@ -26,6 +26,8 @@ namespace NitridationCalibration
 
     void set_gamma_CN( const double gamma );
 
+    void set_gamma_N_params( const std::vector<double>& gamma_N_params );
+
     void reset_initial_guess( const NumericVector<libMesh::Real>& solution );
 
     void solve();
