@@ -68,7 +68,7 @@ namespace NitridationCalibration
     return;
   }
 
-  void NitridationSimulation::set_gamma_CN( const double gamma )
+  void NitridationSimulation::set_gamma_CN_params( const std::vector<double>& gamma_CN_params )
   {
     std::tr1::shared_ptr<GRINS::Physics> physics = this->_multiphysics_system->get_physics( GRINS::reacting_low_mach_navier_stokes );
 
@@ -83,10 +83,7 @@ namespace NitridationCalibration
 
     GRINS::CatalyticWallBase<GRINS::AntiochChemistry>* func = bc_handler->get_catalytic_wall( bc_id );
 
-    std::vector<libMesh::Real> params;
-    params.push_back( gamma );
-
-    func->set_catalycity_params( params );
+    func->set_catalycity_params( gamma_CN_params );
 
     return;
   }

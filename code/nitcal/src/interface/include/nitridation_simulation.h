@@ -24,7 +24,7 @@ namespace NitridationCalibration
 
     virtual ~NitridationSimulation();
 
-    void set_gamma_CN( const double gamma );
+    void set_gamma_CN_params( const std::vector<double>& gamma_CN_params );
 
     void set_gamma_N_params( const std::vector<double>& gamma_N_params );
 

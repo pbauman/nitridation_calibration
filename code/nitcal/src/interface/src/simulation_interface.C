@@ -86,9 +86,9 @@ namespace NitridationCalibration
     return;
   }
 
-  void SimulationInterface::set_gamma_CN( const double gamma ) const
+  void SimulationInterface::set_gamma_CN_params( const std::vector<double>& gamma_CN_params ) const
   {
-    _simulation->set_gamma_CN(gamma);
+    _simulation->set_gamma_CN_params(gamma_CN_params);
     return;
   }
 

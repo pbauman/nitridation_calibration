@@ -55,7 +55,9 @@ namespace NitridationCalibration
         libmesh_error();
       }
     
-    this->_interface.set_gamma_CN( params[0]*_gamma_CN_nom );
+    std::vector<libMesh::Real> gamma_CN_params(1);
+    gamma_CN_params[0] = params[0]*_gamma_CN_nom;
+    this->_interface.set_gamma_CN_params( gamma_CN_params );
 
     std::vector<libMesh::Real> gamma_N_params(1);
     gamma_N_params[0] = params[1]*_gamma_N_nom;
