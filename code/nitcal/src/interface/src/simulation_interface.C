@@ -109,6 +109,11 @@ namespace NitridationCalibration
     return _simulation->computed_mass_loss();
   }
 
+  double SimulationInterface::computed_average_n() const
+  {
+    return _simulation->computed_average_n();
+  }
+
   libMesh::Real initial_values( const libMesh::Point& p,
 				const libMesh::Parameters &params, 
 				const std::string& ,

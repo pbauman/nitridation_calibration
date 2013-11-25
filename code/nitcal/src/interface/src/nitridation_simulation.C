@@ -9,6 +9,9 @@
 // This class
 #include "nitridation_simulation.h"
 
+// NitCal
+#include "qoi_names.h"
+
 // GRINS
 #include "grins/simulation_builder.h"
 #include "grins/bc_handling_base.h"
@@ -25,6 +28,38 @@ namespace NitridationCalibration
 					        GRINS::SimulationBuilder& sim_builder )
     : GRINS::Simulation(input,sim_builder)
   {
+    /* Search for the QoI's and cache their indices for later use */
+    // First get the DifferentiableQoI and cast to CompositeQoI
+    libMesh::DifferentiableQoI* qoi_base = _multiphysics_system->get_qoi();
+    GRINS::CompositeQoI* qois = libmesh_cast_ptr<GRINS::CompositeQoI*>( qoi_base );
+
+    const unsigned int n_qois = qois->n_qois();
+
+    for( unsigned int q = 0; q < n_qois; q++ )
+      {
+        const GRINS::QoIBase& qoi = qois->get_qoi(q);
+
+        const std::string& qoi_name = qoi.name();
+
+        if( qoi_name == mass_loss )
+          {
+            _mass_loss_qoi_index = q;
+          }
+        else if( qoi_name == average_N_mole_fraction )
+          {
+            _average_n_qoi_index = q;
+          }
+        else if( qoi_name == mass_loss_catalytic )
+          {
+            _mass_loss_catalytic_qoi_index = q;
+          }
+        else
+          {
+            std::cerr << "Error: Invalid qoi_name " << qoi_name << std::endl;
+            libmesh_error();
+          }
+      }
+    
     return;
   }
 
@@ -78,7 +113,13 @@ namespace NitridationCalibration
   double NitridationSimulation::computed_mass_loss()
   {
     _multiphysics_system->assemble_qoi( libMesh::QoISet( *_multiphysics_system ) );
-    return this->get_qoi_value(0);
+    return this->get_qoi_value(_mass_loss_catalytic_qoi_index);
+  }
+
+  double NitridationSimulation::computed_average_n()
+  {
+    _multiphysics_system->assemble_qoi( libMesh::QoISet( *_multiphysics_system ) );
+    return this->get_qoi_value(_average_n_qoi_index);
   }
 
 } // end namespace NitridationCalibration

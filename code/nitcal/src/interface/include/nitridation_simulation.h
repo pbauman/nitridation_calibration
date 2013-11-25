@@ -22,7 +22,7 @@ namespace NitridationCalibration
     NitridationSimulation( const GetPot& input,
 			   GRINS::SimulationBuilder& sim_builder );
 
-    ~NitridationSimulation();
+    virtual ~NitridationSimulation();
 
     void set_gamma_CN( const double gamma );
 
@@ -32,7 +32,15 @@ namespace NitridationCalibration
 
     double computed_mass_loss();
 
+    double computed_average_n();
+
   protected:
+
+    unsigned int _mass_loss_qoi_index;
+
+    unsigned int _mass_loss_catalytic_qoi_index;
+
+    unsigned int _average_n_qoi_index;
 
   };
 

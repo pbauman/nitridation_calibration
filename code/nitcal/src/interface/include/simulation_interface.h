@@ -31,6 +31,8 @@ namespace NitridationCalibration
     
     double computed_mass_loss() const;
 
+    double computed_average_n() const;
+
   private:
 
     libMesh::LibMeshInit _libmesh_init;
