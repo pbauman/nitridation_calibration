@@ -36,6 +36,7 @@
 #include "mass_loss.h"
 #include "mass_loss_catalytic.h"
 #include "average_N_mole_fraction.h"
+#include "qoi_names.h"
 
 // GRINS
 #include "grins/qoi_base.h"
@@ -57,21 +58,21 @@ namespace NitridationCalibration
 			    const std::string& qoi_name,
 			    std::tr1::shared_ptr<GRINS::CompositeQoI>& qois )
   {
-    if( qoi_name == std::string("MassLoss") )
+    if( qoi_name == mass_loss )
       {
-        GRINS::QoIBase* qoi = new MassLoss( std::string("MassLoss") );
+        GRINS::QoIBase* qoi = new MassLoss( mass_loss );
         qois->add_qoi(*qoi);
       }
     
-    else if( qoi_name == std::string("AverageNMoleFraction") )
+    else if( qoi_name == average_N_mole_fraction )
       {
-        GRINS::QoIBase* qoi = new AverageNMoleFraction( std::string("AverageNMoleFraction") );
+        GRINS::QoIBase* qoi = new AverageNMoleFraction( average_N_mole_fraction );
         qois->add_qoi(*qoi);
       }
     
-    else if( qoi_name == std::string("MassLossCatalytic") )
+    else if( qoi_name == mass_loss_catalytic  )
       {
-        GRINS::QoIBase* qoi = new MassLossCatalytic( std::string("MassLossCatalytic") );
+        GRINS::QoIBase* qoi = new MassLossCatalytic( mass_loss_catalytic );
         qois->add_qoi(*qoi);
       }
 
