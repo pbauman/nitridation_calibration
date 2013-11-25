@@ -62,6 +62,7 @@ include_HEADERS += inverse_problem/include/mass_loss_helper.h
 include_HEADERS += inverse_problem/include/average_N_helper.h
 
 # qoi
+include_HEADERS += qoi/include/qoi_names.h
 include_HEADERS += qoi/include/qoi_factory.h
 include_HEADERS += qoi/include/mass_loss.h
 include_HEADERS += qoi/include/mass_loss_catalytic.h
