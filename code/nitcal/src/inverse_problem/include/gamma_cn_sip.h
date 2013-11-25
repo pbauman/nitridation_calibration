@@ -32,14 +32,10 @@ namespace NitridationCalibration
 
   protected:
 
-    virtual void create_param_space();
-    virtual void create_param_domain();
-    virtual void create_prior();
-    virtual void create_posterior();
-    virtual void create_likelihood(int argc,
-				   char** argv,
-				   MPI_Comm mpi_comm,
-				   const std::string& input_filename);
+    void create_param_space();
+    void create_param_domain();
+    void create_likelihood( int argc, char** argv, MPI_Comm mpi_comm,
+                            const std::string& input_filename );
 
   };
 

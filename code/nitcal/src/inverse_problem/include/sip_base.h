@@ -42,6 +42,9 @@ namespace NitridationCalibration
   
     void create_sip();
 
+    void create_prior();
+    void create_posterior();
+
     uqBaseEnvironmentClass *_queso_env;
 
     uqVectorSpaceClass<Vec,Mat> *_param_space;

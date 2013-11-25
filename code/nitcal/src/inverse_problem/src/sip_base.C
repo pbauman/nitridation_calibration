@@ -150,6 +150,26 @@ namespace NitridationCalibration
     return;
   }
 
+  template<class Vec,class Mat>
+  void StatisticalInverseProblemBase<Vec,Mat>::create_prior()
+  {
+    this->_prior =
+      new uqUniformVectorRVClass<Vec,Mat>("prior_", // Extra prefix before the default "rv_"
+					  *(this->_param_domain) );
+
+    return;
+  }
+
+  template<class Vec,class Mat>
+  void StatisticalInverseProblemBase<Vec,Mat>::create_posterior()
+  {
+    this->_posterior =
+      new uqGenericVectorRVClass<Vec,Mat>("post_", // Extra prefix before the default "rv_" prefix
+					  *(this->_param_space) );
+
+    return;
+  }
+
   /* ------------------------- Instantiate -------------------------*/
   template class StatisticalInverseProblemBase<uqGslVectorClass,uqGslMatrixClass>;
   
