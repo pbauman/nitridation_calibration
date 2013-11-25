@@ -48,7 +48,12 @@ namespace NitridationCalibration
   template<class Vec,class Mat>
   void ConstantGammaNConstantGammaCNLikelihood<Vec,Mat>::update_parameters( const std::vector<double>& params ) const
   {
-    libmesh_assert_equal_to( params.size(), 1 );
+    if( params.size() != 2 )
+      {
+        std::cerr << "Error: params size should be 2 for ConstantGammaNConstantGammaCNLikelihood" << std::endl
+                  << "       Found size = " << params.size() << std::endl;
+        libmesh_error();
+      }
     
     this->_interface.set_gamma_CN( params[0]*_gamma_CN_nom );
 
