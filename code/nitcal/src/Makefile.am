@@ -30,6 +30,8 @@ libnitcal_la_SOURCES += inverse_problem/src/gamma_cn_sip.C
 libnitcal_la_SOURCES += inverse_problem/src/queso_likelihood_interface.C
 libnitcal_la_SOURCES += inverse_problem/src/likelihood_base.C
 libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_cn_likelihood.C
+libnitcal_la_SOURCES += inverse_problem/src/gamma_n_gamma_cn_likelihood_base.C
+libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_n_constant_gamma_cn_likelihood.C
 libnitcal_la_SOURCES += inverse_problem/src/mass_loss_helper.C
 libnitcal_la_SOURCES += inverse_problem/src/average_N_helper.C
 
@@ -58,6 +60,8 @@ include_HEADERS += inverse_problem/include/gamma_cn_sip.h
 include_HEADERS += inverse_problem/include/queso_likelihood_interface.h
 include_HEADERS += inverse_problem/include/likelihood_base.h
 include_HEADERS += inverse_problem/include/constant_gamma_cn_likelihood.h
+include_HEADERS += inverse_problem/include/gamma_n_gamma_cn_likelihood_base.h
+include_HEADERS += inverse_problem/include/constant_gamma_n_constant_gamma_cn_likelihood.h
 include_HEADERS += inverse_problem/include/mass_loss_helper.h
 include_HEADERS += inverse_problem/include/average_N_helper.h
 
