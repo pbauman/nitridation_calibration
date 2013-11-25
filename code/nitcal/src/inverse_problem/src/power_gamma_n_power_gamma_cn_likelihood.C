@@ -1,0 +1,90 @@
+//-----------------------------------------------------------------------bl-
+//-----------------------------------------------------------------------el-
+
+#include "nitcal_config.h"
+
+#ifdef NITCAL_HAVE_QUESO
+
+// C++
+#include <cmath>
+
+// This class
+#include "power_gamma_n_power_gamma_cn_likelihood.h"
+
+// GRINS
+#include "grins/math_constants.h"
+
+// QUESO
+#include "uqGslVector.h"
+#include "uqGslMatrix.h"
+
+namespace NitridationCalibration
+{
+  template<class Vec,class Mat>
+  PowerGammaNPowerGammaCNLikelihood<Vec,Mat>::PowerGammaNPowerGammaCNLikelihood( int argc,
+                                                                                             char** argv,
+                                                                                             MPI_Comm mpi_comm,
+                                                                                             const std::string& input_filename,
+                                                                                             const char* prefix, 
+                                                                                             const uqVectorSetClass<Vec,Mat>& domain_set,
+                                                                                             const bool returns_ln)
+    : GammaNGammaCNLikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,input_filename,prefix,domain_set,returns_ln)
+  {
+    GetPot input( input_filename );
+
+    _gamma0_CN_nom = input( "InverseProblem/gamma0_CN_nominal_value", 1.0e-3 );
+    _Tref_CN_nom = input( "InverseProblem/Tref_CN_nominal_value", 300.0 );
+    _alpha_CN_nom = input( "InverseProblem/alpha_CN_nominal_value", 1.0 );
+
+    _gamma0_N_nom = input( "InverseProblem/gamma0_N_nominal_value", 1.0e-3 );
+    _Tref_N_nom = input( "InverseProblem/Ta_N_nominal_value", 300.0 );
+    _alpha_N_nom = input( "InverseProblem/alpha_N_nominal_value", 1.0 );
+
+    return;
+  }
+
+  template<class Vec,class Mat>
+  PowerGammaNPowerGammaCNLikelihood<Vec,Mat>::~PowerGammaNPowerGammaCNLikelihood()
+  {
+    return;
+  }
+
+  template<class Vec,class Mat>
+  void PowerGammaNPowerGammaCNLikelihood<Vec,Mat>::update_parameters( const std::vector<double>& params ) const
+  {
+    if( params.size() != 6 )
+      {
+        std::cerr << "Error: params size should be 6 for PowerGammaNPowerGammaCNLikelihood" << std::endl
+                  << "       Found size = " << params.size() << std::endl;
+        libmesh_error();
+      }
+
+    std::vector<libMesh::Real> gamma_CN_params(3);
+    gamma_CN_params[0] = params[0]*_gamma0_CN_nom;
+    gamma_CN_params[1] = params[1]*_Tref_CN_nom;
+    gamma_CN_params[2] = params[2]*_alpha_CN_nom;
+    this->_interface.set_gamma_CN_params( gamma_CN_params );
+
+    std::vector<libMesh::Real> gamma_N_params(3);
+    gamma_N_params[0] = params[3]*_gamma0_N_nom;
+    gamma_N_params[1] = params[4]*_Tref_N_nom;
+    gamma_N_params[2] = params[5]*_alpha_N_nom;
+
+    this->_interface.set_gamma_N_params( gamma_N_params );
+
+    /*
+    if( this->m_env.fullRank() == 0 )
+    {
+      std::cout << "param = " << params[0] << ", gamma = " << params[0]*_gamma_nom << std::endl;
+    }
+    */
+
+    return;
+  }
+
+  // Instantiate GSL version of this class
+  template class PowerGammaNPowerGammaCNLikelihood<uqGslVectorClass,uqGslMatrixClass>;
+
+} // end namespace NitridationCalibration
+
+#endif // NITCAL_HAVE_QUESO
