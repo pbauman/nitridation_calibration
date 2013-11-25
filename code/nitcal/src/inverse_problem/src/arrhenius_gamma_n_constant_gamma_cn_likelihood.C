@@ -52,7 +52,7 @@ namespace NitridationCalibration
   {
     if( params.size() != 3 )
       {
-        std::cerr << "Error: params size should be 2 for ArrheniusGammaNConstantGammaCNLikelihood" << std::endl
+        std::cerr << "Error: params size should be 3 for ArrheniusGammaNConstantGammaCNLikelihood" << std::endl
                   << "       Found size = " << params.size() << std::endl;
         libmesh_error();
       }
