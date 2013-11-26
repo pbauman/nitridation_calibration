@@ -24,9 +24,12 @@ libnitcal_la_SOURCES += boundary_conditions/src/inlet_profile.C
 libnitcal_la_SOURCES += interface/src/simulation_interface.C
 libnitcal_la_SOURCES += interface/src/nitridation_simulation.C
 
-# inverse problem
+# inverse_problem - SIP stuff
 libnitcal_la_SOURCES += inverse_problem/src/sip_base.C
 libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_cn_sip.C
+libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_n_constant_gamma_cn_sip.C
+
+# inverse_problem -likelihood stuff
 libnitcal_la_SOURCES += inverse_problem/src/queso_likelihood_interface.C
 libnitcal_la_SOURCES += inverse_problem/src/likelihood_base.C
 libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_cn_likelihood.C
@@ -60,9 +63,12 @@ include_HEADERS += boundary_conditions/include/inlet_profile.h
 include_HEADERS += interface/include/simulation_interface.h
 include_HEADERS += interface/include/nitridation_simulation.h
 
-# inverse problem
+# inverse_problem - SIP stuff
 include_HEADERS += inverse_problem/include/sip_base.h
 include_HEADERS += inverse_problem/include/constant_gamma_cn_sip.h
+include_HEADERS += inverse_problem/include/constant_gamma_n_constant_gamma_cn_sip.h
+
+# inverse_problem - likelihood stuff
 include_HEADERS += inverse_problem/include/queso_likelihood_interface.h
 include_HEADERS += inverse_problem/include/likelihood_base.h
 include_HEADERS += inverse_problem/include/constant_gamma_cn_likelihood.h
