@@ -68,9 +68,9 @@ int main(int argc, char* argv[])
 							   "",
 							   NULL );
   {
-    NitridationCalibration::GammaCNSIP<uqGslVectorClass,uqGslMatrixClass> sip( env, "multilevel",
-									       argc, argv,
-									       libMesh_input_filename );
+    NitridationCalibration::ConstantGammaCNSIP<uqGslVectorClass,uqGslMatrixClass> sip( env, "multilevel",
+                                                                                       argc, argv,
+                                                                                       libMesh_input_filename );
 
     const uqBaseScalarFunctionClass<uqGslVectorClass,uqGslMatrixClass>& raw_likelihood = sip.get_likelihood_func();
 

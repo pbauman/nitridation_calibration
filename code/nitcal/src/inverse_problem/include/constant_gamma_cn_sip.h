@@ -18,17 +18,17 @@
 namespace NitridationCalibration
 {
   template<class Vec,class Mat>
-  class GammaCNSIP : public StatisticalInverseProblemBase<Vec,Mat>
+  class ConstantGammaCNSIP : public StatisticalInverseProblemBase<Vec,Mat>
   {
   public:
 
-    GammaCNSIP( uqBaseEnvironmentClass* env,
-		const std::string& method,
-		int argc,
-		char** argv,
-		const std::string& input_filename );
+    ConstantGammaCNSIP( uqBaseEnvironmentClass* env,
+                        const std::string& method,
+                        int argc,
+                        char** argv,
+                        const std::string& input_filename );
 
-    virtual ~GammaCNSIP();
+    virtual ~ConstantGammaCNSIP();
 
   protected:
 

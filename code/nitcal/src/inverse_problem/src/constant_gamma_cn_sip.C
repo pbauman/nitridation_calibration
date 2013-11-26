@@ -23,11 +23,11 @@
 namespace NitridationCalibration
 {
   template<class Vec,class Mat>
-  GammaCNSIP<Vec,Mat>::GammaCNSIP( uqBaseEnvironmentClass* env,
-				   const std::string& method,
-				   int argc,
-				   char** argv,
-				   const std::string& libMesh_input_filename )
+  ConstantGammaCNSIP<Vec,Mat>::ConstantGammaCNSIP( uqBaseEnvironmentClass* env,
+                                                   const std::string& method,
+                                                   int argc,
+                                                   char** argv,
+                                                   const std::string& libMesh_input_filename )
     : StatisticalInverseProblemBase<Vec,Mat>( env, method )
   {
     this->create_param_space();
@@ -42,13 +42,13 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  GammaCNSIP<Vec,Mat>::~GammaCNSIP()
+  ConstantGammaCNSIP<Vec,Mat>::~ConstantGammaCNSIP()
   {
     return;
   }
 
   template<class Vec,class Mat>
-  void GammaCNSIP<Vec,Mat>::create_param_space()
+  void ConstantGammaCNSIP<Vec,Mat>::create_param_space()
   {
     const unsigned int n_params = 1;
 
@@ -61,7 +61,7 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  void GammaCNSIP<Vec,Mat>::create_param_domain()
+  void ConstantGammaCNSIP<Vec,Mat>::create_param_domain()
   {
     // These are assuming normalized values
     const double min = 0.0;
@@ -82,10 +82,10 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  void GammaCNSIP<Vec,Mat>::create_likelihood(int argc,
-					      char** argv,
-					      MPI_Comm mpi_comm,
-					      const std::string& input_filename)
+  void ConstantGammaCNSIP<Vec,Mat>::create_likelihood(int argc,
+                                                      char** argv,
+                                                      MPI_Comm mpi_comm,
+                                                      const std::string& input_filename)
   {
     this->_likelihood = 
       new ConstantGammaCNLikelihood<Vec,Mat>(argc, argv, mpi_comm, input_filename,
@@ -97,7 +97,7 @@ namespace NitridationCalibration
   }
 
   // Instantiate GSL version of this class
-  template class GammaCNSIP<uqGslVectorClass,uqGslMatrixClass>;
+  template class ConstantGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>;
 
 } // end namespace NitridationCalibration
 

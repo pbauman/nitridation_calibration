@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
   //************************************************
   {
 
-    NitridationCalibration::GammaCNSIP<uqGslVectorClass,uqGslMatrixClass>
+    NitridationCalibration::ConstantGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>
     sip( env, "multilevel", argc, argv, libMesh_input_filename );
     
     //************************************************
