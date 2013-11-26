@@ -26,7 +26,7 @@ libnitcal_la_SOURCES += interface/src/nitridation_simulation.C
 
 # inverse problem
 libnitcal_la_SOURCES += inverse_problem/src/sip_base.C
-libnitcal_la_SOURCES += inverse_problem/src/gamma_cn_sip.C
+libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_cn_sip.C
 libnitcal_la_SOURCES += inverse_problem/src/queso_likelihood_interface.C
 libnitcal_la_SOURCES += inverse_problem/src/likelihood_base.C
 libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_cn_likelihood.C
@@ -62,7 +62,7 @@ include_HEADERS += interface/include/nitridation_simulation.h
 
 # inverse problem
 include_HEADERS += inverse_problem/include/sip_base.h
-include_HEADERS += inverse_problem/include/gamma_cn_sip.h
+include_HEADERS += inverse_problem/include/constant_gamma_cn_sip.h
 include_HEADERS += inverse_problem/include/queso_likelihood_interface.h
 include_HEADERS += inverse_problem/include/likelihood_base.h
 include_HEADERS += inverse_problem/include/constant_gamma_cn_likelihood.h

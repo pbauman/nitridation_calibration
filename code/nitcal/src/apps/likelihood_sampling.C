@@ -34,7 +34,7 @@
 
 // NitCal
 #include "nitcal_config.h"
-#include "gamma_cn_sip.h"
+#include "constant_gamma_cn_sip.h"
 #include "constant_gamma_cn_likelihood.h"
 
 #ifdef NITCAL_HAVE_QUESO

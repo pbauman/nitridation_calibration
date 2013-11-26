@@ -11,7 +11,7 @@
 #ifdef NITCAL_HAVE_QUESO
 
 // This class
-#include "gamma_cn_sip.h"
+#include "constant_gamma_cn_sip.h"
 
 // NitCal
 #include "constant_gamma_cn_likelihood.h"
