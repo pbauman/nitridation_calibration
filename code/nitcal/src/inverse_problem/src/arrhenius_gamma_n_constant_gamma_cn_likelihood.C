@@ -22,22 +22,17 @@ namespace NitridationCalibration
 {
   template<class Vec,class Mat>
   ArrheniusGammaNConstantGammaCNLikelihood<Vec,Mat>::ArrheniusGammaNConstantGammaCNLikelihood( int argc,
-                                                                                             char** argv,
-                                                                                             MPI_Comm mpi_comm,
-                                                                                             const std::string& input_filename,
-                                                                                             const char* prefix, 
-                                                                                             const uqVectorSetClass<Vec,Mat>& domain_set,
-                                                                                             const bool returns_ln)
-    : GammaNGammaCNLikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,input_filename,prefix,domain_set,returns_ln)
+                                                                                               char** argv,
+                                                                                               MPI_Comm mpi_comm,
+                                                                                               const GetPot& input,
+                                                                                               const char* prefix, 
+                                                                                               const uqVectorSetClass<Vec,Mat>& domain_set,
+                                                                                               const bool returns_ln)
+  : GammaNGammaCNLikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,input,prefix,domain_set,returns_ln),
+    _gamma_CN_nom( input( "InverseProblem/gamma_CN_nominal_value", 1.0e-3 ) ),
+    _gamma0_N_nom( input( "InverseProblem/gamma0_N_nominal_value", 1.0e-3 ) ),
+    _Ta_N_nom( input( "InverseProblem/Ta_N_nominal_value", 300.0 ) )
   {
-    GetPot input( input_filename );
-
-    _gamma_CN_nom = input( "InverseProblem/gamma_CN_nominal_value", 1.0e-3 );
-
-    _gamma0_N_nom = input( "InverseProblem/gamma0_N_nominal_value", 1.0e-3 );
-
-    _Ta_N_nom = input( "InverseProblem/Ta_N_nominal_value", 300.0 );
-
     return;
   }
 

@@ -28,7 +28,7 @@ namespace NitridationCalibration
     ConstantGammaCNLikelihood( int argc,
                                char** argv,
                                MPI_Comm mpi_comm,
-                               const std::string& input_filename,
+                               const GetPot& input,
                                const char* prefix, 
                                const uqVectorSetClass<Vec,Mat>& domain_set,
                                const bool returns_ln );

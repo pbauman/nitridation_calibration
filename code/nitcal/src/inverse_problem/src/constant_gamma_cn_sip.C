@@ -20,6 +20,9 @@
 #include "uqGslVector.h"
 #include "uqGslMatrix.h"
 
+// libMesh
+#include "libmesh/getpot.h"
+
 namespace NitridationCalibration
 {
   template<class Vec,class Mat>
@@ -30,11 +33,13 @@ namespace NitridationCalibration
                                                    const std::string& libMesh_input_filename )
     : StatisticalInverseProblemBase<Vec,Mat>( env, method )
   {
+    GetPot input( libMesh_input_filename );
+
     this->create_param_space();
-    this->create_param_domain();
+    this->create_param_domain(input);
     this->create_prior();
     this->create_posterior();
-    this->create_likelihood(argc,argv,env->subComm().Comm(),libMesh_input_filename);
+    this->create_likelihood( argc, argv, env->subComm().Comm(), input );
 
     this->create_sip();
     
@@ -61,11 +66,11 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  void ConstantGammaCNSIP<Vec,Mat>::create_param_domain()
+  void ConstantGammaCNSIP<Vec,Mat>::create_param_domain(const GetPot& input)
   {
     // These are assuming normalized values
-    const double min = 0.0;
-    const double max = 10.0;
+    const double min = input("InverseProblem/gamma_CN_min", 0.0);
+    const double max = input("InverseProblem/gamma_CN_max", 1000.0);
 
     Vec param_mins( this->_param_space->zeroVector() );
     param_mins[0] = min;
@@ -82,13 +87,13 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  void ConstantGammaCNSIP<Vec,Mat>::create_likelihood(int argc,
-                                                      char** argv,
-                                                      MPI_Comm mpi_comm,
-                                                      const std::string& input_filename)
+  void ConstantGammaCNSIP<Vec,Mat>::create_likelihood( int argc,
+                                                       char** argv,
+                                                       MPI_Comm mpi_comm,
+                                                       const GetPot& input )
   {
     this->_likelihood = 
-      new ConstantGammaCNLikelihood<Vec,Mat>(argc, argv, mpi_comm, input_filename,
+      new ConstantGammaCNLikelihood<Vec,Mat>(argc, argv, mpi_comm, input,
                                              "like_",
                                              *(this->_param_domain),
                                              true ); // the routine computes [ln(function)]

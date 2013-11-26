@@ -20,7 +20,7 @@ namespace NitridationCalibration
   public:
 
     SimulationInterface( int argc, char** argv, MPI_Comm mpi_comm,
-			 const std::string& input_filename );
+			 const GetPot& input );
     ~SimulationInterface();
 
     void set_gamma_CN_params( const std::vector<double>& gamma_CN_params ) const;

@@ -28,12 +28,10 @@ namespace NitridationCalibration
 
   SimulationInterface::SimulationInterface( int argc, char** argv,
 					    MPI_Comm mpi_comm,
-					    const std::string& input_filename )
+					    const GetPot& input )
     : _libmesh_init(argc,argv,mpi_comm),
       _cached_initial_guess( libMesh::NumericVector<libMesh::Real>::build() )
   {
-    GetPot input( input_filename );
-
     GRINS::SimulationBuilder sim_builder;
     
     std::tr1::shared_ptr<GRINS::BoundaryConditionsFactory> bc_factory( new NitridationCalibration::BoundaryConditionsFactory(input) );

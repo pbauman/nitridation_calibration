@@ -13,10 +13,8 @@
 namespace NitridationCalibration
 {
 
-  AverageNHelper::AverageNHelper( const std::string& input_filename )
+  AverageNHelper::AverageNHelper( const GetPot& input )
   {
-    GetPot input( input_filename );
-    
     if( !input.have_variable( "AverageNLikelihood/sigma" ) )
       {
 	std::cerr << "Error: Must specify sigma for mass loss likelihood."

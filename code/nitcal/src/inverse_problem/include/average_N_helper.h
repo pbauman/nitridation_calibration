@@ -10,6 +10,8 @@
 // libMesh
 #include "libmesh/libmesh_common.h"
 
+class GetPot;
+
 namespace NitridationCalibration
 {
 
@@ -17,7 +19,7 @@ namespace NitridationCalibration
   {
   public:
 
-    AverageNHelper( const std::string& input_filename );
+    AverageNHelper( const GetPot& input );
     ~AverageNHelper();
 
     libMesh::Real likelihood_value( const libMesh::Real computed_mass_loss ) const;

@@ -13,10 +13,8 @@
 namespace NitridationCalibration
 {
 
-  MassLossHelper::MassLossHelper( const std::string& input_filename )
-  {
-    GetPot input( input_filename );
-    
+  MassLossHelper::MassLossHelper( const GetPot& input )
+  { 
     if( !input.have_variable( "MassLossLikelihood/sigma" ) )
       {
 	std::cerr << "Error: Must specify sigma for mass loss likelihood."
