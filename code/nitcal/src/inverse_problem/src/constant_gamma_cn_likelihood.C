@@ -29,13 +29,17 @@ namespace NitridationCalibration
   ConstantGammaCNLikelihood<Vec,Mat>::ConstantGammaCNLikelihood( int argc,
                                                                  char** argv,
                                                                  MPI_Comm mpi_comm,
-                                                                 const GetPot& input,
+                                                                 const GetPot& sip_input,
+                                                                 const GetPot& forward_run_input,
+                                                                 const LikelihoodCommHandler& comm_handler,
                                                                  const char* prefix, 
                                                                  const uqVectorSetClass<Vec,Mat>& domain_set,
                                                                  const bool returns_ln)
-    : LikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,input,prefix,domain_set,returns_ln),
-    _mass_loss(input),
-    _gamma_nom( input( "InverseProblem/gamma_CN_nominal_value", 1.0e-3 ) )
+    : LikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,
+                              forward_run_input,comm_handler,
+                              prefix,domain_set,returns_ln),
+    _mass_loss(forward_run_input),
+    _gamma_nom( sip_input( "InverseProblem/gamma_CN_nominal_value", 1.0e-3 ) )
   {
     return;
   }

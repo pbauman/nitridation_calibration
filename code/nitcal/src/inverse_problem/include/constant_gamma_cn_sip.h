@@ -28,7 +28,7 @@ namespace NitridationCalibration
                         const std::string& method,
                         int argc,
                         char** argv,
-                        const std::string& libMesh_input_filename );
+                        const std::string& sip_input_filename );
 
     virtual ~ConstantGammaCNSIP();
 
@@ -37,7 +37,8 @@ namespace NitridationCalibration
     void create_param_space();
     void create_param_domain(const GetPot& input);
     void create_likelihood( int argc, char** argv, MPI_Comm mpi_comm,
-                            const GetPot& input );
+                            const GetPot& sip_input,
+                            const GetPot& forward_run_input );
 
   };
 

@@ -23,7 +23,8 @@ namespace NitridationCalibration
     GammaNGammaCNLikelihoodBase( int argc,
                                  char** argv,
                                  MPI_Comm mpi_comm,
-                                 const GetPot& input,
+                                 const GetPot& forward_run_input,
+                                 const LikelihoodCommHandler& comm_handler,
                                  const char* prefix, 
                                  const uqVectorSetClass<Vec,Mat>& domain_set,
                                  const bool returns_ln );
@@ -38,6 +39,10 @@ namespace NitridationCalibration
     
     AverageNHelper _average_n;
 
+  private:
+
+    GammaNGammaCNLikelihoodBase();
+    
   };
 
 } // end namespace NitridationCalibration

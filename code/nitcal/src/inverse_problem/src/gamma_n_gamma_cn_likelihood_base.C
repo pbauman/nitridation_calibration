@@ -24,13 +24,16 @@ namespace NitridationCalibration
   GammaNGammaCNLikelihoodBase<Vec,Mat>::GammaNGammaCNLikelihoodBase( int argc,
                                                                      char** argv,
                                                                      MPI_Comm mpi_comm,
-                                                                     const GetPot& input,
+                                                                     const GetPot& forward_run_input,
+                                                                     const LikelihoodCommHandler& comm_handler,
                                                                      const char* prefix, 
                                                                      const uqVectorSetClass<Vec,Mat>& domain_set,
                                                                      const bool returns_ln)
-  : LikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,input,prefix,domain_set,returns_ln),
-    _mass_loss(input),
-    _average_n(input)
+  : LikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,
+                            forward_run_input,comm_handler,
+                            prefix,domain_set,returns_ln),
+    _mass_loss(forward_run_input),
+    _average_n(forward_run_input)
   {
     return;
   }

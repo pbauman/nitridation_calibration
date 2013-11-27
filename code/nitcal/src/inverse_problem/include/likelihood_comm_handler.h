@@ -13,7 +13,7 @@ namespace NitridationCalibration
   {
   public:
 
-    LikelihoodCommHandler( MPI_Comm& inter_chain_comm,
+    LikelihoodCommHandler( MPI_Comm inter_chain_comm,
                            const int n_datasets  );
     ~LikelihoodCommHandler();
 
@@ -23,13 +23,15 @@ namespace NitridationCalibration
 
     int get_n_procs_per_dataset() const;
 
+    int get_dataset_index() const;
+
   protected:
 
     void split_inter_chain_comm( const int n_datasets );
 
     // This is the communicator for all procs within a markov chain
     // or a "QUESO subenvironment"
-    MPI_Comm& _inter_chain_comm;
+    MPI_Comm _inter_chain_comm;
 
     // This is the communicator for the split QUESO subenvironment
     // for running many experiments in parallel within likihood
@@ -39,6 +41,8 @@ namespace NitridationCalibration
 
     MPI_Group _inter_chain_0_group;
     MPI_Comm  _inter_chain_0_comm;
+
+    int _dataset_index;
 
   private:
 

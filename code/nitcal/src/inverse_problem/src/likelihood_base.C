@@ -13,6 +13,9 @@
 // This class
 #include "likelihood_base.h"
 
+// NitCal
+#include "likelihood_comm_handler.h"
+
 // QUESO
 #include "uqGslVector.h"
 #include "uqGslMatrix.h"
@@ -22,13 +25,15 @@ namespace NitridationCalibration
 
   template<class Vec,class Mat>
   LikelihoodBase<Vec,Mat>::LikelihoodBase( int argc, char** argv, MPI_Comm mpi_comm,
-                                           const GetPot& input,
+                                           const GetPot& forward_run_input,
+                                           const LikelihoodCommHandler& comm_handler,
                                            const char* prefix, 
                                            const uqVectorSetClass<Vec,Mat>& domain_set,
                                            const bool returns_ln )
     : QuesoLikelihoodInterface<Vec,Mat>( prefix, domain_set, returns_ln ),
-      _interface(argc,argv,mpi_comm, input ),
-      _sample_count(0)
+    _interface(argc,argv,mpi_comm, forward_run_input ),
+    _sample_count(0),
+    _comm_handler(comm_handler)
 
   {
     return;

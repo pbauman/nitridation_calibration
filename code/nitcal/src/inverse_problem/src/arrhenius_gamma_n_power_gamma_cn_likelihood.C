@@ -24,16 +24,20 @@ namespace NitridationCalibration
   ArrheniusGammaNPowerGammaCNLikelihood<Vec,Mat>::ArrheniusGammaNPowerGammaCNLikelihood( int argc,
                                                                                          char** argv,
                                                                                          MPI_Comm mpi_comm,
-                                                                                         const GetPot& input,
+                                                                                         const GetPot& sip_input,
+                                                                                         const GetPot& forward_run_input,
+                                                                                         const LikelihoodCommHandler& comm_handler,
                                                                                          const char* prefix, 
                                                                                          const uqVectorSetClass<Vec,Mat>& domain_set,
                                                                                          const bool returns_ln)
-  : GammaNGammaCNLikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,input,prefix,domain_set,returns_ln),
-    _gamma0_CN_nom( input( "InverseProblem/gamma_CN_nominal_value", 1.0e-3 ) ),
-    _Tref_CN_nom( input( "InverseProblem/Tref_CN_nominal_value", 300.0 ) ),
-    _alpha_CN_nom( input( "InverseProblem/alpha_CN_nominal_value", 1.0 ) ),
-    _gamma0_N_nom( input( "InverseProblem/gamma0_N_nominal_value", 1.0e-3 ) ),
-    _Ta_N_nom( input( "InverseProblem/Ta_N_nominal_value", 300.0 ) )
+  : GammaNGammaCNLikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,
+                                         forward_run_input,comm_handler,
+                                         prefix,domain_set,returns_ln),
+    _gamma0_CN_nom( sip_input( "InverseProblem/gamma_CN_nominal_value", 1.0e-3 ) ),
+    _Tref_CN_nom( sip_input( "InverseProblem/Tref_CN_nominal_value", 300.0 ) ),
+    _alpha_CN_nom( sip_input( "InverseProblem/alpha_CN_nominal_value", 1.0 ) ),
+    _gamma0_N_nom( sip_input( "InverseProblem/gamma0_N_nominal_value", 1.0e-3 ) ),
+    _Ta_N_nom( sip_input( "InverseProblem/Ta_N_nominal_value", 300.0 ) )
   {
     return;
   }

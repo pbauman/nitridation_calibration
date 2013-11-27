@@ -28,7 +28,9 @@ namespace NitridationCalibration
     ConstantGammaCNLikelihood( int argc,
                                char** argv,
                                MPI_Comm mpi_comm,
-                               const GetPot& input,
+                               const GetPot& sip_input,
+                               const GetPot& forward_run_input,
+                               const LikelihoodCommHandler& comm_handler,
                                const char* prefix, 
                                const uqVectorSetClass<Vec,Mat>& domain_set,
                                const bool returns_ln );
@@ -44,6 +46,10 @@ namespace NitridationCalibration
     MassLossHelper _mass_loss;
     
     double _gamma_nom;
+
+  private:
+
+    ConstantGammaCNLikelihood();
 
   };
 

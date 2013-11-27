@@ -30,16 +30,31 @@ namespace NitridationCalibration
                                                    const std::string& method,
                                                    int argc,
                                                    char** argv,
-                                                   const std::string& libMesh_input_filename )
+                                                   const std::string& sip_input_filename )
     : StatisticalInverseProblemBase<Vec,Mat>( env, method )
   {
-    GetPot input( libMesh_input_filename );
+    GetPot sip_input(sip_input_filename);
+
+     unsigned int n_datasets = sip_input.vector_variable_size( "InverseProblem/datasets" );
+
+    this->_comm_handler.reset( new LikelihoodCommHandler( env->subComm().Comm(), n_datasets ) );
+    
+    std::vector<std::string> datasets(n_datasets);
+    for( unsigned int d = 0; d < n_datasets; d++ )
+      {
+        datasets[d] = sip_input( "InverseProblem/datasets", "DIE!", d );
+      }
+
+    int dataset_index = this->_comm_handler->get_dataset_index();
+
+    GetPot forward_run_input( datasets[dataset_index] );
 
     this->create_param_space();
-    this->create_param_domain(input);
+    this->create_param_domain(sip_input);
     this->create_prior();
     this->create_posterior();
-    this->create_likelihood( argc, argv, env->subComm().Comm(), input );
+    this->create_likelihood( argc, argv, this->_comm_handler->get_split_chain_comm(),
+                             sip_input, forward_run_input );
 
     this->create_sip();
     
@@ -87,13 +102,15 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  void ConstantGammaCNSIP<Vec,Mat>::create_likelihood( int argc,
-                                                       char** argv,
-                                                       MPI_Comm mpi_comm,
-                                                       const GetPot& input )
+  void ConstantGammaCNSIP<Vec,Mat>::create_likelihood( int argc, char** argv, MPI_Comm mpi_comm,
+                                                       const GetPot& sip_input,
+                                                       const GetPot& forward_run_input )
   {
     this->_likelihood = 
-      new ConstantGammaCNLikelihood<Vec,Mat>(argc, argv, mpi_comm, input,
+      new ConstantGammaCNLikelihood<Vec,Mat>(argc, argv, mpi_comm,
+                                             sip_input,
+                                             forward_run_input,
+                                             *this->_comm_handler.get(),
                                              "like_",
                                              *(this->_param_domain),
                                              true ); // the routine computes [ln(function)]

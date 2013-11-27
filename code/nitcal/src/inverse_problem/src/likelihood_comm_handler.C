@@ -7,7 +7,7 @@
 namespace NitridationCalibration
 {
 
-  LikelihoodCommHandler::LikelihoodCommHandler( MPI_Comm& inter_chain_comm,
+  LikelihoodCommHandler::LikelihoodCommHandler( MPI_Comm inter_chain_comm,
                                                 const int n_datasets )
     : _inter_chain_comm(inter_chain_comm)
   {
@@ -57,18 +57,23 @@ namespace NitridationCalibration
     return _n_procs_per_dataset;
   }
 
+  int LikelihoodCommHandler::get_dataset_index() const
+  {
+    return _dataset_index;
+  }
+
   void LikelihoodCommHandler::split_inter_chain_comm( const int n_datasets )
   {
     int inter_chain_rank;
     MPI_Comm_rank( _inter_chain_comm, &inter_chain_rank );
     
-    // Processes with the same split_key will be in the same group
+    // Processes with the same split key (_dataset_index) will be in the same group
     // So, if we want more than 1 proc to run for the data sets
     // group them together.
-    int split_key = inter_chain_rank/ _n_procs_per_dataset;
+    _dataset_index = inter_chain_rank/ _n_procs_per_dataset;
 
     int ierr = MPI_Comm_split( _inter_chain_comm, // Old communicator
-                               split_key,
+                               _dataset_index,
                                inter_chain_rank, // rank in old communicator
                                &_split_chain_comm ); // new communicator
     

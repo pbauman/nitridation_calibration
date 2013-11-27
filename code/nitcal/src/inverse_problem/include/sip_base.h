@@ -13,7 +13,14 @@
 
 #ifdef NITCAL_HAVE_QUESO
 
+// Boost
+#include "boost/scoped_ptr.hpp"
+
+// Queso
 #include "uqStatisticalInverseProblem.h"
+
+// NitCal
+#include "likelihood_comm_handler.h"
 
 namespace NitridationCalibration
 {
@@ -61,6 +68,8 @@ namespace NitridationCalibration
     Vec* _param_initials;
 
     std::string _method;
+
+    boost::scoped_ptr<LikelihoodCommHandler> _comm_handler;
 
   private:
 

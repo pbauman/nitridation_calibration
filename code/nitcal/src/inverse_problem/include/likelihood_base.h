@@ -18,6 +18,7 @@
 
 namespace NitridationCalibration
 {
+  class LikelihoodCommHandler;
 
   template<class Vec,class Mat>
   class LikelihoodBase : public QuesoLikelihoodInterface<Vec,Mat>
@@ -25,7 +26,8 @@ namespace NitridationCalibration
   public:
 
     LikelihoodBase( int argc, char** argv, MPI_Comm mpi_comm,
-                    const GetPot& input,
+                    const GetPot& forward_run_input,
+                    const LikelihoodCommHandler& comm_handler,
                     const char* prefix, 
                     const uqVectorSetClass<Vec,Mat>& domain_set,
                     const bool returns_ln);
@@ -39,6 +41,12 @@ namespace NitridationCalibration
     // Silly variable to monitor sampling
     // since this problem takes a bit.
     mutable unsigned int _sample_count;
+
+    const LikelihoodCommHandler& _comm_handler;
+
+  private:
+
+    LikelihoodBase();
 
   };
 
