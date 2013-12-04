@@ -6,8 +6,8 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
-#ifndef NITCAL_SIP_BASE_H
-#define NITCAL_SIP_BASE_H
+#ifndef NITCAL_QUESO_SIP_INTERFACE_H
+#define NITCAL_QUESO_SIP_INTERFACE_H
 
 #include "nitcal_config.h"
 
@@ -26,14 +26,14 @@ namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
-  class StatisticalInverseProblemBase
+  class QuesoStatisticalInverseProblemInterface
   {
   public:
 
-    StatisticalInverseProblemBase( uqBaseEnvironmentClass* env,
-				   const std::string method );
+    QuesoStatisticalInverseProblemInterface( uqBaseEnvironmentClass* env,
+                                             const std::string method );
 
-    virtual ~StatisticalInverseProblemBase();
+    virtual ~QuesoStatisticalInverseProblemInterface();
 
     void solve();
     
@@ -73,7 +73,7 @@ namespace NitridationCalibration
 
   private:
 
-    StatisticalInverseProblemBase();
+    QuesoStatisticalInverseProblemInterface();
 
   };
 
@@ -81,35 +81,35 @@ namespace NitridationCalibration
 
   template<class Vec,class Mat>
   inline
-  const uqVectorSpaceClass<Vec,Mat>& StatisticalInverseProblemBase<Vec,Mat>::get_param_space() const
+  const uqVectorSpaceClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_param_space() const
   {
     return *_param_space;
   }
 
   template<class Vec,class Mat>
   inline
-  const uqVectorSubsetClass<Vec,Mat>& StatisticalInverseProblemBase<Vec,Mat>::get_param_domain() const
+  const uqVectorSubsetClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_param_domain() const
   {
     return *_param_domain;
   }
 
   template<class Vec,class Mat>
   inline
-  const uqBaseVectorRVClass<Vec,Mat>& StatisticalInverseProblemBase<Vec,Mat>::get_prior_rv() const
+  const uqBaseVectorRVClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_prior_rv() const
   {
     return *_prior;
   }
 
   template<class Vec,class Mat>
   inline
-  const uqGenericVectorRVClass<Vec,Mat>& StatisticalInverseProblemBase<Vec,Mat>::get_posterior_rv() const
+  const uqGenericVectorRVClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_posterior_rv() const
   {
     return *_posterior;
   }
 
   template<class Vec,class Mat>
   inline
-  const uqBaseScalarFunctionClass<Vec,Mat>& StatisticalInverseProblemBase<Vec,Mat>::get_likelihood_func() const
+  const uqBaseScalarFunctionClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_likelihood_func() const
   {
     return *_likelihood;
   }
@@ -118,4 +118,4 @@ namespace NitridationCalibration
 
 #endif // NITCAL_HAVE_QUESO
 
-#endif // NITCAL_SIP_BASE_H
+#endif // NITCAL_QUESO_SIP_INTERFACE_H

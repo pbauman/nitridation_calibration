@@ -14,7 +14,7 @@
 #include <cmath>
 
 // This class
-#include "sip_base.h"
+#include "queso_sip_inteface.h"
 
 // QUESO
 #include "uqGslVector.h"
@@ -24,8 +24,8 @@ namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
-  StatisticalInverseProblemBase<Vec,Mat>::StatisticalInverseProblemBase( uqBaseEnvironmentClass *env,
-									 const std::string method )
+  QuesoStatisticalInverseProblemInterface<Vec,Mat>::QuesoStatisticalInverseProblemInterface( uqBaseEnvironmentClass *env,
+                                                                                             const std::string method )
     : _queso_env(env),
       _method(method)
   {
@@ -33,7 +33,7 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  StatisticalInverseProblemBase<Vec,Mat>::~StatisticalInverseProblemBase( )
+  QuesoStatisticalInverseProblemInterface<Vec,Mat>::~QuesoStatisticalInverseProblemInterface( )
   {
     delete _ip;
     
@@ -41,7 +41,7 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  void StatisticalInverseProblemBase<Vec,Mat>::create_sip( )
+  void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_sip( )
   {
     _ip = new uqStatisticalInverseProblemClass<Vec,Mat>("", // No extra prefix before the default "ip_" prefix
 							NULL,
@@ -53,7 +53,7 @@ namespace NitridationCalibration
   }
   
   template<class Vec,class Mat>
-  void StatisticalInverseProblemBase<Vec,Mat>::solve( )
+  void QuesoStatisticalInverseProblemInterface<Vec,Mat>::solve( )
   {
     if (_queso_env->fullRank() == 0) 
       {
@@ -151,7 +151,7 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  void StatisticalInverseProblemBase<Vec,Mat>::create_prior()
+  void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_prior()
   {
     this->_prior =
       new uqUniformVectorRVClass<Vec,Mat>("prior_", // Extra prefix before the default "rv_"
@@ -161,7 +161,7 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  void StatisticalInverseProblemBase<Vec,Mat>::create_posterior()
+  void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_posterior()
   {
     this->_posterior =
       new uqGenericVectorRVClass<Vec,Mat>("post_", // Extra prefix before the default "rv_" prefix
@@ -171,7 +171,7 @@ namespace NitridationCalibration
   }
 
   /* ------------------------- Instantiate -------------------------*/
-  template class StatisticalInverseProblemBase<uqGslVectorClass,uqGslMatrixClass>;
+  template class QuesoStatisticalInverseProblemInterface<uqGslVectorClass,uqGslMatrixClass>;
   
 } // end namespace NitridationCalibration
 
