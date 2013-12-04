@@ -72,7 +72,7 @@ namespace NitridationCalibration
 
     const double gamma_CN_max = input("InverseProblem/gamma_CN_max", 1000.0);
     const double gamma0_N_max = input("InverseProblem/gamma0_N_max", 1000.0);
-    const double Ta_N_max = input("InverseProblem/gamma0_N_max", 1000.0);
+    const double Ta_N_max = input("InverseProblem/Ta_N_max", 1000.0);
 
     Vec param_mins( this->_param_space->zeroVector() );
     param_mins[0] = gamma_CN_min;
@@ -82,7 +82,7 @@ namespace NitridationCalibration
     Vec param_maxs( this->_param_space->zeroVector() );
     param_maxs[0] = gamma_CN_max;
     param_maxs[1] = gamma0_N_max;
-    param_maxs[1] = Ta_N_max;
+    param_maxs[2] = Ta_N_max;
 
     this->_param_domain = new uqBoxSubsetClass<Vec,Mat>("param_",
 							*(this->_param_space),
