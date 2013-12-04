@@ -14,7 +14,7 @@
 #include <cmath>
 
 // This class
-#include "queso_sip_inteface.h"
+#include "queso_sip_interface.h"
 
 // QUESO
 #include "uqGslVector.h"

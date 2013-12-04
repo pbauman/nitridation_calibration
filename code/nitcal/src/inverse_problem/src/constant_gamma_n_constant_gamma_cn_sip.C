@@ -26,33 +26,23 @@ namespace NitridationCalibration
                                                    int argc,
                                                    char** argv,
                                                    const std::string& sip_input_filename )
-    : StatisticalInverseProblemBase<Vec,Mat>( env, method )
+    : StatisticalInverseProblemBase<Vec,Mat>(env, method, argc, argv, sip_input_filename)
   {
-    GetPot sip_input(sip_input_filename);
-
-    unsigned int n_datasets = sip_input.vector_variable_size( "InverseProblem/datasets" );
-
-    this->_comm_handler.reset( new LikelihoodCommHandler( env->subComm().Comm(), n_datasets ) );
-    
-    std::vector<std::string> datasets(n_datasets);
-    for( unsigned int d = 0; d < n_datasets; d++ )
-      {
-        datasets[d] = sip_input( "InverseProblem/datasets", "DIE!", d );
-      }
-
-    int dataset_index = this->_comm_handler->get_dataset_index();
-
-    GetPot forward_run_input( datasets[dataset_index] );
-
     this->create_param_space();
-    this->create_param_domain(sip_input);
+    this->create_param_domain( (*(this->_sip_input.get())) );
     this->create_prior();
     this->create_posterior();
+
     this->create_likelihood( argc, argv, this->_comm_handler->get_split_chain_comm(),
-                             sip_input, forward_run_input );
+                             (*(this->_sip_input.get())),
+                             (*(this->_forward_run_input.get())) );
 
     this->create_sip();
     
+    // We don't need these anymore
+    this->_sip_input.reset();
+    this->_forward_run_input.reset();
+
     return;
   }
 
