@@ -27,7 +27,6 @@
 namespace NitridationCalibration
 {
 
-  const std::string mass_loss               = "MassLoss";
   const std::string average_N_mole_fraction = "AverageNMoleFraction";
   const std::string mass_loss_catalytic     = "MassLossCatalytic";
 

@@ -38,8 +38,6 @@ namespace NitridationCalibration
 
   protected:
 
-    unsigned int _mass_loss_qoi_index;
-
     unsigned int _mass_loss_catalytic_qoi_index;
 
     unsigned int _average_n_qoi_index;

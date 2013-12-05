@@ -41,11 +41,7 @@ namespace NitridationCalibration
 
         const std::string& qoi_name = qoi.name();
 
-        if( qoi_name == mass_loss )
-          {
-            _mass_loss_qoi_index = q;
-          }
-        else if( qoi_name == average_N_mole_fraction )
+        if( qoi_name == average_N_mole_fraction )
           {
             _average_n_qoi_index = q;
           }

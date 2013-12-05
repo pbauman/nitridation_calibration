@@ -33,7 +33,6 @@
 #include "antioch/vector_utils_decl.h"
 
 // NitCal
-#include "mass_loss.h"
 #include "mass_loss_catalytic.h"
 #include "average_N_mole_fraction.h"
 #include "qoi_names.h"
@@ -58,13 +57,7 @@ namespace NitridationCalibration
 			    const std::string& qoi_name,
 			    std::tr1::shared_ptr<GRINS::CompositeQoI>& qois )
   {
-    if( qoi_name == mass_loss )
-      {
-        GRINS::QoIBase* qoi = new MassLoss( mass_loss );
-        qois->add_qoi(*qoi);
-      }
-    
-    else if( qoi_name == average_N_mole_fraction )
+    if( qoi_name == average_N_mole_fraction )
       {
         GRINS::QoIBase* qoi = new AverageNMoleFraction( average_N_mole_fraction );
         qois->add_qoi(*qoi);
