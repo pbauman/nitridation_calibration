@@ -41,7 +41,11 @@ namespace NitridationCalibration
     return;
   }
 
-
+  template<class Vec,class Mat>
+  StatisticalInverseProblemBase<Vec,Mat>::~StatisticalInverseProblemBase()
+  {
+    return;
+  }
   // Instantiate GSL version of this class
   template class StatisticalInverseProblemBase<uqGslVectorClass,uqGslMatrixClass>;
 
