@@ -34,6 +34,7 @@ libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_arrhenius_gamma_cn
 libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_power_gamma_cn_sip.C
 libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_constant_gamma_cn_sip.C
 libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_arrhenius_gamma_cn_sip.C
+libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_power_gamma_cn_sip.C
 
 # inverse_problem -likelihood stuff
 libnitcal_la_SOURCES += inverse_problem/src/likelihood_comm_handler.C
@@ -80,6 +81,7 @@ include_HEADERS += inverse_problem/include/arrhenius_gamma_n_arrhenius_gamma_cn_
 include_HEADERS += inverse_problem/include/arrhenius_gamma_n_power_gamma_cn_sip.h
 include_HEADERS += inverse_problem/include/power_gamma_n_constant_gamma_cn_sip.h
 include_HEADERS += inverse_problem/include/power_gamma_n_arrhenius_gamma_cn_sip.h
+include_HEADERS += inverse_problem/include/power_gamma_n_power_gamma_cn_sip.h
 
 # inverse_problem - likelihood stuff
 include_HEADERS += inverse_problem/include/likelihood_comm_handler.h
