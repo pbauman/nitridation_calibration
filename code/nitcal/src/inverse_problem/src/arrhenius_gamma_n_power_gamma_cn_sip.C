@@ -76,7 +76,7 @@ namespace NitridationCalibration
     const double Tref_CN_max = input("InverseProblem/Tref_CN_max", 1000.0);
     const double alpha_CN_max = input("InverseProblem/alpha_CN_max", 1000.0);
     const double gamma0_N_max = input("InverseProblem/gamma0_N_max", 1000.0);
-    const double Ta_N_max = input("InverseProblem/gamma0_N_max", 1000.0);
+    const double Ta_N_max = input("InverseProblem/Ta_N_max", 1000.0);
 
     Vec param_mins( this->_param_space->zeroVector() );
     param_mins[0] = gamma0_CN_min;
