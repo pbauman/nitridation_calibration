@@ -10,7 +10,7 @@
 
 #include "likelihood_base.h"
 #include "mass_loss_helper.h"
-#include "average_n_helper.h"
+#include "average_N_helper.h"
 
 namespace NitridationCalibration
 {
