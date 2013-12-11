@@ -30,51 +30,18 @@
   <reactionData id="park_jaffe_partridge_JTHT_2001">
     <!-- reaction 0001    -->
     <reaction reversible="yes" type="ThreeBody" id="0001">
-      <equation>N2 + M [=] 2 N + M</equation>
+      <equation>2N + M [=] N2 + M</equation>
       <rateCoeff>
         <Arrhenius>
-           <A>7.e+18</A>
-           <b>-1.6</b>
-           <E units="cal/mol">224801.3</E>
-        </Arrhenius>
-        <efficiencies default="1.0">N:4.2857 C:4.2857 </efficiencies>
-      </rateCoeff>
-      <reactants>N2:1.0</reactants>
-      <products>N:2.0</products>
-    </reaction>
-
-    
-    <!-- reaction 0007    -->
-    <reaction reversible="yes" type="ThreeBody" id="0007">
-      <equation>CN + M [=] C + N + M</equation>
-      <rateCoeff>
-        <Arrhenius>
-           <A>2.5e+11</A>
+           <A>3.0e+8</A>
            <b>0.0</b>
-           <E units="cal/mol">174240.9</E>
+           <E units="cal/mol">500</E>
         </Arrhenius>
         <efficiencies default="1.0"></efficiencies>
       </rateCoeff>
-      <reactants>CN:1</reactants>
-      <products>C:1 N:1</products>
+      <reactants>N:2.0</reactants>
+      <products>N2:1.0</products>
     </reaction>
-
- 
-    <!-- reaction 0012    -->
-    <!--
-    <reaction reversible="yes" id="0012">
-      <equation>N2 + C [=] CN + N</equation>
-      <rateCoeff>
-        <Arrhenius>
-           <A>1.1e+11</A>
-           <b>-0.11</b>
-           <E units="cal/mol">46072.4</E>
-        </Arrhenius>
-      </rateCoeff>
-      <reactants>N2:1 C:1</reactants>
-      <products>CN:1 N:1</products>
-    </reaction>    
-   -->
 
   </reactionData>
 

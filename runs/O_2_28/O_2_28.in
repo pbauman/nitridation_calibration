@@ -19,26 +19,24 @@ gamma_nominal_value = '1e-3'
 tc_locs = '0.0 0.244 0.324 0.639 0.709 0.869'
 
 # Temperature vals for above locs (K) - at 1273K
-wall_temps = '298.0 350.0 1273.0 1273.0 525.0 400.0'
+wall_temps = '298.0 320.0 873.0 873.0 470.0 350.0'
 
 [../InletProfile]
 
-mdot = '16.5' # [mg/s]
+mdot = '10.4' # [mg/s]
 
-p_inlet = '600' # [Pa]
+p_inlet = '266' # [Pa]
 
 []
 
 [QoI]
 
-enabled_qois = 'MassLossCatalytic AverageNMoleFraction'
+enabled_qois = 'MassLoss MassLossCatalytic AverageNMoleFraction'
 
 [./MassLoss]
 
 bc_ids = '3'
 
-radius = '0.0015875' #[m]
-length = '0.029' #[m]
 delta_t = '8160' #[s]
 
 [../MassLossCatalytic]
@@ -91,7 +89,7 @@ T_order       = 'SECOND'
 P_order       = 'FIRST'
 
 # Thermodynamic pressure
-p0 = '530.6' #[Pa]
+p0 = '213.3' #[Pa]
 
 # Gravity vector
 g = '0.0 0.0' #[m/s^2]
@@ -115,13 +113,13 @@ temp_bc_ids = '1 6 3 4 2'
 temp_bc_types = 'isothermal axisymmetric isothermal isothermal general_isothermal'
 
 T_wall_1 = '298'
-T_wall_3 = '1273'
-T_wall_4 = '1273'
+T_wall_3 = '873'
+T_wall_4 = '873'
 
 species_bc_ids = '1 3 2' 
 species_bc_types = 'prescribed_mole_fracs gas_solid_catalytic_wall gas_recombination_catalytic_wall'
 
-bound_species_1 = '0.99596 0.00404 0.0 0.0'
+bound_species_1 = '0.99775 0.00225 0.0 0.0'
 
 wall_gas_solid_reactions_3 = 'N+C(s)->CN'
 
@@ -149,9 +147,9 @@ pin_pressure = 'false'
 # Mesh related options
 [mesh-options]
 mesh_option = 'read_mesh_from_file'
-mesh_filename = 'K_2_63_axi_new.exo'
+mesh_filename = 'O_2_28.exo'
 
-#uniformly_refine = '2' 
+uniformly_refine = '2' 
 
 []
 
