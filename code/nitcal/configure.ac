@@ -11,7 +11,7 @@ AX_PREFIX_CONFIG_H(nitcal_config.h,NITCAL,nitcal_config.h.tmp)
 
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CANONICAL_TARGET()
-AM_INIT_AUTOMAKE([dist-bzip2 tar-ustar 1.11 no-define])
+AM_INIT_AUTOMAKE([dist-bzip2 tar-ustar 1.11 no-define color-tests parallel-tests])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES(yes)]) # use silent rules where available - automake 1.11
 
 LT_INIT
@@ -168,6 +168,9 @@ dnl-----------------------------------------------
 dnl Generate files for unit and regression testing
 dnl-----------------------------------------------
 AC_CONFIG_FILES(test/tube_twall_test.sh, [chmod +x test/tube_twall_test.sh])
+
+AC_CONFIG_FILES(test/input_files/K_2_63_axi.in)
+AC_CONFIG_FILES(test/K_2_63.sh, [chmod +x test/K_2_63.sh] )
 
 dnl-------------------
 dnl Generate makefiles

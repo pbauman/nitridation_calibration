@@ -65,7 +65,7 @@ is_axisymmetric = 'true'
 [./Chemistry]
 
 species   = 'N2 N C CN'
-chem_file = './nitridation.xml'
+chem_file = '@abs_top_srcdir@/test/input_files/nitridation.xml'
 mixture   = 'air4sp'
 
 [../Antioch]
@@ -149,7 +149,7 @@ pin_pressure = 'false'
 # Mesh related options
 [mesh-options]
 mesh_option = 'read_mesh_from_file'
-mesh_filename = 'K_2_63_axi.exo'
+mesh_filename = '@abs_top_srcdir@/test/input_files/K_2_63_axi.exo'
 
 #uniformly_refine = '2' 
 

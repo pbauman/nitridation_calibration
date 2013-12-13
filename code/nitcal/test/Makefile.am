@@ -1,6 +1,7 @@
 BUILT_SOURCES   = .license.stamp
 
-check_PROGRAMS  = tube_twall_test
+check_PROGRAMS   = tube_twall_test
+check_PROGRAMS  += fp_regression
 
 AM_CPPFLAGS  = -I$(top_srcdir)/src/boundary_conditions/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/interface/include
@@ -18,9 +19,11 @@ AM_CPPFLAGS += $(GLPK_CPPFLAGS)
 AM_LDFLAGS = $(LIBNITCAL_LIBS)
 
 tube_twall_test_SOURCES = tube_twall_test.C
+fp_regression_SOURCES = fp_regression.C
 
 #Define tests to actually be run
-TESTS = tube_twall_test.sh
+TESTS  = tube_twall_test.sh
+TESTS += K_2_63.sh
 
 if CODE_COVERAGE_ENABLED
   CLEANFILES = *.gcda *.gcno
