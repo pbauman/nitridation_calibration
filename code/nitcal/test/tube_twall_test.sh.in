@@ -1,0 +1,7 @@
+#!/bin/bash                                                                                                                                                                                                                                  
+
+PROG="@top_builddir@/test/tube_twall_test"
+
+INPUT="@top_srcdir@/test/input_files/tube_twall_test.in"
+
+$PROG $INPUT

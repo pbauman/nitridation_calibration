@@ -20,7 +20,7 @@ AM_LDFLAGS = $(LIBNITCAL_LIBS)
 tube_twall_test_SOURCES = tube_twall_test.C
 
 #Define tests to actually be run
-TESTS = tube_twall_test
+TESTS = tube_twall_test.sh
 
 if CODE_COVERAGE_ENABLED
   CLEANFILES = *.gcda *.gcno

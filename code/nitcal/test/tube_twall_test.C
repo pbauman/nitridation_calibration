@@ -29,9 +29,17 @@
 #include <iomanip>
 #include "tube_twall.h"
 
-int main()
+int main( int argc, char* argv[] )
 {
-  GetPot input( "./input_files/tube_twall_test.in" );
+  // Check command line count.
+  if( argc < 2 )
+    {
+      // TODO: Need more consistent error handling.
+      std::cerr << "Error: Must specify input file." << std::endl;
+      exit(1);
+    }
+
+  GetPot input( argv[1] );
   
   NitridationCalibration::TubeTempBC tube(input);
 

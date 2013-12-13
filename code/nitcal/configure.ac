@@ -161,16 +161,22 @@ DX_PS_FEATURE(OFF)
 
 DX_INIT_DOXYGEN(VAR, doxygen/nitcal.dox, docs/doxygen )
 
+AC_CONFIG_FILES( doxygen/txt_common/about_vpath.page doxygen/nitcal.dox )
+
+
+dnl-----------------------------------------------
+dnl Generate files for unit and regression testing
+dnl-----------------------------------------------
+AC_CONFIG_FILES(test/tube_twall_test.sh, [chmod +x test/tube_twall_test.sh])
 
 dnl-------------------
 dnl Generate makefiles
 dnl-------------------
-AC_OUTPUT( Makefile \
-           src/Makefile \
-           test/Makefile \
-           doxygen/Makefile \
-           doxygen/txt_common/about_vpath.page \
-           doxygen/nitcal.dox )
+AC_CONFIG_FILES( Makefile src/Makefile test/Makefile doxygen/Makefile )
+
+
+# Must still call AC_OUTPUT() after generating all the files
+AC_OUTPUT()
 
 dnl------------------------------
 dnl Final summary
