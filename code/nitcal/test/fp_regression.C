@@ -46,10 +46,10 @@ int run( int argc, char* argv[], const GetPot& input );
 int main(int argc, char* argv[])
 {
   // Check command line count.
-  if( argc < 3 )
+  if( argc < 5 )
     {
       // TODO: Need more consistent error handling.
-      std::cerr << "Error: Must specify libMesh input file and exact solution file." << std::endl;
+      std::cerr << "Error: Must specify libMesh input file, exact solution file, exact mass loss QoI, and exact average N QoI." << std::endl;
       exit(1); // TODO: something more sophisticated for parallel runs?
     }
 
@@ -188,7 +188,7 @@ int run( int argc, char* argv[], const GetPot& input )
     {
       return_flag = 1;
 
-      std::cout << "Tolerance exceeded for thermally driven flow test." << std::endl
+      std::cout << "Tolerance exceeded for solution fields." << std::endl
 		<< "tolerance     = " << tol << std::endl
 		<< "u l2 error    = " << u_l2error << std::endl
 		<< "u h1 error    = " << u_h1error << std::endl
@@ -206,6 +206,32 @@ int run( int argc, char* argv[], const GetPot& input )
 		<< "w_N2 h1 error = " << wN2_h1error << std::endl
                 << "w_CN l2 error = " << wCN_l2error << std::endl
                 << "w_CN h1 error = " << wCN_h1error << std::endl;
+    }
+
+  // Now test QoI Values
+  const libMesh::Real mass_loss_reg = atof(argv[3]);
+  const libMesh::Real avg_N_reg = atof(argv[4]);
+
+  const libMesh::Real mass_loss_comp = grins.get_qoi_value(0);
+  const libMesh::Real avg_N_comp = grins.get_qoi_value(1);
+  
+  const double qoi_tol = 1.0e-9;
+
+  const double mass_loss_error = std::fabs( (mass_loss_comp - mass_loss_reg)/mass_loss_reg );
+
+  const double avg_N_error = std::fabs( (avg_N_comp - avg_N_reg)/avg_N_reg );
+
+  if( mass_loss_error > qoi_tol ||
+      avg_N_error > qoi_tol )
+    {
+      return_flag = 1;
+
+       std::cout << "Tolerance exceeded for qoi values." << std::endl
+                 << "tolerance       = " << qoi_tol << std::endl
+                 << "mass loss       = " << mass_loss_comp << std::endl
+                 << "avg N           = " << avg_N_comp << std::endl
+                 << "mass loss error = " << mass_loss_error << std::endl
+                 << "avg N error     = " << avg_N_error << std::endl;
     }
 
   return return_flag;

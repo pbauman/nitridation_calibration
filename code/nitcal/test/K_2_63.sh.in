@@ -2,7 +2,7 @@
 
 PROG="@top_builddir@/test/fp_regression"
 
-INPUT="@top_builddir@/test/input_files/K_2_63_axi.in @top_srcdir@/test/test_data/K_2_63_axi.xdr"
+INPUT="@top_builddir@/test/input_files/K_2_63_axi.in @top_srcdir@/test/test_data/K_2_63_axi.xdr -1.2200841973229164e-06 1.7391350362837381e-03"
 
 PETSC_OPTIONS="-ksp_type gmres -pc_type ilu -pc_factor_levels 6 -pc_factor_fill 10"                                                                                                                                                          
 
