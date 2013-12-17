@@ -1,0 +1,14 @@
+# Inverse problem
+[InverseProblem]
+
+datasets = '@abs_top_builddir@/test/input_files/K_2_63_axi.in'
+
+gamma_CN_nominal_value = '1.0e-3'
+
+gamma_N_nominal_value = '1.0e-4'
+
+gamma_CN_min = '0.0'
+gamma_CN_max = '1.0'
+
+gamma_N_min = '0.0'
+gamma_N_max = '1.0'

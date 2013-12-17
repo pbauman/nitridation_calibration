@@ -1,0 +1,9 @@
+#!/bin/bash                                                                                                                                                                                                                                  
+
+PROG="@top_builddir@/test/likelihood_regression"
+
+INPUT="@top_builddir@/test/input_files/constant_gamma_n_constant_gamma_cn_sip.in"
+
+PETSC_OPTIONS="-ksp_type gmres -pc_type ilu -pc_factor_levels 6 -pc_factor_fill 10"                                                                                                                                                          
+
+$PROG $INPUT $PETSC_OPTIONS
