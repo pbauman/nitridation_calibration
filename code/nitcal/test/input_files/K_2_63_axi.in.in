@@ -7,6 +7,8 @@ sigma = '2.0e-8' # [kg]
 
 data_value = '2.45e-6' # [kg]
 
+gamma_nominal_value = '1.0e-3'
+
 []
 
 [AverageNLikelihood]
@@ -133,7 +135,7 @@ bound_species_1 = '0.99596 0.00404 0.0 0.0'
 wall_gas_solid_reactions_3 = 'N+C(s)->CN'
 
 gamma_N_3_type = 'constant'
-gamma_N_3 = '${GammaCNInverseProblem/gamma_nominal_value}'
+gamma_N_3 = '${MassLossLikelihood/gamma_nominal_value}'
 
 wall_catalytic_reactions_2 = 'N->N2'
 
