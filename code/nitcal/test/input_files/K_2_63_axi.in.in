@@ -1,13 +1,20 @@
 #
 #
 
-[GammaCNInverseProblem]
+[MassLossLikelihood]
 
 sigma = '2.0e-8' # [kg]
 
-mass_loss = '2.45e-6' # [kg]
+data_value = '2.45e-6' # [kg]
 
-gamma_nominal_value = '1e-3' 
+[]
+
+[AverageNLikelihood]
+
+# 15% of data value
+sigma = '1.71e-3' # [mole fraction]
+
+data_value = '0.114e-2' # [mole fraction]
 
 []
 
