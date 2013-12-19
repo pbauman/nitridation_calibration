@@ -30,6 +30,10 @@ namespace NitridationCalibration
 
     virtual ~StatisticalInverseProblemBase();
 
+    const GetPot& get_sip_input() const;
+
+    const GetPot& get_forward_run_input() const;
+
   protected:
 
     boost::scoped_ptr<GetPot> _sip_input;
@@ -40,6 +44,20 @@ namespace NitridationCalibration
     StatisticalInverseProblemBase();
 
   };
+
+  template<class Vec,class Mat>
+  inline
+  const GetPot& StatisticalInverseProblemBase<Vec,Mat>::get_sip_input() const
+  {
+    return (*_sip_input.get());
+  }
+
+  template<class Vec,class Mat>
+  inline
+  const GetPot& StatisticalInverseProblemBase<Vec,Mat>::get_forward_run_input() const
+  {
+    return (*_forward_run_input.get());
+  }
 
 } // end namespace NitridationCalibration
 #endif // NITCAL_HAVE_QUESO
