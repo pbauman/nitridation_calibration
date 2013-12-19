@@ -51,13 +51,11 @@ namespace NitridationCalibration
 
     const double tmp = computed_mass_loss - _data;
 
-    const double value = tmp*tmp/_sigma_sq;
+    const double value = -0.5*tmp*tmp/_sigma_sq;
 
     likelihood_value += value;
 
-    likelihood_value += _constant;
-
-    likelihood_value =  -likelihood_value/2.0;
+    likelihood_value += -_constant;
 
     return likelihood_value;
   } 
