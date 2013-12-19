@@ -35,10 +35,6 @@ namespace NitridationCalibration
                              (*(this->_forward_run_input.get())) );
 
     this->create_sip();
-    
-    // We don't need these anymore
-    this->_sip_input.reset();
-    this->_forward_run_input.reset();
 
     return;
   }
