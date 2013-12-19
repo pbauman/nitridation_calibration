@@ -53,6 +53,12 @@ namespace NitridationCalibration
 
     const double computed_average_n = this->_interface.computed_average_n();
 
+    /*
+    std::cout << std::scientific << std::setprecision(16)
+              << "computed_mass_loss = " << computed_mass_loss << std::endl
+              << "computed_average_n = " << computed_average_n << std::endl;
+    */
+
     // Reset initial guess for next time
     this->_interface.reset_initial_guess();
 
