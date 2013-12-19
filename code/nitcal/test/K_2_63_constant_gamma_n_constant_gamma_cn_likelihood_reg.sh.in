@@ -2,7 +2,7 @@
 
 PROG="@top_builddir@/test/likelihood_regression"
 
-INPUT="@top_builddir@/test/input_files/constant_gamma_n_constant_gamma_cn_sip.in"
+INPUT="@top_builddir@/test/input_files/constant_gamma_n_constant_gamma_cn_sip.in -1.2200841973229164e-06 1.7391350362837381e-03"
 
 PETSC_OPTIONS="-ksp_type gmres -pc_type ilu -pc_factor_levels 6 -pc_factor_fill 10"                                                                                                                                                          
 
