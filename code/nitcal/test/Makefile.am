@@ -3,6 +3,7 @@ BUILT_SOURCES   = .license.stamp
 check_PROGRAMS   = tube_twall_test
 check_PROGRAMS  += fp_regression
 check_PROGRAMS  += likelihood_regression
+check_PROGRAMS  += two_dataset_likelihood_regression
 
 AM_CPPFLAGS  = -I$(top_srcdir)/src/boundary_conditions/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/interface/include
@@ -22,6 +23,7 @@ AM_LDFLAGS = $(LIBNITCAL_LIBS)
 tube_twall_test_SOURCES = tube_twall_test.C
 fp_regression_SOURCES = fp_regression.C
 likelihood_regression_SOURCES = likelihood_regression.C
+two_dataset_likelihood_regression_SOURCES = two_dataset_likelihood_regression.C
 
 #Define tests to actually be run
 TESTS  = tube_twall_test.sh
@@ -29,6 +31,7 @@ TESTS += K_2_63.sh
 TESTS += O_2_28.sh
 TESTS += K_2_63_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh
 TESTS += O_2_28_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh
+TESTS += K_2_63_O_2_28_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh
 
 if CODE_COVERAGE_ENABLED
   CLEANFILES = *.gcda *.gcno
