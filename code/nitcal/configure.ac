@@ -170,10 +170,16 @@ dnl-----------------------------------------------
 AC_CONFIG_FILES(test/tube_twall_test.sh, [chmod +x test/tube_twall_test.sh])
 
 AC_CONFIG_FILES(test/input_files/K_2_63_axi.in)
-AC_CONFIG_FILES(test/K_2_63.sh, [chmod +x test/K_2_63.sh] )
-AC_CONFIG_FILES(test/K_2_63_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh, [chmod +x test/K_2_63_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh] )
+AC_CONFIG_FILES(test/input_files/O_2_28_axi.in)
 
-AC_CONFIG_FILES(test/input_files/constant_gamma_n_constant_gamma_cn_sip.in)
+AC_CONFIG_FILES(test/K_2_63.sh, [chmod +x test/K_2_63.sh] )
+AC_CONFIG_FILES(test/O_2_28.sh, [chmod +x test/O_2_28.sh] )
+
+AC_CONFIG_FILES(test/K_2_63_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh, [chmod +x test/K_2_63_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh] )
+AC_CONFIG_FILES(test/O_2_28_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh, [chmod +x test/O_2_28_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh] )
+
+AC_CONFIG_FILES(test/input_files/K_2_63_constant_gamma_n_constant_gamma_cn_sip.in)
+AC_CONFIG_FILES(test/input_files/O_2_28_constant_gamma_n_constant_gamma_cn_sip.in)
 
 dnl-------------------
 dnl Generate makefiles

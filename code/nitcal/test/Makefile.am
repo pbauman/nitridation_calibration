@@ -26,7 +26,9 @@ likelihood_regression_SOURCES = likelihood_regression.C
 #Define tests to actually be run
 TESTS  = tube_twall_test.sh
 TESTS += K_2_63.sh
+TESTS += O_2_28.sh
 TESTS += K_2_63_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh
+TESTS += O_2_28_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh
 
 if CODE_COVERAGE_ENABLED
   CLEANFILES = *.gcda *.gcno
