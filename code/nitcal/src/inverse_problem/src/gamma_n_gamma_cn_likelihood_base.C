@@ -11,6 +11,9 @@
 // This class
 #include "gamma_n_gamma_cn_likelihood_base.h"
 
+// Nitcal
+#include "likelihood_comm_handler.h"
+
 // GRINS
 #include "grins/math_constants.h"
 
@@ -69,7 +72,7 @@ namespace NitridationCalibration
     likelihood_value += _average_n.likelihood_value(computed_average_n);
 
     // Now sum over all the data sets distributed across the processors.
-    //Parallel::sum(likelihood_value, Parallel::Communicator(this->m_env.subComm().Comm()));
+    libMesh::Parallel::sum(likelihood_value, libMesh::Parallel::Communicator(this->_comm_handler.get_inter_chain_0_comm()));
 
     if( this->m_env.fullRank() == 0 )
       {
