@@ -126,7 +126,10 @@ namespace NitridationCalibration
   double NitridationSimulation::computed_mass_loss()
   {
     _multiphysics_system->assemble_qoi( libMesh::QoISet( *_multiphysics_system ) );
-    return this->get_qoi_value(_mass_loss_catalytic_qoi_index);
+    
+    /* Absolute value because this will be a negative quantity, but the data
+       to which we are comparing are all given as postive values */
+    return std::fabs(this->get_qoi_value(_mass_loss_catalytic_qoi_index));
   }
 
   double NitridationSimulation::computed_average_n()

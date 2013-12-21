@@ -211,8 +211,10 @@ int run( int argc, char* argv[], const GetPot& input )
   // Now test QoI Values
   const libMesh::Real mass_loss_reg = atof(argv[3]);
   const libMesh::Real avg_N_reg = atof(argv[4]);
-
-  const libMesh::Real mass_loss_comp = grins.get_qoi_value(0);
+  
+  /* The value we compute is negative by convention, but the data are given
+     as positive by convention, so convert to data convention. */
+  const libMesh::Real mass_loss_comp = std::fabs(grins.get_qoi_value(0));
   const libMesh::Real avg_N_comp = grins.get_qoi_value(1);
   
   const double qoi_tol = 1.0e-9;
