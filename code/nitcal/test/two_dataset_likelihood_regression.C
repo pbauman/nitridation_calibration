@@ -138,6 +138,8 @@ int main(int argc, char* argv[])
       + std::log( 1.0/(avg_N_sigma*std::sqrt(2*GRINS::Constants::pi)) )
       + -0.5*(avg_N_value - avg_N_data)*(avg_N_value - avg_N_data)/(avg_N_sigma*avg_N_sigma);
 
+    std::cout << "exact_ln_likelihood = " << exact_ln_likelihood << std::endl;
+
     double global_exact_ln_likelihood = 0.0;
     MPI_Allreduce(&exact_ln_likelihood, &global_exact_ln_likelihood, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
