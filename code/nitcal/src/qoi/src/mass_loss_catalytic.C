@@ -95,6 +95,9 @@ namespace NitridationCalibration
       }
 
     libMesh::Real delta_t = input("QoI/"+_qoi_name+"/delta_t", 0.0 );
+    
+    // convert from mins to seconds
+    delta_t *= 60;
 
     // delta_t*\int d\theta
     this->_factor = delta_t*GRINS::Constants::two_pi;

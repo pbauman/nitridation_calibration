@@ -38,7 +38,7 @@ inlet_species = '0.99775 0.00225 0.0 0.0' #[mole fraction] , N2 N C CN
 
 mesh_file = '@abs_top_srcdir@/test/input_files/O_2_28_axi.exo'
 
-delta_t = '21600'  #[s]
+delta_t = '360'  #[s]
 
 [BoundaryConditions] 
 
