@@ -69,6 +69,9 @@ namespace NitridationCalibration
     virtual void side_qoi( GRINS::AssemblyContext& context,
                            const unsigned int qoi_index );
 
+    virtual void side_qoi_derivative( GRINS::AssemblyContext& context,
+                                      const unsigned int qoi_index );
+
   protected:
 
     //! List of boundary ids for which we want to compute this QoI

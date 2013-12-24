@@ -212,4 +212,81 @@ namespace NitridationCalibration
     return;
   }
 
+void MassLossCatalytic::side_qoi_derivative( GRINS::AssemblyContext& context,
+                                             const unsigned int qoi_index )
+  {
+    for( std::set<libMesh::boundary_id_type>::const_iterator id = _bc_ids.begin();
+         id != _bc_ids.end(); id++ )
+      {
+        if( context.has_side_boundary_id( (*id) ) )
+          {
+            GRINS::VariableIndex N_var = this->_species_vars[_N_index];
+
+            const unsigned int n_T_dofs = context.get_dof_indices(_T_var).size();
+            const unsigned int n_s_dofs = context.get_dof_indices(N_var).size();
+
+            FEBase* s_side_fe;
+            context.get_side_fe<libMesh::Real>(N_var, s_side_fe);
+
+            FEBase* T_side_fe;
+            context.get_side_fe<libMesh::Real>(_T_var, T_side_fe);
+
+            const std::vector<std::vector<libMesh::Real> >& s_phi = s_side_fe->get_phi();
+
+            const std::vector<std::vector<libMesh::Real> >& T_phi = T_side_fe->get_phi();
+
+            const std::vector<libMesh::Real> &JxW = s_side_fe->get_JxW();
+
+            unsigned int n_qpoints = context.get_side_qrule().n_points();
+
+            const std::vector<libMesh::Point>& qpoint = s_side_fe->get_xyz();
+
+            DenseSubVector<Number>& dQ_dT = context.get_qoi_derivatives(qoi_index, _T_var);
+
+            DenseSubVector<Number>& dQ_dYN = context.get_qoi_derivatives(qoi_index, N_var);
+
+            const unsigned int n_species = _physics->n_species();
+
+            std::vector<libMesh::Real> Y;
+            Y.resize(n_species);
+
+            for (unsigned int qp = 0; qp != n_qpoints; qp++)
+              {
+                const libMesh::Real T =  context.side_value(_T_var, qp);
+                
+                const libMesh::Real r = qpoint[qp](0);
+
+                for( unsigned int s = 0; s < n_species; s++ )
+                  {
+                    context.side_value( _species_vars[s], qp, Y[s] );
+                  }
+                
+                const libMesh::Real p0 = _physics->get_p0_steady_side(context, qp);
+                
+                const libMesh::Real R = _chem_mixture->R_mix( Y );
+
+                const libMesh::Real rho = _physics->rho(T, p0, R);
+
+                const libMesh::Real dmdot_dT = _omega_dot->compute_reactant_solid_mass_consumption_dT(rho,Y[_N_index],T);
+
+                const libMesh::Real dmdot_dYN = _omega_dot->compute_reactant_solid_mass_consumption_dYs(rho,Y,T);
+
+                for( unsigned int i = 0; i != n_T_dofs; i++ )
+                  {
+                    dQ_dT(i) += _factor*dmdot_dT*T_phi[i][qp]*r*JxW[qp];
+                  }
+
+                for( unsigned int i = 0; i != n_s_dofs; i++ )
+                  {
+                    dQ_dYN(i) += _factor*dmdot_dYN*s_phi[i][qp]*r*JxW[qp];
+                  }
+
+              } // quadrature loop
+
+          } // end check on boundary id
+      }
+
+    return;
+  }
+
 } // end namespace NitridationCalibration
