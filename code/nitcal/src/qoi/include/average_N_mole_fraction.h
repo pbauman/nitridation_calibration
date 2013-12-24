@@ -60,6 +60,9 @@ namespace NitridationCalibration
     virtual void side_qoi( GRINS::AssemblyContext& context,
                            const unsigned int qoi_index );
 
+    virtual void side_qoi_derivative( GRINS::AssemblyContext& context,
+                                      const unsigned int qoi_index );
+
   protected:
 
     std::set<libMesh::boundary_id_type> _bc_ids;

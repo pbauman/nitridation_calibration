@@ -168,4 +168,69 @@ namespace NitridationCalibration
     return;
   }
 
+  void AverageNMoleFraction::side_qoi_derivative( GRINS::AssemblyContext& context,
+                                                  const unsigned int qoi_index )
+  {
+    for( std::set<libMesh::boundary_id_type>::const_iterator id = _bc_ids.begin();
+	 id != _bc_ids.end(); id++ )
+      {
+	if( context.has_side_boundary_id( (*id) ) )
+	  {
+            GRINS::VariableIndex N_var = this->_species_vars[_N_index];
+
+            const unsigned int n_s_dofs = context.get_dof_indices(N_var).size();
+
+	    FEBase* side_fe;
+	    context.get_side_fe<libMesh::Real>(N_var, side_fe);
+
+            const std::vector<std::vector<libMesh::Real> >& s_phi = side_fe->get_phi();
+
+	    const std::vector<libMesh::Real> &JxW = side_fe->get_JxW();
+
+	    unsigned int n_qpoints = context.get_side_qrule().n_points();
+	    
+            const std::vector<libMesh::Point>& qpoint = side_fe->get_xyz();
+
+	    
+
+            const unsigned int n_species = _chem_mixture->n_species();
+
+            std::vector<libMesh::Real> Y;
+            Y.resize(n_species);
+
+            for (unsigned int qp = 0; qp != n_qpoints; qp++)
+              {
+                const libMesh::Real r = qpoint[qp](0);
+
+                for( unsigned int s = 0; s < n_species; s++ )
+                  {
+                    context.side_value( _species_vars[s], qp, Y[s] );
+                  }
+                
+                const libMesh::Real M = _chem_mixture->M( Y );
+
+                for( unsigned int s = 0; s < n_species; s++ )
+                  {
+                    DenseSubVector<Number>& dQ_dYs = context.get_qoi_derivatives(qoi_index, _species_vars[s]);
+
+                    const libMesh::Real M_s = _chem_mixture->M( s );
+                    
+                    const libMesh::Real Y_s = Y[s];
+                    
+                    libMesh::Real dXN_dYs = M*(1.0 - M*Y_s/M_s);
+
+                    for( unsigned int i = 0; i != n_s_dofs; i++ )
+                      {
+                        dQ_dYs(i) += _factor*dXN_dYs*s_phi[i][qp]*r*JxW[qp];
+                      }
+                  }
+
+	      } // quadrature loop
+
+	  } // end check on boundary id
+      }
+
+    return;
+  }
+
 } // end namespace NitridationCalibration
