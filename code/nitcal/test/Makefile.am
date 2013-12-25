@@ -32,6 +32,7 @@ TESTS += O_2_28.sh
 TESTS += K_2_63_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh
 TESTS += O_2_28_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh
 TESTS += K_2_63_O_2_28_constant_gamma_n_constant_gamma_cn_likelihood_reg.sh
+TESTS += K_2_63_O_2_28_constant_gamma_n_constant_gamma_cn_likelihood_reg2.sh
 
 if CODE_COVERAGE_ENABLED
   CLEANFILES = *.gcda *.gcno
