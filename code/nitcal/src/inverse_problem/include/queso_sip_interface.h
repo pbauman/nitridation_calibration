@@ -43,6 +43,8 @@ namespace NitridationCalibration
     const uqGenericVectorRVClass<Vec,Mat>&  get_posterior_rv() const;
     const uqBaseScalarFunctionClass<Vec,Mat>& get_likelihood_func() const;
 
+    const LikelihoodCommHandler& comm_handler() const;
+
   protected:
 
     void create_proposal_cov_mat();
@@ -112,6 +114,13 @@ namespace NitridationCalibration
   const uqBaseScalarFunctionClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_likelihood_func() const
   {
     return *_likelihood;
+  }
+
+  template<class Vec,class Mat>
+  inline
+  const LikelihoodCommHandler& QuesoStatisticalInverseProblemInterface<Vec,Mat>::comm_handler() const
+  {
+    return *(_comm_handler.get());
   }
 
 } // end namespace NitridationCalibration
