@@ -114,18 +114,47 @@ int main(int argc, char* argv[])
     int rank = -1;
     MPI_Comm_rank( MPI_COMM_WORLD, &rank );
 
+    int size = -1;
+    MPI_Comm_size( MPI_COMM_WORLD, &size );
+
     double mass_loss_value = 0.0;
     double avg_N_value = 0.0;
 
-    if( rank == 0 )
+    if( size == 2)
       {
-        mass_loss_value = atof(argv[2]);
-        avg_N_value = atof(argv[3]);
+        if( rank == 0 )
+          {
+            mass_loss_value = atof(argv[2]);
+            avg_N_value = atof(argv[3]);
+          }
+        else if( rank == 1 )
+          {
+            mass_loss_value = atof(argv[4]);
+            avg_N_value = atof(argv[5]);
+          }
+        else
+          {
+            std::cerr << "Something broke!" << std::endl;
+            return 1;
+          }
       }
-    else if( rank == 1 )
+    else if( size == 4 )
       {
-        mass_loss_value = atof(argv[4]);
-        avg_N_value = atof(argv[5]);
+        if( rank == 0 || rank == 1 )
+          {
+            mass_loss_value = atof(argv[2]);
+            avg_N_value = atof(argv[3]);
+          }
+        else if( rank == 2 || rank == 3 )
+          {
+            mass_loss_value = atof(argv[4]);
+            avg_N_value = atof(argv[5]);
+          }
+        else
+          {
+            std::cerr << "Something broke!" << std::endl;
+            return 1;
+          }
       }
     else
       {
@@ -140,22 +169,31 @@ int main(int argc, char* argv[])
 
     std::cout << "exact_ln_likelihood = " << exact_ln_likelihood << std::endl;
 
+
+    MPI_Comm inter0_comm = sip.comm_handler().get_inter_chain_0_comm();
+
     double global_exact_ln_likelihood = 0.0;
-    MPI_Allreduce(&exact_ln_likelihood, &global_exact_ln_likelihood, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    if( sip.comm_handler().get_inter0_rank() >= 0 )
+      {
+        MPI_Allreduce(&exact_ln_likelihood, &global_exact_ln_likelihood, 1, MPI_DOUBLE, MPI_SUM, inter0_comm );
+      }
 
     std::cout << "global_exact_ln_likelihood = " << global_exact_ln_likelihood << std::endl;
 
     const double tol = 1.0e-10;
 
-    if( std::fabs( (computed_likelihood - global_exact_ln_likelihood)/exact_ln_likelihood ) > tol )
+    if( rank == 0 || rank == 2)
       {
-        std::cerr << std::scientific << std::setprecision(16)
-                  << "Error: Tolerance exceeded in computed likelihood" << std::endl
-                  << "       tolerance              = " << tol << std::endl
-                  << "       computed_ln_likelihood = " << computed_likelihood << std::endl
-                  << "       exact_ln_likelihood    = " << global_exact_ln_likelihood << std::endl;
+        if( std::fabs( (computed_likelihood - global_exact_ln_likelihood)/exact_ln_likelihood ) > tol )
+          {
+            std::cerr << std::scientific << std::setprecision(16)
+                      << "Error: Tolerance exceeded in computed likelihood" << std::endl
+                      << "       tolerance              = " << tol << std::endl
+                      << "       computed_ln_likelihood = " << computed_likelihood << std::endl
+                      << "       exact_ln_likelihood    = " << global_exact_ln_likelihood << std::endl;
 
-        return_flag = 1;
+            return_flag = 1;
+          }
       }
 
   }
