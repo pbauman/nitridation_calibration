@@ -4,12 +4,16 @@
 // This class
 #include "likelihood_comm_handler.h"
 
+// C++
+#include <algorithm>
+
 namespace NitridationCalibration
 {
 
   LikelihoodCommHandler::LikelihoodCommHandler( MPI_Comm inter_chain_comm,
                                                 const int n_datasets )
-    : _inter_chain_comm(inter_chain_comm)
+    : _inter_chain_comm(inter_chain_comm),
+      _inter0_rank(-1)
   {
     int inter_chain_size;
     MPI_Comm_size( _inter_chain_comm, &inter_chain_size );
@@ -35,7 +39,9 @@ namespace NitridationCalibration
   }
 
   LikelihoodCommHandler::~LikelihoodCommHandler()
-  {}
+  {
+    return;
+  }
 
   MPI_Comm LikelihoodCommHandler::get_inter_chain_comm() const
   {
@@ -103,6 +109,14 @@ namespace NitridationCalibration
     ierr = MPI_Comm_create( _inter_chain_comm,
                             _inter_chain_0_group,
                             &_inter_chain_0_comm );
+
+    int inter_rank = -1;
+    MPI_Comm_rank( this->get_inter_chain_comm(), &inter_rank );
+
+    if( std::binary_search( inter_chain_0_ranks.begin(), inter_chain_0_ranks.end(), inter_rank ) )
+      {
+        MPI_Comm_rank( this->get_inter_chain_0_comm(), &_inter0_rank );
+      }
 
     return;
   }
