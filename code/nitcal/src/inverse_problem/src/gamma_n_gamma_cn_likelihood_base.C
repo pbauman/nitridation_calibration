@@ -72,7 +72,10 @@ namespace NitridationCalibration
     likelihood_value += _average_n.likelihood_value(computed_average_n);
 
     // Now sum over all the data sets distributed across the processors.
-    libMesh::Parallel::sum(likelihood_value, libMesh::Parallel::Communicator(this->_comm_handler.get_inter_chain_0_comm()));
+    if( this->_comm_handler.get_inter0_rank() >= 0 )
+      {
+        libMesh::Parallel::sum(likelihood_value, libMesh::Parallel::Communicator(this->_comm_handler.get_inter_chain_0_comm()));
+      }
 
     if( this->m_env.fullRank() == 0 )
       {
