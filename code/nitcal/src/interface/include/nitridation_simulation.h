@@ -20,7 +20,8 @@ namespace NitridationCalibration
   public:
 
     NitridationSimulation( const GetPot& input,
-			   GRINS::SimulationBuilder& sim_builder );
+			   GRINS::SimulationBuilder& sim_builder,
+                           libMesh::Parallel::Communicator& comm );
 
     virtual ~NitridationSimulation();
 
@@ -28,7 +29,7 @@ namespace NitridationCalibration
 
     void set_gamma_N_params( const std::vector<double>& gamma_N_params );
 
-    void reset_initial_guess( const NumericVector<libMesh::Real>& solution );
+    void reset_initial_guess( const libMesh::NumericVector<libMesh::Real>& solution );
 
     void solve();
 

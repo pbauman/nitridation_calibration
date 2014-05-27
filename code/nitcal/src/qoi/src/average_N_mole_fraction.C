@@ -127,7 +127,7 @@ namespace NitridationCalibration
       {
 	if( context.has_side_boundary_id( (*id) ) )
 	  {
-	    FEBase* side_fe;
+	    libMesh::FEBase* side_fe;
 	    context.get_side_fe<libMesh::Real>(this->_species_vars[_N_index], side_fe);
 
 	    const std::vector<libMesh::Real> &JxW = side_fe->get_JxW();
@@ -180,7 +180,7 @@ namespace NitridationCalibration
 
             const unsigned int n_s_dofs = context.get_dof_indices(N_var).size();
 
-	    FEBase* side_fe;
+	    libMesh::FEBase* side_fe;
 	    context.get_side_fe<libMesh::Real>(N_var, side_fe);
 
             const std::vector<std::vector<libMesh::Real> >& s_phi = side_fe->get_phi();
@@ -211,7 +211,7 @@ namespace NitridationCalibration
 
                 for( unsigned int s = 0; s < n_species; s++ )
                   {
-                    DenseSubVector<Number>& dQ_dYs = context.get_qoi_derivatives(qoi_index, _species_vars[s]);
+                    libMesh::DenseSubVector<libMesh::Number>& dQ_dYs = context.get_qoi_derivatives(qoi_index, _species_vars[s]);
 
                     const libMesh::Real M_s = _chem_mixture->M( s );
                     

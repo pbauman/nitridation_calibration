@@ -30,7 +30,7 @@ namespace NitridationCalibration
 					    MPI_Comm mpi_comm,
 					    const GetPot& input )
     : _libmesh_init(argc,argv,mpi_comm),
-      _cached_initial_guess( libMesh::NumericVector<libMesh::Real>::build() )
+      _cached_initial_guess( libMesh::NumericVector<libMesh::Real>::build(libMesh::Parallel::Communicator(mpi_comm)) )
   {
     GRINS::SimulationBuilder sim_builder;
     
@@ -41,8 +41,9 @@ namespace NitridationCalibration
     std::tr1::shared_ptr<GRINS::QoIFactory> qoi_factory( new NitridationCalibration::QoIFactory );
     
     sim_builder.attach_qoi_factory( qoi_factory );
-
-    _simulation = new NitridationSimulation( input, sim_builder );
+    
+    libMesh::Parallel::Communicator libmesh_comm(mpi_comm);
+    _simulation = new NitridationSimulation( input, sim_builder, libmesh_comm );
 
     // Project initial solution
     std::string restart_file = input( "restart-options/restart_file", "none" );
@@ -56,12 +57,12 @@ namespace NitridationCalibration
 	std::tr1::shared_ptr<libMesh::EquationSystems> es = _simulation->get_equation_system();
 	const libMesh::System& system = es->get_system(system_name);
       
-	Parameters &params = es->parameters;
+        libMesh::Parameters &params = es->parameters;
 
-	Real& w_N2 = params.set<Real>( "w_N2" );
+	libMesh::Real& w_N2 = params.set<libMesh::Real>( "w_N2" );
 	w_N2 = input( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0, 0 );
       
-	Real& w_N = params.set<Real>( "w_N" );
+	libMesh::Real& w_N = params.set<libMesh::Real>( "w_N" );
 	w_N = input( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0, 1 );
 
 	wall_temp.reset( new NitridationCalibration::TubeTempBC( input ) );

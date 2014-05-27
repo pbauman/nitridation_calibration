@@ -25,13 +25,14 @@
 namespace NitridationCalibration
 {
   NitridationSimulation::NitridationSimulation( const GetPot& input,
-					        GRINS::SimulationBuilder& sim_builder )
-    : GRINS::Simulation(input,sim_builder)
+					        GRINS::SimulationBuilder& sim_builder,
+                                                libMesh::Parallel::Communicator& comm )
+    : GRINS::Simulation(input,sim_builder,comm)
   {
     /* Search for the QoI's and cache their indices for later use */
     // First get the DifferentiableQoI and cast to CompositeQoI
     libMesh::DifferentiableQoI* qoi_base = _multiphysics_system->get_qoi();
-    GRINS::CompositeQoI* qois = libmesh_cast_ptr<GRINS::CompositeQoI*>( qoi_base );
+    GRINS::CompositeQoI* qois = libMesh::libmesh_cast_ptr<GRINS::CompositeQoI*>( qoi_base );
 
     const unsigned int n_qois = qois->n_qois();
 
@@ -71,7 +72,7 @@ namespace NitridationCalibration
     GRINS::BCHandlingBase* bc_handler_base = physics->get_bc_handler();
 
     GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>* bc_handler =
-      libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
+      libMesh::libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
     
     /*! \todo Need to generalize to more than 1 bc */
     
@@ -91,7 +92,7 @@ namespace NitridationCalibration
     GRINS::BCHandlingBase* bc_handler_base = physics->get_bc_handler();
 
     GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>* bc_handler =
-      libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
+      libMesh::libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
     
     /*! \todo Need to generalize to more than 1 bc */
     
@@ -104,7 +105,7 @@ namespace NitridationCalibration
     return;
   }
 
-  void NitridationSimulation::reset_initial_guess( const NumericVector<libMesh::Real>& solution )
+  void NitridationSimulation::reset_initial_guess( const libMesh::NumericVector<libMesh::Real>& solution )
   {
     (*((this->_multiphysics_system)->solution)) = solution;
     (*((this->_multiphysics_system)->current_local_solution)) = solution;

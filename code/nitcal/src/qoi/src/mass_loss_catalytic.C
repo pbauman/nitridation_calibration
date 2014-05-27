@@ -103,7 +103,7 @@ namespace NitridationCalibration
     this->_factor = delta_t*GRINS::Constants::two_pi;
 
     std::tr1::shared_ptr<GRINS::Physics> base_physics = system.get_physics( GRINS::reacting_low_mach_navier_stokes );
-    _physics = libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBase* >( base_physics.get() );
+    _physics = libMesh::libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBase* >( base_physics.get() );
     
     // Grab temperature variable index
     std::string T_var_name = input("Physics/VariableNames/Temperature",
@@ -124,11 +124,11 @@ namespace NitridationCalibration
     GRINS::BCHandlingBase* bc_handler_base = base_physics->get_bc_handler();
 
     GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>* bc_handler =
-      libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
+      libMesh::libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
     
     /*! \todo Need to generalize to more than 1 bc */
     GRINS::CatalyticWallBase<GRINS::AntiochChemistry>* base_wall_ptr  = bc_handler->get_catalytic_wall( (*_bc_ids.begin()) );
-    _omega_dot = libmesh_cast_ptr<GRINS::GasSolidCatalyticWall<GRINS::AntiochChemistry>*>( base_wall_ptr );
+    _omega_dot = libMesh::libmesh_cast_ptr<GRINS::GasSolidCatalyticWall<GRINS::AntiochChemistry>*>( base_wall_ptr );
 
     return;
   }
@@ -155,7 +155,7 @@ namespace NitridationCalibration
           {
             GRINS::VariableIndex CN_var = this->_species_vars[_CN_index];
 
-            FEBase* side_fe;
+            libMesh::FEBase* side_fe;
             context.get_side_fe<libMesh::Real>(CN_var, side_fe);
 
             const std::vector<libMesh::Real> &JxW = side_fe->get_JxW();
@@ -225,10 +225,10 @@ void MassLossCatalytic::side_qoi_derivative( GRINS::AssemblyContext& context,
             const unsigned int n_T_dofs = context.get_dof_indices(_T_var).size();
             const unsigned int n_s_dofs = context.get_dof_indices(N_var).size();
 
-            FEBase* s_side_fe;
+            libMesh::FEBase* s_side_fe;
             context.get_side_fe<libMesh::Real>(N_var, s_side_fe);
 
-            FEBase* T_side_fe;
+            libMesh::FEBase* T_side_fe;
             context.get_side_fe<libMesh::Real>(_T_var, T_side_fe);
 
             const std::vector<std::vector<libMesh::Real> >& s_phi = s_side_fe->get_phi();
@@ -241,9 +241,9 @@ void MassLossCatalytic::side_qoi_derivative( GRINS::AssemblyContext& context,
 
             const std::vector<libMesh::Point>& qpoint = s_side_fe->get_xyz();
 
-            DenseSubVector<Number>& dQ_dT = context.get_qoi_derivatives(qoi_index, _T_var);
+            libMesh::DenseSubVector<libMesh::Number>& dQ_dT = context.get_qoi_derivatives(qoi_index, _T_var);
 
-            DenseSubVector<Number>& dQ_dYN = context.get_qoi_derivatives(qoi_index, N_var);
+            libMesh::DenseSubVector<libMesh::Number>& dQ_dYN = context.get_qoi_derivatives(qoi_index, N_var);
 
             const unsigned int n_species = _physics->n_species();
 
