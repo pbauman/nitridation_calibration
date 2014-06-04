@@ -1,0 +1,240 @@
+#
+#
+
+[SimulationParameters]
+
+wall_temps = '298.0 350.0 1273.0 1273.0 525.0 400.0' # [K]
+
+mdot = '6.0' # [mg/s]
+
+p_inlet = '387.2' # [Pa]
+
+p_outlet = '350.8' # [Pa]
+
+T_sample = '1273.0' #[K]
+
+inlet_species = '0.99474 0.00526 0.0 0.0' #[mole fraction] , N2 N C CN
+
+mesh_file = 'C_1_15_9adapt.xda'
+
+delta_t = '144'  #[min]
+
+mass_loss_data = '2.96' #[mg]
+
+average_N_data = '0.179' #[% mole fraction]
+
+[]
+
+#########################################################
+## Change nothing below!
+#########################################################
+
+[MassLossLikelihood]
+
+sigma = '2.0e-8' # [kg]
+
+data_value = '${* ${SimulationParameters/mass_loss_data} 1.0e-6}' # [kg]
+
+gamma_nominal_value = '1.0e-3'
+
+[]
+
+[AverageNLikelihood]
+
+data_value = '${* ${SimulationParameters/average_N_data} 1.0e-2}' # [mole fraction]
+
+# 15% of data value
+sigma = '${* 0.15 ${AverageNLikelihood/data_value} }'
+
+gamma_nominal_value = '1.0e-4'
+
+[]
+
+[BoundaryConditions] 
+
+[./TubeWall]
+
+# Locaton of thermocouples along tube wall (m)
+tc_locs = '0.0 0.244 0.324 0.639 0.709 0.869'
+
+# Temperature vals for above locs (K) - at 1273K
+wall_temps = '${SimulationParameters/wall_temps}'
+
+[../InletProfile]
+
+mdot = '${SimulationParameters/mdot}' # [mg/s]
+
+p_inlet = '${SimulationParameters/p_inlet}' # [Pa]
+
+[]
+
+[QoI]
+
+enabled_qois = 'MassLossCatalytic AverageNMoleFraction'
+
+[./MassLossCatalytic]
+
+bc_ids = '3'
+
+delta_t = '${SimulationParameters/delta_t}'
+
+[../AverageNMoleFraction]
+
+bc_ids = '5'
+
+channel_radius = '0.011' #[m]
+
+[]
+
+# Options related to all Physics
+[Physics]
+
+enabled_physics = 'ReactingLowMachNavierStokes'
+
+is_axisymmetric = 'true'
+
+[./Chemistry]
+
+species   = 'N2 N C CN'
+chem_file = './nitridation.xml'
+mixture   = 'air4sp'
+
+[../Antioch]
+
+mixing_model = 'wilke'
+viscosity_model = 'blottner'
+conductivity_model = 'eucken'
+diffusivity_model = 'constant_lewis'
+
+Le = '1.4'
+
+# Options for Incompressible Navier-Stokes physics
+[../ReactingLowMachNavierStokes]
+
+species_FE_family = 'LAGRANGE'
+V_FE_family       = 'LAGRANGE'
+P_FE_family       = 'LAGRANGE'
+T_FE_family       = 'LAGRANGE'
+
+species_order = 'SECOND'
+V_order       = 'SECOND'
+T_order       = 'SECOND'
+P_order       = 'FIRST'
+
+# Thermodynamic pressure
+p0 = '${SimulationParameters/p_outlet}' #[Pa]
+
+# Gravity vector
+g = '0.0 0.0' #[m/s^2]
+
+thermochemistry_library      = 'antioch'
+
+# Boundary ids:
+# inflow = 1
+# outer wall = 2
+# specimen = 3
+# holder = 4
+# outflow = 5
+# axis (no sample/holder) = 6
+
+vel_bc_ids = '1 6 2 3 4'
+vel_bc_types = 'general_velocity axisymmetric no_slip no_slip no_slip'
+
+general_velocity_fix_1 = 'u'
+
+temp_bc_ids = '1 6 3 4 2'
+temp_bc_types = 'isothermal axisymmetric isothermal isothermal general_isothermal'
+
+T_wall_1 = '298'
+T_wall_3 = '${SimulationParameters/T_sample}'
+T_wall_4 = '${SimulationParameters/T_sample}'
+
+species_bc_ids = '1 3 2' 
+species_bc_types = 'prescribed_mole_fracs gas_solid_catalytic_wall gas_recombination_catalytic_wall'
+
+bound_species_1 = '${SimulationParameters/inlet_species}'
+
+wall_gas_solid_reactions_3 = 'N+C(s)->CN'
+
+gamma_N_3_type = 'constant'
+gamma_N_3 = '${MassLossLikelihood/gamma_nominal_value}'
+
+wall_catalytic_reactions_2 = 'N->N2'
+
+#gamma_N_2_type = 'arrhenius'
+#gamma0_N_2 = '4.e-4'
+#Ta_N_2 = '300'
+
+gamma_N_2_type = 'constant'
+gamma_N_2 = '${AverageNLikelihood/gamma_nominal_value}'
+
+enable_thermo_press_calc = 'false'
+pin_pressure = 'false'
+
+[]
+
+[restart-options]
+
+restart_file = 'restart.xdr'
+
+# Mesh related options
+[mesh-options]
+mesh_option = 'read_mesh_from_file'
+mesh_filename = '${SimulationParameters/mesh_file}'
+
+#uniformly_refine = '1' 
+
+[]
+
+# Options for tiem solvers
+[unsteady-solver]
+transient = 'false' 
+
+[]
+
+#Linear and nonlinear solver options
+[linear-nonlinear-solver]
+max_nonlinear_iterations = '50'
+max_linear_iterations = '500'
+
+verify_analytic_jacobians = '0.0'
+
+initial_linear_tolerance = '1.0e-10'
+
+relative_residual_tolerance = '1.0e-10'
+
+use_numerical_jacobians_only = 'true'
+
+[]
+
+# Visualization options
+[vis-options]
+output_vis = 'true'
+
+vis_output_file_prefix = 'nitridation' 
+
+output_residual = 'false'
+
+output_format = 'xdr ExodusII'
+
+#output_vars = 'cp_mix h_s rho_mix mole_fractions omega_dot'
+output_vars = 'rho_mix mole_fractions mu_mix k_mix'
+
+# Options for print info to the screen
+[screen-options]
+
+system_name = 'Nitridation'
+
+print_equation_system_info = 'true'
+print_mesh_info = 'true'
+print_log_info = 'true'
+solver_verbose = 'true'
+solver_quiet = 'false'
+
+print_element_jacobians = 'false'
+
+print_qoi = 'true'
+echo_qoi = 'true'
+
+[]
+
