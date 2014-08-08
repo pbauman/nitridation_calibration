@@ -106,6 +106,10 @@ include_HEADERS += qoi/include/average_N_mole_fraction.h
 
 libnitcal_la_LIBADD = $(GRINS_PREFIX)/lib/libgrins.la $(LIBMESH_LIBDIR)/libmesh_$(LIBMESH_METHOD).la
 
+if HDF5_ENABLED
+   libnitcal_la_LIBADD += $(HDF5_PREFIX)/lib/libhdf5.la
+endif
+
 if QUESO_ENABLED
    libnitcal_la_LIBADD += $(QUESO_PREFIX)/lib/libqueso.la
 endif
@@ -153,6 +157,10 @@ AM_CPPFLAGS += $(GRINS_CPPFLAGS)
 AM_CPPFLAGS += $(QUESO_CPPFLAGS)
 AM_CPPFLAGS += $(GSL_CPPFLAGS)
 AM_CPPFLAGS += $(GLPK_CPPFLAGS)
+
+if HDF5_ENABLED 
+  AM_CPPFLAGS += $(HDF5_CFLAGS)
+endif
 
 if CODE_COVERAGE_ENABLED
   CLEANFILES = *.gcda *.gcno

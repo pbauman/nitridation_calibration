@@ -122,6 +122,12 @@ AX_PATH_ANTIOCH(0.0.8,yes)
 
 AX_PATH_GRINS(0.4.0,yes)
 
+# Check for HDF5 (optional)
+# We need this because if QUESO is linked to HDF5
+# there are headers missing because QUESO is stupid
+# about including external headers
+AX_PATH_HDF5_NEW([1.8.0],[no])
+
 #----------------
 # Check for QUESO
 #----------------
