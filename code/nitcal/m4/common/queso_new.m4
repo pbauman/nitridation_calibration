@@ -119,7 +119,7 @@ HAVE_QUESO=0
         version_succeeded=no
 
         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        @%:@include <queso.h>
+        @%:@include <queso/queso.h>
             ]], [[
             #if QUESO_MAJOR_VERSION > $MAJOR_VER
             /* Sweet nibblets */
@@ -196,7 +196,7 @@ HAVE_QUESO=0
             succeeded=yes
     fi
 
-    if test "$succeeded" = no; then
+    if test "$version_succeeded" != "yes" || test "$succeeded" = no; then
        if test "$is_package_required" = yes; then
           AC_MSG_ERROR([QUESO not found.  Try either --with-queso or setting QUESO_DIR.])
        else
