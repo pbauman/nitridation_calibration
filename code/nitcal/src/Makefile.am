@@ -114,6 +114,10 @@ if QUESO_ENABLED
    libnitcal_la_LIBADD += $(QUESO_PREFIX)/lib/libqueso.la
 endif
 
+if GRVY_ENABLED
+   libnitcal_la_LIBADD += $(GRVY_PREFIX)/lib/libgrvy.la
+endif
+
 #------------------------------------
 # Source for nitfp
 #------------------------------------
@@ -161,6 +165,8 @@ AM_CPPFLAGS += $(GLPK_CPPFLAGS)
 if HDF5_ENABLED 
   AM_CPPFLAGS += $(HDF5_CFLAGS)
 endif
+
+AM_CPPFLAGS += $(GRVY_CFLAGS)
 
 if CODE_COVERAGE_ENABLED
   CLEANFILES = *.gcda *.gcno

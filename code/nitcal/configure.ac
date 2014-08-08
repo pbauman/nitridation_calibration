@@ -127,6 +127,7 @@ AX_PATH_GRINS(0.4.0,yes)
 # there are headers missing because QUESO is stupid
 # about including external headers
 AX_PATH_HDF5_NEW([1.8.0],[no])
+AX_PATH_GRVY_NEW([0.30],[no])
 
 #----------------
 # Check for QUESO

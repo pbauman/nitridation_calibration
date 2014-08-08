@@ -22,6 +22,8 @@ if HDF5_ENABLED
   AM_CPPFLAGS += $(HDF5_CFLAGS)
 endif
 
+AM_CPPFLAGS += $(GRVY_CFLAGS)
+
 AM_LDFLAGS = $(LIBNITCAL_LIBS)
 
 tube_twall_test_SOURCES = tube_twall_test.C
