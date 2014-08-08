@@ -17,8 +17,8 @@
 #include "likelihood_comm_handler.h"
 
 // QUESO
-#include "uqGslVector.h"
-#include "uqGslMatrix.h"
+#include "queso/GslVector.h"
+#include "queso/GslMatrix.h"
 
 namespace NitridationCalibration
 {
@@ -28,7 +28,7 @@ namespace NitridationCalibration
                                            const GetPot& forward_run_input,
                                            const LikelihoodCommHandler& comm_handler,
                                            const char* prefix, 
-                                           const uqVectorSetClass<Vec,Mat>& domain_set,
+                                           const QUESO::VectorSet<Vec,Mat>& domain_set,
                                            const bool returns_ln )
     : QuesoLikelihoodInterface<Vec,Mat>( prefix, domain_set, returns_ln ),
     _interface(argc,argv,mpi_comm, forward_run_input ),
@@ -46,7 +46,7 @@ namespace NitridationCalibration
   }
 
   // Instantiate GSL version of this class
-  template class LikelihoodBase<uqGslVectorClass,uqGslMatrixClass>;
+  template class LikelihoodBase<QUESO::GslVector,QUESO::GslMatrix>;
 
 } // end namespace NitridationCalibration
 

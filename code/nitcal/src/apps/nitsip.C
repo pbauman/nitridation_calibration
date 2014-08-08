@@ -47,8 +47,8 @@
 
 #ifdef NITCAL_HAVE_QUESO
 // QUESO
-#include "uqGslVector.h"
-#include "uqGslMatrix.h"
+#include "queso/GslVector.h"
+#include "queso/GslMatrix.h"
 #endif // HAVE_QUESO
 
 int main(int argc, char* argv[])
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
   //************************************************
   MPI_Init(&argc,&argv);
 
-  uqFullEnvironmentClass* env = new uqFullEnvironmentClass(MPI_COMM_WORLD,
+  QUESO::FullEnvironment* env = new QUESO::FullEnvironment(MPI_COMM_WORLD,
 							   QUESO_input.c_str(),
 							   "",
 							   NULL );
@@ -85,39 +85,39 @@ int main(int argc, char* argv[])
     GetPot sip_input(sip_input_filename);
     std::string sip_type = sip_input( "InverseProblem/sip_type", "DIE!" );
 
-    boost::scoped_ptr<NitridationCalibration::StatisticalInverseProblemBase<uqGslVectorClass,uqGslMatrixClass> > sip(NULL);
+    boost::scoped_ptr<NitridationCalibration::StatisticalInverseProblemBase<QUESO::GslVector,QUESO::GslMatrix> > sip(NULL);
 
     if( sip_type == std::string("constant_gamma_cn") )
       {
-        sip.reset( new NitridationCalibration::ConstantGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>( env, "multilevel", argc, argv, sip_input_filename ) );
+        sip.reset( new NitridationCalibration::ConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
       }
     else if( sip_type == std::string("constant_gamma_n_constant_gamma_cn") )
       {
-        sip.reset( new NitridationCalibration::ConstantGammaNConstantGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>( env, "multilevel", argc, argv, sip_input_filename ) );
+        sip.reset( new NitridationCalibration::ConstantGammaNConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
       }
     else if( sip_type == std::string("arrhenius_gamma_n_constant_gamma_cn") )
       {
-        sip.reset( new NitridationCalibration::ArrheniusGammaNConstantGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>( env, "multilevel", argc, argv, sip_input_filename ) );
+        sip.reset( new NitridationCalibration::ArrheniusGammaNConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
       }
     else if( sip_type == std::string("power_gamma_n_constant_gamma_cn") )
       {
-        sip.reset( new NitridationCalibration::PowerGammaNConstantGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>( env, "multilevel", argc, argv, sip_input_filename ) );
+        sip.reset( new NitridationCalibration::PowerGammaNConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
       }
     else if( sip_type == std::string("arrhenius_gamma_n_arrhenius_gamma_cn") )
       {
-        sip.reset( new NitridationCalibration::ArrheniusGammaNArrheniusGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>( env, "multilevel", argc, argv, sip_input_filename ) );
+        sip.reset( new NitridationCalibration::ArrheniusGammaNArrheniusGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
       }
     else if( sip_type == std::string("power_gamma_n_arrhenius_gamma_cn") )
       {
-        sip.reset( new NitridationCalibration::PowerGammaNArrheniusGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>( env, "multilevel", argc, argv, sip_input_filename ) );
+        sip.reset( new NitridationCalibration::PowerGammaNArrheniusGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
       }
     else if( sip_type == std::string("arrhenius_gamma_n_power_gamma_cn") )
       {
-        sip.reset( new NitridationCalibration::ArrheniusGammaNPowerGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>( env, "multilevel", argc, argv, sip_input_filename ) );
+        sip.reset( new NitridationCalibration::ArrheniusGammaNPowerGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
       }
     else if( sip_type == std::string("power_gamma_n_power_gamma_cn") )
       {
-        sip.reset( new NitridationCalibration::PowerGammaNPowerGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>( env, "multilevel", argc, argv, sip_input_filename ) );
+        sip.reset( new NitridationCalibration::PowerGammaNPowerGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
       }
     else
       {

@@ -32,7 +32,7 @@ namespace NitridationCalibration
                                const GetPot& forward_run_input,
                                const LikelihoodCommHandler& comm_handler,
                                const char* prefix, 
-                               const uqVectorSetClass<Vec,Mat>& domain_set,
+                               const QUESO::VectorSet<Vec,Mat>& domain_set,
                                const bool returns_ln );
 
     virtual ~ConstantGammaCNLikelihood();

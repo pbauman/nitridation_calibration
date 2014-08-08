@@ -18,8 +18,8 @@
 #include "grins/math_constants.h"
 
 // QUESO
-#include "uqGslVector.h"
-#include "uqGslMatrix.h"
+#include "queso/GslVector.h"
+#include "queso/GslMatrix.h"
 
 namespace NitridationCalibration
 {
@@ -30,7 +30,7 @@ namespace NitridationCalibration
                                                                      const GetPot& forward_run_input,
                                                                      const LikelihoodCommHandler& comm_handler,
                                                                      const char* prefix, 
-                                                                     const uqVectorSetClass<Vec,Mat>& domain_set,
+                                                                     const QUESO::VectorSet<Vec,Mat>& domain_set,
                                                                      const bool returns_ln)
   : LikelihoodBase<Vec,Mat>(argc,argv,mpi_comm,
                             forward_run_input,comm_handler,
@@ -89,7 +89,7 @@ namespace NitridationCalibration
   }
 
   // Instantiate GSL version of this class
-  template class GammaNGammaCNLikelihoodBase<uqGslVectorClass,uqGslMatrixClass>;
+  template class GammaNGammaCNLikelihoodBase<QUESO::GslVector,QUESO::GslMatrix>;
 
 } // end namespace NitridationCalibration
 

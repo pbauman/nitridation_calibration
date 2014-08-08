@@ -34,9 +34,9 @@
 #include "constant_gamma_n_constant_gamma_cn_likelihood.h"
 
 // QUESO
-#include "uqEnvironment.h"
-#include "uqGslVector.h"
-#include "uqGslMatrix.h"
+#include "queso/Environment.h"
+#include "queso/GslVector.h"
+#include "queso/GslMatrix.h"
 
 // GRINS
 #include "grins/math_constants.h"
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 
   MPI_Init(&argc,&argv);
 
-  uqFullEnvironmentClass* env = new uqFullEnvironmentClass(MPI_COMM_WORLD,
+  QUESO::FullEnvironment* env = new QUESO::FullEnvironment(MPI_COMM_WORLD,
 							   QUESO_input.c_str(),
 							   "",
 							   NULL );
@@ -64,11 +64,11 @@ int main(int argc, char* argv[])
   int return_flag = 0;
 
   {
-    NitridationCalibration::ConstantGammaNConstantGammaCNSIP<uqGslVectorClass,uqGslMatrixClass> sip( env, "multilevel",
+    NitridationCalibration::ConstantGammaNConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix> sip( env, "multilevel",
                                                                                        argc, argv,
                                                                                        QUESO_input );
 
-    const uqBaseScalarFunctionClass<uqGslVectorClass,uqGslMatrixClass>& raw_likelihood = sip.get_likelihood_func();
+    const QUESO::BaseScalarFunction<QUESO::GslVector,QUESO::GslMatrix>& raw_likelihood = sip.get_likelihood_func();
 
     const NitridationCalibration::ConstantGammaNConstantGammaCNLikelihood<QUESO::GslVector,QUESO::GslMatrix>& likelihood = 
       libMesh::libmesh_cast_ref<const NitridationCalibration::ConstantGammaNConstantGammaCNLikelihood<QUESO::GslVector,QUESO::GslMatrix>& >( raw_likelihood );

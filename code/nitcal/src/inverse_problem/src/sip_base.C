@@ -9,13 +9,13 @@
 #include "sip_base.h"
 
 // QUESO
-#include "uqGslVector.h"
-#include "uqGslMatrix.h"
+#include "queso/GslVector.h"
+#include "queso/GslMatrix.h"
 
 namespace NitridationCalibration
 {
   template<class Vec,class Mat>
-  StatisticalInverseProblemBase<Vec,Mat>::StatisticalInverseProblemBase( uqBaseEnvironmentClass* env,
+  StatisticalInverseProblemBase<Vec,Mat>::StatisticalInverseProblemBase( QUESO::BaseEnvironment* env,
                                                                          const std::string& method,
                                                                          int argc,
                                                                          char** argv,
@@ -47,7 +47,7 @@ namespace NitridationCalibration
     return;
   }
   // Instantiate GSL version of this class
-  template class StatisticalInverseProblemBase<uqGslVectorClass,uqGslMatrixClass>;
+  template class StatisticalInverseProblemBase<QUESO::GslVector,QUESO::GslMatrix>;
 
 } // end namespace NitridationCalibration
 

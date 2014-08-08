@@ -14,17 +14,17 @@
 #include "queso_likelihood_interface.h"
 
 // QUESO
-#include "uqGslVector.h"
-#include "uqGslMatrix.h"
+#include "queso/GslVector.h"
+#include "queso/GslMatrix.h"
 
 namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
   QuesoLikelihoodInterface<Vec,Mat>::QuesoLikelihoodInterface( const char* prefix, 
-                                                               const uqVectorSetClass<Vec,Mat>& domain_set,
+                                                               const QUESO::VectorSet<Vec,Mat>& domain_set,
                                                                const bool returns_ln )
-    : uqBaseScalarFunctionClass<Vec,Mat>( prefix, domain_set ),
+    : QUESO::BaseScalarFunction<Vec,Mat>( prefix, domain_set ),
       m_returns_ln( returns_ln )
   {
     return;
@@ -118,7 +118,7 @@ namespace NitridationCalibration
   }
 
   // Instantiate GSL version of this class
-  template class QuesoLikelihoodInterface<uqGslVectorClass,uqGslMatrixClass>;
+  template class QuesoLikelihoodInterface<QUESO::GslVector,QUESO::GslMatrix>;
 
 } // end namespace NitridationCalibration
 

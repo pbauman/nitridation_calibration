@@ -17,14 +17,15 @@
 #include "queso_sip_interface.h"
 
 // QUESO
-#include "uqGslVector.h"
-#include "uqGslMatrix.h"
+#include "queso/GslVector.h"
+#include "queso/GslMatrix.h"
+#include "queso/UniformVectorRV.h"
 
 namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
-  QuesoStatisticalInverseProblemInterface<Vec,Mat>::QuesoStatisticalInverseProblemInterface( uqBaseEnvironmentClass *env,
+  QuesoStatisticalInverseProblemInterface<Vec,Mat>::QuesoStatisticalInverseProblemInterface( QUESO::BaseEnvironment *env,
                                                                                              const std::string method )
     : _queso_env(env),
       _method(method)
@@ -43,7 +44,7 @@ namespace NitridationCalibration
   template<class Vec,class Mat>
   void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_sip( )
   {
-    _ip = new uqStatisticalInverseProblemClass<Vec,Mat>("", // No extra prefix before the default "ip_" prefix
+    _ip = new QUESO::StatisticalInverseProblem<Vec,Mat>("", // No extra prefix before the default "ip_" prefix
 							NULL,
 							*_prior,
 							*_likelihood,
@@ -114,8 +115,8 @@ namespace NitridationCalibration
     // Write weighted squared norm to disk, to be used by 'sip_plot.m' afterwards
     //******************************************************
     // Define auxVec
-    const uqBaseVectorRealizerClass<Vec,Mat>& postRealizer = postRv.realizer();
-    uqVectorSpaceClass<Vec,Mat> auxSpace(env,"",postRealizer.subPeriod(),NULL);
+    const QUESO::BaseVectorRealizer<Vec,Mat>& postRealizer = postRv.realizer();
+    QUESO::VectorSpace<Vec,Mat> auxSpace(env,"",postRealizer.subPeriod(),NULL);
     Vec auxVec(auxSpace.zeroVector());
 
     // Populate auxVec
@@ -154,7 +155,7 @@ namespace NitridationCalibration
   void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_prior()
   {
     this->_prior =
-      new uqUniformVectorRVClass<Vec,Mat>("prior_", // Extra prefix before the default "rv_"
+      new QUESO::UniformVectorRV<Vec,Mat>("prior_", // Extra prefix before the default "rv_"
 					  *(this->_param_domain) );
 
     return;
@@ -164,14 +165,14 @@ namespace NitridationCalibration
   void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_posterior()
   {
     this->_posterior =
-      new uqGenericVectorRVClass<Vec,Mat>("post_", // Extra prefix before the default "rv_" prefix
+      new QUESO::GenericVectorRV<Vec,Mat>("post_", // Extra prefix before the default "rv_" prefix
 					  *(this->_param_space) );
 
     return;
   }
 
   /* ------------------------- Instantiate -------------------------*/
-  template class QuesoStatisticalInverseProblemInterface<uqGslVectorClass,uqGslMatrixClass>;
+  template class QuesoStatisticalInverseProblemInterface<QUESO::GslVector,QUESO::GslMatrix>;
   
 } // end namespace NitridationCalibration
 

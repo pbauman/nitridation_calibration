@@ -39,8 +39,8 @@
 
 #ifdef NITCAL_HAVE_QUESO
 // QUESO
-#include "uqGslVector.h"
-#include "uqGslMatrix.h"
+#include "queso/GslVector.h"
+#include "queso/GslMatrix.h"
 #endif // HAVE_QUESO
 
 int main(int argc, char* argv[])
@@ -70,16 +70,16 @@ int main(int argc, char* argv[])
   //************************************************
   MPI_Init(&argc,&argv);
 
-  uqFullEnvironmentClass* env = new uqFullEnvironmentClass(MPI_COMM_WORLD,
+  QUESO::FullEnvironment* env = new QUESO::FullEnvironment(MPI_COMM_WORLD,
 							   QUESO_input.c_str(),
 							   "",
 							   NULL );
   {
-    NitridationCalibration::ConstantGammaCNSIP<uqGslVectorClass,uqGslMatrixClass> sip( env, "multilevel",
+    NitridationCalibration::ConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix> sip( env, "multilevel",
                                                                                        argc, argv,
                                                                                        libMesh_input_filename );
 
-    const uqBaseScalarFunctionClass<uqGslVectorClass,uqGslMatrixClass>& raw_likelihood = sip.get_likelihood_func();
+    const QUESO::BaseScalarFunction<QUESO::GslVector,QUESO::GslMatrix>& raw_likelihood = sip.get_likelihood_func();
 
     const NitridationCalibration::ConstantGammaCNLikelihood<QUESO::GslVector,QUESO::GslMatrix>& likelihood = 
       libMesh::libmesh_cast_ref<const NitridationCalibration::ConstantGammaCNLikelihood<QUESO::GslVector,QUESO::GslMatrix>& >( raw_likelihood );

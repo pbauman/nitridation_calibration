@@ -19,7 +19,7 @@ namespace NitridationCalibration
   {
   public:
 
-    ArrheniusGammaNConstantGammaCNSIP( uqBaseEnvironmentClass* env,
+    ArrheniusGammaNConstantGammaCNSIP( QUESO::BaseEnvironment* env,
                                       const std::string& method,
                                       int argc,
                                       char** argv,

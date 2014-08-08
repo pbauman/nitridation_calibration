@@ -17,7 +17,7 @@
 #include "boost/scoped_ptr.hpp"
 
 // Queso
-#include "uqStatisticalInverseProblem.h"
+#include "queso/StatisticalInverseProblem.h"
 
 // NitCal
 #include "likelihood_comm_handler.h"
@@ -30,18 +30,18 @@ namespace NitridationCalibration
   {
   public:
 
-    QuesoStatisticalInverseProblemInterface( uqBaseEnvironmentClass* env,
+    QuesoStatisticalInverseProblemInterface( QUESO::BaseEnvironment* env,
                                              const std::string method );
 
     virtual ~QuesoStatisticalInverseProblemInterface();
 
     void solve();
     
-    const uqVectorSpaceClass<Vec,Mat>&  get_param_space() const;
-    const uqVectorSubsetClass<Vec,Mat>&  get_param_domain() const;
-    const uqBaseVectorRVClass<Vec,Mat>& get_prior_rv() const;
-    const uqGenericVectorRVClass<Vec,Mat>&  get_posterior_rv() const;
-    const uqBaseScalarFunctionClass<Vec,Mat>& get_likelihood_func() const;
+    const QUESO::VectorSpace<Vec,Mat>&  get_param_space() const;
+    const QUESO::VectorSubset<Vec,Mat>&  get_param_domain() const;
+    const QUESO::BaseVectorRV<Vec,Mat>& get_prior_rv() const;
+    const QUESO::GenericVectorRV<Vec,Mat>&  get_posterior_rv() const;
+    const QUESO::BaseScalarFunction<Vec,Mat>& get_likelihood_func() const;
 
     const LikelihoodCommHandler& comm_handler() const;
 
@@ -54,17 +54,17 @@ namespace NitridationCalibration
     void create_prior();
     void create_posterior();
 
-    uqBaseEnvironmentClass *_queso_env;
+    QUESO::BaseEnvironment *_queso_env;
 
-    uqVectorSpaceClass<Vec,Mat> *_param_space;
-    uqVectorSubsetClass<Vec,Mat> *_param_domain;
+    QUESO::VectorSpace<Vec,Mat> *_param_space;
+    QUESO::VectorSubset<Vec,Mat> *_param_domain;
 
-    uqBaseScalarFunctionClass<Vec,Mat> *_likelihood;
+    QUESO::BaseScalarFunction<Vec,Mat> *_likelihood;
 
-    uqBaseVectorRVClass<Vec,Mat> *_prior;
-    uqGenericVectorRVClass<Vec,Mat> *_posterior;
+    QUESO::BaseVectorRV<Vec,Mat> *_prior;
+    QUESO::GenericVectorRV<Vec,Mat> *_posterior;
   
-    uqStatisticalInverseProblemClass<Vec,Mat>* _ip;
+    QUESO::StatisticalInverseProblem<Vec,Mat>* _ip;
 
     Mat* _proposal_cov_mat;
     Vec* _param_initials;
@@ -83,35 +83,35 @@ namespace NitridationCalibration
 
   template<class Vec,class Mat>
   inline
-  const uqVectorSpaceClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_param_space() const
+  const QUESO::VectorSpace<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_param_space() const
   {
     return *_param_space;
   }
 
   template<class Vec,class Mat>
   inline
-  const uqVectorSubsetClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_param_domain() const
+  const QUESO::VectorSubset<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_param_domain() const
   {
     return *_param_domain;
   }
 
   template<class Vec,class Mat>
   inline
-  const uqBaseVectorRVClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_prior_rv() const
+  const QUESO::BaseVectorRV<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_prior_rv() const
   {
     return *_prior;
   }
 
   template<class Vec,class Mat>
   inline
-  const uqGenericVectorRVClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_posterior_rv() const
+  const QUESO::GenericVectorRV<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_posterior_rv() const
   {
     return *_posterior;
   }
 
   template<class Vec,class Mat>
   inline
-  const uqBaseScalarFunctionClass<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_likelihood_func() const
+  const QUESO::BaseScalarFunction<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_likelihood_func() const
   {
     return *_likelihood;
   }

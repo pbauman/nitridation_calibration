@@ -14,18 +14,18 @@
 #ifdef NITCAL_HAVE_QUESO
 
 // QUESO
-#include "uqScalarFunction.h"
+#include "queso/ScalarFunction.h"
 
 namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
-  class QuesoLikelihoodInterface : public uqBaseScalarFunctionClass<Vec,Mat>
+  class QuesoLikelihoodInterface : public QUESO::BaseScalarFunction<Vec,Mat>
   {
   public:
 
     QuesoLikelihoodInterface( const char* prefix, 
-                              const uqVectorSetClass<Vec,Mat>& domain_set,
+                              const QUESO::VectorSet<Vec,Mat>& domain_set,
                               const bool returns_ln);
 
     virtual ~QuesoLikelihoodInterface();

@@ -12,8 +12,8 @@
 #include "constant_gamma_n_constant_gamma_cn_likelihood.h"
 
 // QUESO
-#include "uqGslVector.h"
-#include "uqGslMatrix.h"
+#include "queso/GslVector.h"
+#include "queso/GslMatrix.h"
 
 // libMesh
 #include "libmesh/getpot.h"
@@ -21,7 +21,7 @@
 namespace NitridationCalibration
 {
   template<class Vec,class Mat>
-  ConstantGammaNConstantGammaCNSIP<Vec,Mat>::ConstantGammaNConstantGammaCNSIP( uqBaseEnvironmentClass* env,
+  ConstantGammaNConstantGammaCNSIP<Vec,Mat>::ConstantGammaNConstantGammaCNSIP( QUESO::BaseEnvironment* env,
                                                    const std::string& method,
                                                    int argc,
                                                    char** argv,
@@ -53,7 +53,7 @@ namespace NitridationCalibration
   {
     const unsigned int n_params = 2;
 
-    this->_param_space = new uqVectorSpaceClass<Vec,Mat>( *(this->_queso_env),
+    this->_param_space = new QUESO::VectorSpace<Vec,Mat>( *(this->_queso_env),
 							  "param_",
 							  n_params,
 							  NULL );
@@ -79,7 +79,7 @@ namespace NitridationCalibration
     param_maxs[0] = gamma_CN_max;
     param_maxs[1] = gamma_N_max;
 
-    this->_param_domain = new uqBoxSubsetClass<Vec,Mat>("param_",
+    this->_param_domain = new QUESO::BoxSubset<Vec,Mat>("param_",
 							*(this->_param_space),
 							param_mins,
 							param_maxs );
@@ -107,7 +107,7 @@ namespace NitridationCalibration
   }
 
   // Instantiate GSL version of this class
-  template class ConstantGammaNConstantGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>;
+  template class ConstantGammaNConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>;
 
 } // end namespace NitridationCalibration
 

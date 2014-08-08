@@ -12,13 +12,13 @@
 #include "arrhenius_gamma_n_power_gamma_cn_likelihood.h"
 
 // QUESO
-#include "uqGslVector.h"
-#include "uqGslMatrix.h"
+#include "queso/GslVector.h"
+#include "queso/GslMatrix.h"
 
 namespace NitridationCalibration
 {
   template<class Vec,class Mat>
-  ArrheniusGammaNPowerGammaCNSIP<Vec,Mat>::ArrheniusGammaNPowerGammaCNSIP( uqBaseEnvironmentClass* env,
+  ArrheniusGammaNPowerGammaCNSIP<Vec,Mat>::ArrheniusGammaNPowerGammaCNSIP( QUESO::BaseEnvironment* env,
                                                                            const std::string& method,
                                                                            int argc,
                                                                            char** argv,
@@ -50,7 +50,7 @@ namespace NitridationCalibration
   {
     const unsigned int n_params = 5;
 
-    this->_param_space = new uqVectorSpaceClass<Vec,Mat>( *(this->_queso_env),
+    this->_param_space = new QUESO::VectorSpace<Vec,Mat>( *(this->_queso_env),
 							  "param_",
 							  n_params,
 							  NULL );
@@ -88,7 +88,7 @@ namespace NitridationCalibration
     param_maxs[3] = gamma0_N_max;
     param_maxs[4] = Ta_N_max;
 
-    this->_param_domain = new uqBoxSubsetClass<Vec,Mat>("param_",
+    this->_param_domain = new QUESO::BoxSubset<Vec,Mat>("param_",
 							*(this->_param_space),
 							param_mins,
 							param_maxs );
@@ -116,7 +116,7 @@ namespace NitridationCalibration
   }
 
   // Instantiate GSL version of this class
-  template class ArrheniusGammaNPowerGammaCNSIP<uqGslVectorClass,uqGslMatrixClass>;
+  template class ArrheniusGammaNPowerGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>;
 
 } // end namespace NitridationCalibration
 

@@ -22,7 +22,7 @@ namespace NitridationCalibration
   {
   public:
 
-    StatisticalInverseProblemBase( uqBaseEnvironmentClass* env,
+    StatisticalInverseProblemBase( QUESO::BaseEnvironment* env,
                                    const std::string& method,
                                    int argc,
                                    char** argv,
