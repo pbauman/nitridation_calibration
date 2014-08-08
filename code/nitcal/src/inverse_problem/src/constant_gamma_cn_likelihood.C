@@ -85,7 +85,8 @@ namespace NitridationCalibration
     // Now sum over all the data sets distributed across the processors.
     if( this->_comm_handler.get_inter0_rank() >= 0 )
       {
-        libMesh::Parallel::sum(likelihood_value, libMesh::Parallel::Communicator(this->_comm_handler.get_inter_chain_0_comm()));
+        libMesh::Parallel::Communicator comm(this->_comm_handler.get_inter_chain_0_comm());
+        comm.sum(likelihood_value);
       }
 
     if( this->m_env.fullRank() == 0 )

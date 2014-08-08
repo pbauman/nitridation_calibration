@@ -70,8 +70,8 @@ int main(int argc, char* argv[])
 
     const uqBaseScalarFunctionClass<uqGslVectorClass,uqGslMatrixClass>& raw_likelihood = sip.get_likelihood_func();
 
-    const NitridationCalibration::ConstantGammaNConstantGammaCNLikelihood<uqGslVectorClass,uqGslMatrixClass>& likelihood = 
-      libmesh_cast_ref<const NitridationCalibration::ConstantGammaNConstantGammaCNLikelihood<uqGslVectorClass,uqGslMatrixClass>& >( raw_likelihood );
+    const NitridationCalibration::ConstantGammaNConstantGammaCNLikelihood<QUESO::GslVector,QUESO::GslMatrix>& likelihood = 
+      libMesh::libmesh_cast_ref<const NitridationCalibration::ConstantGammaNConstantGammaCNLikelihood<QUESO::GslVector,QUESO::GslMatrix>& >( raw_likelihood );
 
 
     const double computed_likelihood = likelihood.evaluate_likelihood();
