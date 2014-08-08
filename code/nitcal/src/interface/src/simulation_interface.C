@@ -41,9 +41,8 @@ namespace NitridationCalibration
     std::tr1::shared_ptr<GRINS::QoIFactory> qoi_factory( new NitridationCalibration::QoIFactory );
     
     sim_builder.attach_qoi_factory( qoi_factory );
-    
-    libMesh::Parallel::Communicator libmesh_comm(mpi_comm);
-    _simulation = new NitridationSimulation( input, sim_builder, libmesh_comm );
+
+    _simulation = new NitridationSimulation( input, sim_builder, _libmesh_init.comm() );
 
     // Project initial solution
     std::string restart_file = input( "restart-options/restart_file", "none" );
