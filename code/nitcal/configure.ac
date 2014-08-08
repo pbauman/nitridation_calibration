@@ -134,7 +134,7 @@ AX_PATH_GRVY_NEW([0.30],[no])
 #----------------
 AX_PATH_GSL_NEW(1.15, no)
 AX_PATH_GLPK(4.47, no)
-AX_PATH_QUESO_NEW(0.45.0, no)
+AX_PATH_QUESO_NEW(0.50.1, no)
 
 
 dnl---------------------------------------------------------
