@@ -17,11 +17,11 @@ inlet_N = '0.526' #[% mole fraction]
 
 outlet_N = '0.179' #[% mole fraction]
 
-mesh_file = 'C_1_15_axi.exo'
+mesh_file = 'C_1_15_9adapt.xda'
 
 delta_t = '144'  #[min]
 
-mass_loss_data = '2.96' #[mg]
+mass_loss_data = '2.96' #[mg]                                                                                                                                                                                                                
 
 []
 
@@ -182,25 +182,6 @@ mesh_filename = '${SimulationParameters/mesh_file}'
 
 []
 
-[MeshAdaptivity]                                                  
-mesh_adaptive = 'true'
-absolute_global_tolerance = '1.0e-2'
-estimator_type = 'adjoint_residual'
-
-plot_cell_errors = 'false'
-
-max_refinement_steps = '9'
-
-output_adjoint_sol = 'false'
-
-refine_percentage = '0.1'
-coarsen_percentage = '0.1'
-refinement_strategy = 'elem_fraction'
-
-
-[]
-
-
 # Options for tiem solvers
 [unsteady-solver]
 transient = 'false' 
@@ -209,7 +190,7 @@ transient = 'false'
 
 #Linear and nonlinear solver options
 [linear-nonlinear-solver]
-max_nonlinear_iterations = '10'
+max_nonlinear_iterations = '1'
 max_linear_iterations = '500'
 
 verify_analytic_jacobians = '0.0'
