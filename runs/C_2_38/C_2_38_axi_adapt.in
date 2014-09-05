@@ -1,6 +1,5 @@
 #
 #
-
 [SimulationParameters]
 
 wall_temps = '298.0 350.0 1273.0 1273.0 525.0 400.0' # [K]
@@ -13,16 +12,15 @@ p_outlet = '352.0' # [Pa]
 
 T_sample = '1273.0' #[K]
 
-inlet_species = '0.99857 0.00143 0.0 0.0' #[mole fraction] , N2 N C CN
+inlet_N = '0.421' #[% mole fraction]
 
-#mesh_file = 'C_2_38_axi.exo'
-mesh_file = 'C_2_38_9adapt.xda'
+outlet_N = '0.143' #[% mole fraction]
+
+mesh_file = 'C_2_38_axi.exo'
 
 delta_t = '153'  #[min]
 
-mass_loss_data = '1.07' #[mg]
-
-average_N_data = '0.143' #[% mole fraction]
+mass_loss_data = '1.07' #[mg]                                                                                                                                                                                                                
 
 []
 
@@ -42,7 +40,7 @@ gamma_nominal_value = '1.0e-3'
 
 [AverageNLikelihood]
 
-data_value = '${* ${SimulationParameters/average_N_data} 1.0e-2}' # [mole fraction]
+data_value = '${* ${SimulationParameters/outlet_N} 1.0e-2}' # [mole fraction]
 
 # 15% of data value
 sigma = '${* 0.15 ${AverageNLikelihood/data_value} }'
@@ -153,7 +151,7 @@ T_wall_4 = '${SimulationParameters/T_sample}'
 species_bc_ids = '1 3 2' 
 species_bc_types = 'prescribed_mole_fracs gas_solid_catalytic_wall gas_recombination_catalytic_wall'
 
-bound_species_1 = '${SimulationParameters/inlet_species}'
+bound_species_1 = '${- 1 ${* ${SimulationParameters/inlet_N} 1.0e-2}}  ${* ${SimulationParameters/inlet_N} 1.0e-2} 0.0 0.0'
 
 wall_gas_solid_reactions_3 = 'N+C(s)->CN'
 
@@ -184,7 +182,7 @@ mesh_filename = '${SimulationParameters/mesh_file}'
 []
 
 [MeshAdaptivity]                                                  
-mesh_adaptive = 'false'
+mesh_adaptive = 'true'
 absolute_global_tolerance = '1.0e-2'
 estimator_type = 'adjoint_residual'
 
@@ -210,7 +208,7 @@ transient = 'false'
 
 #Linear and nonlinear solver options
 [linear-nonlinear-solver]
-max_nonlinear_iterations = '1'
+max_nonlinear_iterations = '10'
 max_linear_iterations = '500'
 
 verify_analytic_jacobians = '0.0'

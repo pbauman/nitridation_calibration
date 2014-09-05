@@ -173,10 +173,6 @@ pin_pressure = 'false'
 
 []
 
-[restart-options]
-
-restart_file = 'restart.xdr'
-
 # Mesh related options
 [mesh-options]
 mesh_option = 'read_mesh_from_file'
@@ -194,7 +190,7 @@ transient = 'false'
 
 #Linear and nonlinear solver options
 [linear-nonlinear-solver]
-max_nonlinear_iterations = '10'
+max_nonlinear_iterations = '1'
 max_linear_iterations = '500'
 
 verify_analytic_jacobians = '0.0'
