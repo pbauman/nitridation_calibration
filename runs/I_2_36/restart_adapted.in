@@ -5,23 +5,23 @@
 
 wall_temps = '298.0 350.0 1273.0 1273.0 525.0 400.0' # [K]
 
-mdot = '10.6' # [mg/s]
+mdot = '10.4' # [mg/s]
 
-p_inlet = '666.6' # [Pa]
+p_inlet = '386.6' # [Pa]
 
-p_outlet = '628.2' # [Pa]
+p_outlet = '324.0' # [Pa]
 
 T_sample = '1273.0' #[K]
 
-inlet_N = '0.563' #[% mole fraction]
+inlet_N = '0.352' #[% mole fraction]
 
-outlet_N = '0.163' #[% mole fraction]
+outlet_N = '0.128' #[% mole fraction]
 
-mesh_file = 'F_1_17_9adapt.xda'
+mesh_file = 'I_2_36_9adapt.xda'
 
-delta_t = '133'  #[min]
+delta_t = '180'  #[min]
 
-mass_loss_data = '3.7' #[mg]                                                                                                                                                                                                                 
+mass_loss_data = '1.58' #[mg]                                                                                                                                                                                                                
 
 []
 
