@@ -3,27 +3,28 @@
 
 [SimulationParameters]
 
-wall_temps = '298.0 350.0 1273.0 1273.0 525.0 400.0' # [K]
+wall_temps = '298.0 330.0 1073.0 1073.0 500.0 375.0' # [K]
 
-mdot = '10.6' # [mg/s]
+mdot = '10.2' # [mg/s]
 
-p_inlet = '666.6' # [Pa]
+p_inlet = '320.0' # [Pa]
 
-p_outlet = '628.2' # [Pa]
+p_outlet = '263.3' # [Pa]
 
-T_sample = '1273.0' #[K]
+T_sample = '1073.0' #[K]
 
-inlet_N = '0.563' #[% mole fraction]
+inlet_N = '0.273' #[% mole fraction]
 
-outlet_N = '0.163' #[% mole fraction]
+outlet_N = '0.117' #[% mole fraction]
 
-mesh_file = 'F_1_17_9adapt.xda'                                                                                                                                                                                                              
+mesh_file = 'Q_2_29_9adapt.xda'                                                                                                                                                                                                              
 
-delta_t = '133'  #[min]
+delta_t = '300'  #[min]
 
-mass_loss_data = '3.7' #[mg]                                                                                                                                                                                                                 
+mass_loss_data = '0.61' #[mg]                                                                                                                                                                                                                
 
 []
+
 
 #########################################################
 ## Change nothing below!
