@@ -17,7 +17,7 @@ inlet_N = '0.404' #[% mole fraction]
 
 outlet_N = '0.114' #[% mole fraction]
 
-mesh_file = 'K_2_63_axi.exo'
+mesh_file = 'K_2_63_axi_new.exo'
 
 delta_t = '136'  #[min]
 

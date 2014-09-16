@@ -184,8 +184,13 @@ mesh_filename = '${SimulationParameters/mesh_file}'
 
 [MeshAdaptivity]                                                  
 mesh_adaptive = 'true'
-absolute_global_tolerance = '1.0e-2'
-estimator_type = 'adjoint_residual'
+absolute_global_tolerance = '0.0'
+estimator_type = 'adjoint_refinement'
+
+node_level_mismatch_limit = '1'
+edge_level_mismatch_limit = '1'
+face_level_mismatch_limit = '1'
+enforce_mismatch_limit_prior_to_refinement= 'true'
 
 plot_cell_errors = 'false'
 
