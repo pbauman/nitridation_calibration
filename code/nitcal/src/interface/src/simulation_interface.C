@@ -74,7 +74,17 @@ namespace NitridationCalibration
 
 	*(_cached_initial_guess.get()) = *(system.solution.get());
       }
-    
+    else
+      {
+        std::string system_name = input( "screen-options/system_name", "GRINS" );
+	std::tr1::shared_ptr<libMesh::EquationSystems> es = _simulation->get_equation_system();
+	const libMesh::System& system = es->get_system(system_name);
+
+        _cached_initial_guess->init( *(system.solution.get()), true );
+
+	*(_cached_initial_guess.get()) = *(system.solution.get());
+      }
+
     return;
   }
 
