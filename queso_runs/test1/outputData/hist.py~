@@ -1,0 +1,80 @@
+#!/usr/bin/python
+
+import sys
+import os
+import glob
+
+import matplotlib                                                                                                                                                                                                                  
+from matplotlib import rc
+rc('text',usetex=True)
+
+# Different modes
+# By default, you can "show()" the figure which gives you an interactive window
+# and it will save a .png when you call savefig().
+# PDF produces a .pdf file, but show() doesn't seem to work.
+matplotlib.use("PDF")
+
+import matplotlib.pyplot as plot                                                                                                                                                                                                    
+from numpy import * 
+from scipy.stats import gaussian_kde
+
+data_2010 = loadtxt("ablation_samples_2010.dat")
+data_2011 = loadtxt("ablation_samples_2011.dat")
+
+tick_label_fontsize=18
+axis_label_fontsize=18
+matplotlib.rc('xtick', labelsize=tick_label_fontsize )
+matplotlib.rc(('xtick.major','xtick.minor'),  pad=10)
+matplotlib.rc('ytick', labelsize=tick_label_fontsize)
+
+
+#================================================================
+# Plot 2010 Data
+#================================================================
+plot.figure()
+plot.xlabel( "Ablation Rate", fontsize=axis_label_fontsize)
+plot.ylabel( "Output Samples", fontsize=axis_label_fontsize)
+plot.title( "2010 Forward Propagation Results", fontsize=axis_label_fontsize)
+
+p1 = plot.hist( data_2010[0,:], bins=10, align='mid' )
+
+ax = plot.twinx()
+
+density = gaussian_kde(data_2010[0,:])
+
+x = linspace(1.3e-5, 2.6e-5,100)
+
+p2 = plot.plot( x, density(x), 'k-', linewidth=2 )
+
+plot.ylabel( "PDF", fontsize=axis_label_fontsize)
+ax.ticklabel_format(style='sci', axis='x', scilimits=(0,0) ) 
+ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0) ) 
+
+plot.savefig("ablation_rate_pdf_2010.pdf")
+
+
+#================================================================
+# Plot 2012 Data
+#================================================================
+plot.figure()
+plot.xlabel( "Ablation Rate", fontsize=axis_label_fontsize)
+plot.ylabel( "Output Samples", fontsize=axis_label_fontsize)
+plot.title( "2011 Forward Propagation Results", fontsize=axis_label_fontsize)
+
+p1 = plot.hist( data_2011, bins=10, align='mid' )
+
+ax = plot.twinx()
+
+density = gaussian_kde(data_2011)
+
+x = linspace(2.5e-6, 7e-6,100)
+
+p2 = plot.plot( x, density(x), 'k-', linewidth=2 )
+
+plot.ylabel( "PDF", fontsize=axis_label_fontsize)
+ax.ticklabel_format(style='sci', axis='x', scilimits=(0,0) ) 
+ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0) ) 
+
+plot.savefig("ablation_rate_pdf_2011.pdf")
+
+plot.show()
