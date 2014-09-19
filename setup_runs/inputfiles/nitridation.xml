@@ -32,19 +32,22 @@
     <reaction reversible="yes" type="ThreeBody" id="0001">
       <equation>N2 + M [=] 2 N + M</equation>
       <rateCoeff>
-        <Arrhenius>
-           <A>7.e+18</A>
+        <ModifiedArrhenius>
+           <A units="m3/kmol/s">7.e+18</A>
            <b>-1.6</b>
            <E units="cal/mol">224801.3</E>
-        </Arrhenius>
+           <Tref units="K">1</Tref>
+        </ModifiedArrhenius>
         <efficiencies default="1.0">N:4.2857 C:4.2857 </efficiencies>
       </rateCoeff>
       <reactants>N2:1.0</reactants>
       <products>N:2.0</products>
     </reaction>
 
+
     
     <!-- reaction 0007    -->
+<!--
     <reaction reversible="yes" type="ThreeBody" id="0007">
       <equation>CN + M [=] C + N + M</equation>
       <rateCoeff>
@@ -58,7 +61,7 @@
       <reactants>CN:1</reactants>
       <products>C:1 N:1</products>
     </reaction>
-
+-->
  
     <!-- reaction 0012    -->
     <!--
