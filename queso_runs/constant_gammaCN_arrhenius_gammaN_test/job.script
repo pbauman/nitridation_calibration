@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#SBATCH -J nitsip          # Job Name
+#SBATCH -o nitsip.o%j      # Output and error file name (%j expands to jobID)
+#SBATCH -n 256          # Total number of MPI tasks 
+#SBATCH -N 16
+#SBATCH -p normal       # Queue (partition) name -- normal, development, etc.
+#SBATCH -t 24:00:00     # Run time (hh:mm:ss) - 1.5 hours
+#SBATCH -A UQ-Pecos
+
+# use ibrun to launch a parallel executable
+ibrun nitsip ./sip.in ./queso.in -ksp_type preonly -pc_type lu -pc_factor_mat_solver_package superlu_dist 
+ 
