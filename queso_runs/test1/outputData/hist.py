@@ -34,7 +34,7 @@ plot.figure()
 plot.xlabel( r"$\gamma_{CN}$", fontsize=axis_label_fontsize)
 plot.ylabel( "Output Samples", fontsize=axis_label_fontsize)
 
-p1 = plot.hist( data[:,2], bins=50, align='mid' )
+p1 = plot.hist( data[:,0], bins=50, align='mid' )
 
 #ax = plot.twinx()
 
