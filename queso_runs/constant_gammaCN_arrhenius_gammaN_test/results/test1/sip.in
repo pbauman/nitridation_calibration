@@ -20,5 +20,5 @@ gamma0_N_min = '0'
 gamma0_N_max = '2'
 
 Ta_N_nominal_value = '300.0'
-Ta_N_min = '-1.0'
+Ta_N_min = '-50.0'
 Ta_N_max = '1.0'
