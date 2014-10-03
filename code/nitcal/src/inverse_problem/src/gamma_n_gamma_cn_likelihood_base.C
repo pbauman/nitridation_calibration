@@ -51,21 +51,21 @@ namespace NitridationCalibration
   double GammaNGammaCNLikelihoodBase<Vec,Mat>::evaluate_likelihood() const
   {
     try
-    {
-    this->_interface.solve();
-    }
-    catch(...)
-    {
-    std::cerr << "Caught exception in solver" << std::endl;
-    libMesh::Real likelihood_value = -1.0e100;
-    if( this->_comm_handler.get_inter0_rank() >= 0 )
       {
-        libMesh::Parallel::Communicator comm(this->_comm_handler.get_inter_chain_0_comm());
-        comm.sum(likelihood_value);
+        this->_interface.solve();
       }
-    this->_interface.reset_initial_guess();
-    return likelihood_value;
-    }
+    catch(...)
+      {
+        std::cerr << "Caught exception in solver" << std::endl;
+        libMesh::Real likelihood_value = -1.0e100;
+        if( this->_comm_handler.get_inter0_rank() >= 0 )
+          {
+            libMesh::Parallel::Communicator comm(this->_comm_handler.get_inter_chain_0_comm());
+            comm.sum(likelihood_value);
+          }
+        this->_interface.reset_initial_guess();
+        return likelihood_value;
+      }
 
     const double computed_mass_loss = this->_interface.computed_mass_loss();
 
