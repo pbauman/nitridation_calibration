@@ -66,12 +66,14 @@ namespace NitridationCalibration
 
     this->_interface.set_gamma_N_params( gamma_N_params );
 
-    /*
+
     if( this->m_env.fullRank() == 0 )
     {
-      std::cout << "param = " << params[0] << ", gamma = " << params[0]*_gamma_nom << std::endl;
+      std::cout << "gammaCN = " << params[0]*_gamma_CN_nom << std::endl
+                << "gammaN  = " << params[1]*_gamma0_N_nom << std::endl
+                << "Ta_N    = " << params[2]*_Ta_N_nom << std::endl;
     }
-    */
+
 
     return;
   }
