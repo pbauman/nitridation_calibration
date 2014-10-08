@@ -1,0 +1,24 @@
+#
+#
+
+[InverseProblem]
+
+datasets = 'A_1_13a_restart.in
+            O_2_28_restart.in
+            Q_2_29_restart.in
+            U_2_55_restart.in'
+
+
+sip_type = 'arrhenius_gamma_n_constant_gamma_cn'
+
+gamma_CN_nominal_value = '1.0e-3'
+gamma_CN_min = '0.1'
+gamma_CN_max = '10'
+
+gamma0_N_nominal_value = '4.4e-4'
+gamma0_N_min = '0'
+gamma0_N_max = '2'
+
+Ta_N_nominal_value = '300.0'
+Ta_N_min = '-10.0'
+Ta_N_max = '1.0'

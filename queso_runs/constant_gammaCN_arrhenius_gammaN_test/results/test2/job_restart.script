@@ -1,0 +1,35 @@
+#!/bin/sh
+#SBATCH --partition=general-compute
+#SBATCH --exclusive
+#SBATCH --time=72:00:00
+#SBATCH --nodes=32
+#SBATCH --ntasks-per-node=12
+#SBATCH --job-name="nitsip"
+#SBATCH --output=run_output.out
+#SBATCH --constraint=CPU-E5645
+#SBATCH --mail-user=pbauman@buffalo.edu
+#SBATCH --mail-type=ALL
+
+echo "SLURM_JOB_ID="$SLURM_JOB_ID
+echo "SLURM_JOB_NODELIST"=$SLURM_JOB_NODELIST
+echo "SLURM_NNODES"=$SLURM_NNODES
+echo "SLURMTMPDIR="$SLURMTMPDIR
+
+cd $SLURM_SUBMIT_DIR
+echo "working directory = "$SLURM_SUBMIT_DIR
+
+module load gcc/4.8.2
+module load mvapich2/gcc-4.8.2/2-2.1a-QLogic
+module load mkl/11.1
+module list
+ulimit -s unlimited
+#
+
+echo "Launch helloworld with srun"
+NPROCS=`srun --nodes=${SLURM_NNODES} bash -c 'hostname' |wc -l`
+echo NPROCS=$NPROCS
+export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+srun -n $NPROCS nitsip ./sip.in ./queso_restart.in -ksp_type preonly -pc_type lu -pc_factor_mat_solver_package superlu_dist
+
+#
+echo "All Done!"
