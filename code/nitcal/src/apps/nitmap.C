@@ -23,6 +23,23 @@
 
 #include "nitcal_config.h"
 
+// C++
+#include <string>
+#include <iostream>
+
+// Boost
+#include "boost/scoped_ptr.hpp"
+
+// NitCal
+#include "constant_gamma_cn_sip.h"
+#include "constant_gamma_n_constant_gamma_cn_sip.h"
+#include "arrhenius_gamma_n_constant_gamma_cn_sip.h"
+#include "power_gamma_n_constant_gamma_cn_sip.h"
+#include "arrhenius_gamma_n_arrhenius_gamma_cn_sip.h"
+#include "power_gamma_n_arrhenius_gamma_cn_sip.h"
+#include "arrhenius_gamma_n_power_gamma_cn_sip.h"
+#include "power_gamma_n_power_gamma_cn_sip.h"
+
 #ifdef NITCAL_HAVE_QUESO
 // QUESO
 #include "queso/GslVector.h"
@@ -36,7 +53,7 @@ int main(int argc, char* argv[])
 #ifdef NITCAL_HAVE_QUESO
 
   // Check command line count.
-  if( argc < 2 )
+  if( argc < 3 )
     {
       // TODO: Need more consistent error handling.
       std::cerr << "Error: Must specify SIP and QUESO input files." << std::endl;
@@ -44,6 +61,7 @@ int main(int argc, char* argv[])
     }
 
   std::string sip_input_filename = argv[1];
+  std::string QUESO_input = argv[2];
 
   //************************************************
   // Initialize environments
@@ -105,9 +123,9 @@ int main(int argc, char* argv[])
 
      QUESO::GslOptimizer optimizer(raw_likelihood);
 
-     QUESO::GslVector guess(raw_likelihood->domainSet().vectorSpace().zeroVector());
+     QUESO::GslVector guess(raw_likelihood.domainSet().vectorSpace().zeroVector());
 
-     unsigned int guess_size = sip_input("Optimizer/guess").vector_variable_size();
+     unsigned int guess_size = sip_input.vector_variable_size("Optimizer/guess");
 
      if( guess_size != guess.sizeLocal() )
        {
@@ -124,7 +142,7 @@ int main(int argc, char* argv[])
          guess[i] = sip_input("Optimizer/guess", 0, i);
        }
 
-     const QUESO::Vector* minimizer = optimizer->minimize(guess);
+     const QUESO::Vector* minimizer = optimizer.minimize(guess);
 
   }
 

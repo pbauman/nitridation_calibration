@@ -8,6 +8,7 @@ bin_PROGRAMS  = nitfp
 bin_PROGRAMS += likelihood_test
 bin_PROGRAMS += nitsip
 bin_PROGRAMS += likelihood_sampling
+bin_PROGRAMS += nitmap
 
 lib_LTLIBRARIES = libnitcal.la
 
@@ -145,6 +146,12 @@ nitsip_LDADD = libnitcal.la
 
 likelihood_sampling_SOURCES = apps/likelihood_sampling.C
 likelihood_sampling_LDADD = libnitcal.la
+
+#------------------------------------
+# Source for nitmap
+#------------------------------------
+nitmap_SOURCES = apps/nitmap.C
+nitmap_LDADD = libnitcal.la
 
 #--------------------------------------
 #Local Directories to include for build
