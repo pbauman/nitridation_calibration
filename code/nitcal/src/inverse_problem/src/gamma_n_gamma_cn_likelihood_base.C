@@ -93,12 +93,14 @@ namespace NitridationCalibration
         comm.sum(likelihood_value);
       }
 
+    /*
     if( this->m_env.fullRank() == 0 )
       {
         this->_sample_count += 1;
 
         std::cout << "Sample #" << this->_sample_count << std::endl;
       }
+    */
 
     return likelihood_value;
   }
