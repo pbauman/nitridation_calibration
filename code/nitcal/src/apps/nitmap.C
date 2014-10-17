@@ -45,6 +45,7 @@
 #include "queso/GslVector.h"
 #include "queso/GslMatrix.h"
 #include "queso/GslOptimizer.h"
+#include "queso/OptimizerMonitor.h"
 #endif // HAVE_QUESO
 
 
@@ -113,7 +114,10 @@ int main(int argc, char* argv[])
       }
     else
       {
-        std::cerr << "Error: Invalid SIP type! Found " << sip_type << std::endl;
+        if( env->fullRank() == 0 )
+          {
+            std::cerr << "Error: Invalid SIP type! Found " << sip_type << std::endl;
+          }
         delete env;
         MPI_Finalize();
         return 1;
@@ -121,17 +125,18 @@ int main(int argc, char* argv[])
 
      const QUESO::BaseScalarFunction<QUESO::GslVector,QUESO::GslMatrix>& raw_likelihood = sip->get_likelihood_func();
 
-     QUESO::GslOptimizer optimizer(raw_likelihood);
-
      QUESO::GslVector guess(raw_likelihood.domainSet().vectorSpace().zeroVector());
 
      unsigned int guess_size = sip_input.vector_variable_size("Optimizer/guess");
 
      if( guess_size != guess.sizeLocal() )
        {
-         std::cerr << "Error: Initial guess size mismatch!" << std::endl
-                   << "input guess size = " << guess_size << std::endl
-                   << "sip guess size   = " << guess.sizeLocal() << std::endl;
+         if( env->fullRank() == 0 )
+           {
+             std::cerr << "Error: Initial guess size mismatch!" << std::endl
+                       << "input guess size = " << guess_size << std::endl
+                       << "sip guess size   = " << guess.sizeLocal() << std::endl;
+           }
          delete env;
          MPI_Finalize();
          return 1;
@@ -139,10 +144,65 @@ int main(int argc, char* argv[])
 
      for( unsigned int i = 0; i < guess_size; i++ )
        {
-         guess[i] = sip_input("Optimizer/guess", 0, i);
+         guess[i] = sip_input("Optimizer/guess", 0.0, i);
+         if( env->fullRank() == 0 )
+           {
+             std::cout << "guess["<<i<<"] = " << guess[i] << std::endl;
+           }
        }
 
-     const QUESO::Vector* minimizer = optimizer.minimize(guess);
+     QUESO::GslVector step_size(raw_likelihood.domainSet().vectorSpace().zeroVector());
+     unsigned int step_size_size = sip_input.vector_variable_size("Optimizer/step_size");
+     if( step_size_size != step_size.sizeLocal() )
+       {
+         if( env->fullRank() == 0 )
+           {
+             std::cerr << "Error: Initial step size mismatch!" << std::endl
+                       << "input step size size = " << step_size_size << std::endl
+                       << "sip step size size   = " << step_size.sizeLocal() << std::endl;
+           }
+         delete env;
+         MPI_Finalize();
+         return 1;
+       }
+
+     for( unsigned int i = 0; i < guess_size; i++ )
+       {
+         step_size[i] = sip_input("Optimizer/step_size", 0.0, i);
+       }
+
+     QUESO::OptimizerMonitor monitor(raw_likelihood.domainSet().env(),10000);
+     monitor.set_display_output(true,true);
+
+     QUESO::GslOptimizer optimizer(raw_likelihood);
+
+     std::string solver_type = sip_input("Optimizer/solver_type", "DIE");
+
+     double h = sip_input("Optimizer/finite_difference_step_size", 1.0e-8);
+     optimizer.set_solver_type(solver_type);
+     optimizer.set_step_size(step_size);
+     optimizer.setFiniteDifferenceStepSize(h);
+
+
+     if( env->fullRank() == 0 )
+       {
+         std::cout << std::endl
+                   << "=============================================================" << std::endl
+                   << "      Solving using: " << solver_type << std::endl
+                   << "=============================================================" << std::endl;
+       }
+
+     const QUESO::Vector* raw_minimizer = optimizer.minimize(guess,&monitor);
+
+     const QUESO::GslVector* minimizer = dynamic_cast<const QUESO::GslVector*>(raw_minimizer);
+
+     for( unsigned int i = 0; i < guess_size; i++ )
+       {
+         if( env->fullRank() == 0 )
+           {
+             std::cout << "minimizer["<<i<<"] = " << minimizer[i] << std::endl;
+           }
+       }
 
   }
 
