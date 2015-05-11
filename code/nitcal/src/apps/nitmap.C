@@ -192,9 +192,12 @@ int main(int argc, char* argv[])
                    << "=============================================================" << std::endl;
        }
 
-     const QUESO::Vector* raw_minimizer = optimizer.minimize(guess,&monitor);
 
-     const QUESO::GslVector* minimizer = dynamic_cast<const QUESO::GslVector*>(raw_minimizer);
+     optimizer.setInitialPoint(guess);
+
+     optimizer.minimize(&monitor);
+
+     const QUESO::GslVector& minimizer = optimizer.minimizer();
 
      for( unsigned int i = 0; i < guess_size; i++ )
        {
