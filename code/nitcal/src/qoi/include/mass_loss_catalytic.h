@@ -43,7 +43,7 @@
 
 namespace GRINS
 {
-  class ReactingLowMachNavierStokesBase;
+  class ReactingLowMachNavierStokesAbstract;
   class AssemblyContext;
 }
 
@@ -81,7 +81,7 @@ namespace NitridationCalibration
 
     GRINS::VariableIndex _T_var;
 
-    GRINS::ReactingLowMachNavierStokesBase* _physics;
+    GRINS::ReactingLowMachNavierStokesAbstract* _physics;
 
     unsigned int _N_index;
     unsigned int _CN_index;

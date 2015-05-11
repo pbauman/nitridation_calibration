@@ -31,7 +31,7 @@
 
 // GRINS
 #include "grins/multiphysics_sys.h"
-#include "grins/reacting_low_mach_navier_stokes_base.h"
+#include "grins/reacting_low_mach_navier_stokes_abstract.h"
 #include "grins/variable_name_defaults.h"
 #include "grins/math_constants.h"
 #include "grins/assembly_context.h"
@@ -103,8 +103,8 @@ namespace NitridationCalibration
     this->_factor = delta_t*GRINS::Constants::two_pi;
 
     std::tr1::shared_ptr<GRINS::Physics> base_physics = system.get_physics( GRINS::reacting_low_mach_navier_stokes );
-    _physics = libMesh::libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBase* >( base_physics.get() );
-    
+    _physics = libMesh::libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesAbstract* >( base_physics.get() );
+
     // Grab temperature variable index
     std::string T_var_name = input("Physics/VariableNames/Temperature",
                                    GRINS::T_var_name_default);
