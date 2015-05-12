@@ -66,34 +66,36 @@ int main(int argc, char* argv[])
   //************************************************
   MPI_Init(&argc,&argv);
 
-  QUESO::FullEnvironment env( MPI_COMM_WORLD,
-                              QUESO_input.c_str(),
-                              "",
-                              NULL );
+  {
+    QUESO::FullEnvironment env( MPI_COMM_WORLD,
+                                QUESO_input.c_str(),
+                                "",
+                                NULL );
 
-  NitridationCalibration::ConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>
-    model(argc,argv,env,forward_run_input,model_input );
+    NitridationCalibration::ConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>
+      model(argc,argv,env,forward_run_input,model_input );
 
-  std::vector<unsigned int> n_points(1);
-  n_points[0] = 101;
+    std::vector<unsigned int> n_points(1);
+    n_points[0] = 101;
 
-  unsigned int n_datasets = 2;
-  QUESO::InterpolationSurrogateDataSet<QUESO::GslVector, QUESO::GslMatrix>
-    data(model.param_domain(),n_points,n_datasets);
+    unsigned int n_datasets = 2;
+    QUESO::InterpolationSurrogateDataSet<QUESO::GslVector, QUESO::GslMatrix>
+      data(model.param_domain(),n_points,n_datasets);
 
-  NitridationCalibration::ModelInterpolationBuilder<QUESO::GslVector,QUESO::GslMatrix>
-    builder( data, model );
+    NitridationCalibration::ModelInterpolationBuilder<QUESO::GslVector,QUESO::GslMatrix>
+      builder( data, model );
 
-  // The expensive part. The builder will now evaluate the model for all the
-  // desired points in parameter space. This will build both interpolants.
-  builder.build_values();
+    // The expensive part. The builder will now evaluate the model for all the
+    // desired points in parameter space. This will build both interpolants.
+    builder.build_values();
 
-  // Now that we've built the data, we write it out so we can reuse it later
-  QUESO::InterpolationSurrogateIOASCII<QUESO::GslVector, QUESO::GslMatrix>
-    data_writer;
+    // Now that we've built the data, we write it out so we can reuse it later
+    QUESO::InterpolationSurrogateIOASCII<QUESO::GslVector, QUESO::GslMatrix>
+      data_writer;
 
-  data_writer.write( "constant_gamma_cn_mass_loss.dat", data.get_dataset(0) );
-  data_writer.write( "constant_gamma_cn_avg_N.dat", data.get_dataset(1) );
+    data_writer.write( "constant_gamma_cn_mass_loss.dat", data.get_dataset(0) );
+    data_writer.write( "constant_gamma_cn_avg_N.dat", data.get_dataset(1) );
+  }
 
   MPI_Finalize();
 
