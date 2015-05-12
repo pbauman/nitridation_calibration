@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------bl-
 //--------------------------------------------------------------------------
-// 
-// NitCal - Nitridation Calibration 
+//
+// NitCal - Nitridation Calibration
 //
 // Copyright (C) 2012-2013 The PECOS Development Team
 //
@@ -123,58 +123,66 @@ int main(int argc, char* argv[])
         return 1;
       }
 
-     const QUESO::BaseScalarFunction<QUESO::GslVector,QUESO::GslMatrix>& raw_likelihood = sip->get_likelihood_func();
+    QUESO::VectorSet<QUESO::GslVector,QUESO::GslMatrix>* solutionDomain =
+       QUESO::InstantiateIntersection(sip->get_prior_rv().pdf().domainSet(),sip->get_likelihood_func().domainSet());
 
-     QUESO::GslVector guess(raw_likelihood.domainSet().vectorSpace().zeroVector());
+    QUESO::BayesianJointPdf<QUESO::GslVector,QUESO::GslMatrix>
+       raw_posterior( "post_",
+                      sip->get_prior_rv().pdf(),
+                      sip->get_likelihood_func(),
+                      1.,
+                      *solutionDomain );
 
-     unsigned int guess_size = sip_input.vector_variable_size("Optimizer/guess");
+    QUESO::GslVector guess(raw_posterior.domainSet().vectorSpace().zeroVector());
 
-     if( guess_size != guess.sizeLocal() )
-       {
-         if( env->fullRank() == 0 )
-           {
-             std::cerr << "Error: Initial guess size mismatch!" << std::endl
-                       << "input guess size = " << guess_size << std::endl
-                       << "sip guess size   = " << guess.sizeLocal() << std::endl;
-           }
-         delete env;
-         MPI_Finalize();
-         return 1;
+    unsigned int guess_size = sip_input.vector_variable_size("Optimizer/guess");
+
+    if( guess_size != guess.sizeLocal() )
+      {
+        if( env->fullRank() == 0 )
+          {
+            std::cerr << "Error: Initial guess size mismatch!" << std::endl
+                      << "input guess size = " << guess_size << std::endl
+                      << "sip guess size   = " << guess.sizeLocal() << std::endl;
+          }
+        delete env;
+        MPI_Finalize();
+        return 1;
+      }
+
+    for( unsigned int i = 0; i < guess_size; i++ )
+      {
+        guess[i] = sip_input("Optimizer/guess", 0.0, i);
+        if( env->fullRank() == 0 )
+          {
+            std::cout << "guess["<<i<<"] = " << guess[i] << std::endl;
+          }
+      }
+
+    QUESO::GslVector step_size(raw_posterior.domainSet().vectorSpace().zeroVector());
+    unsigned int step_size_size = sip_input.vector_variable_size("Optimizer/step_size");
+    if( step_size_size != step_size.sizeLocal() )
+      {
+        if( env->fullRank() == 0 )
+          {
+            std::cerr << "Error: Initial step size mismatch!" << std::endl
+                      << "input step size size = " << step_size_size << std::endl
+                      << "sip step size size   = " << step_size.sizeLocal() << std::endl;
+          }
+        delete env;
+        MPI_Finalize();
+        return 1;
        }
 
-     for( unsigned int i = 0; i < guess_size; i++ )
-       {
-         guess[i] = sip_input("Optimizer/guess", 0.0, i);
-         if( env->fullRank() == 0 )
-           {
-             std::cout << "guess["<<i<<"] = " << guess[i] << std::endl;
-           }
-       }
-
-     QUESO::GslVector step_size(raw_likelihood.domainSet().vectorSpace().zeroVector());
-     unsigned int step_size_size = sip_input.vector_variable_size("Optimizer/step_size");
-     if( step_size_size != step_size.sizeLocal() )
-       {
-         if( env->fullRank() == 0 )
-           {
-             std::cerr << "Error: Initial step size mismatch!" << std::endl
-                       << "input step size size = " << step_size_size << std::endl
-                       << "sip step size size   = " << step_size.sizeLocal() << std::endl;
-           }
-         delete env;
-         MPI_Finalize();
-         return 1;
-       }
-
-     for( unsigned int i = 0; i < guess_size; i++ )
+    for( unsigned int i = 0; i < guess_size; i++ )
        {
          step_size[i] = sip_input("Optimizer/step_size", 0.0, i);
        }
 
-     QUESO::OptimizerMonitor monitor(raw_likelihood.domainSet().env(),10000);
+     QUESO::OptimizerMonitor monitor(raw_posterior.domainSet().env(),10000);
      monitor.set_display_output(true,true);
 
-     QUESO::GslOptimizer optimizer(raw_likelihood);
+     QUESO::GslOptimizer optimizer(raw_posterior);
 
      std::string solver_type = sip_input("Optimizer/solver_type", "DIE");
 
@@ -221,6 +229,6 @@ int main(int argc, char* argv[])
   std::cout << "Must have linked against a valid QUESO installation for this program to run." << std::endl;
 
 #endif //NITCAL_HAVE_QUESO
-  
+
   return 0;
 }
