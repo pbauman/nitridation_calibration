@@ -9,6 +9,9 @@
 #ifndef NITCAL_SIMULATION_INTERFACE_H
 #define NITCAL_SIMULATION_INTERFACE_H
 
+// Boost
+#include "boost/scoped_ptr.hpp"
+
 // Nitridation
 #include "nitridation_simulation.h"
 
@@ -42,6 +45,8 @@ namespace NitridationCalibration
     NitridationSimulation* _simulation;
 
     libMesh::AutoPtr<libMesh::NumericVector<libMesh::Real> > _cached_initial_guess;
+
+    boost::scoped_ptr<GetPot> _command_line;
 
   };
 

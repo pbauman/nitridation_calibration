@@ -20,6 +20,7 @@ namespace NitridationCalibration
   public:
 
     NitridationSimulation( const GetPot& input,
+                           GetPot& command_line,
 			   GRINS::SimulationBuilder& sim_builder,
                            const libMesh::Parallel::Communicator& comm );
 

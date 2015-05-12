@@ -30,7 +30,8 @@ namespace NitridationCalibration
 					    MPI_Comm mpi_comm,
 					    const GetPot& input )
     : _libmesh_init(argc,argv,mpi_comm),
-      _cached_initial_guess( libMesh::NumericVector<libMesh::Real>::build(libMesh::Parallel::Communicator(mpi_comm)) )
+      _cached_initial_guess( libMesh::NumericVector<libMesh::Real>::build(libMesh::Parallel::Communicator(mpi_comm)) ),
+      _command_line( new GetPot(argc,argv) )
   {
     GRINS::SimulationBuilder sim_builder;
     
@@ -42,7 +43,7 @@ namespace NitridationCalibration
     
     sim_builder.attach_qoi_factory( qoi_factory );
 
-    _simulation = new NitridationSimulation( input, sim_builder, _libmesh_init.comm() );
+    _simulation = new NitridationSimulation( input, *(_command_line.get()), sim_builder, _libmesh_init.comm() );
 
     // Project initial solution
     std::string restart_file = input( "restart-options/restart_file", "none" );

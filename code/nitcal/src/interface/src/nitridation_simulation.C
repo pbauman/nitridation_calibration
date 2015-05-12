@@ -25,9 +25,10 @@
 namespace NitridationCalibration
 {
   NitridationSimulation::NitridationSimulation( const GetPot& input,
+                                                GetPot& command_line,
 					        GRINS::SimulationBuilder& sim_builder,
                                                 const libMesh::Parallel::Communicator& comm )
-    : GRINS::Simulation(input,sim_builder,comm)
+    : GRINS::Simulation(input,command_line,sim_builder,comm)
   {
     /* Search for the QoI's and cache their indices for later use */
     // First get the DifferentiableQoI and cast to CompositeQoI
