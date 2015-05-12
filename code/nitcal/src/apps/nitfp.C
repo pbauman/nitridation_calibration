@@ -60,6 +60,8 @@ int main(int argc, char* argv[])
   // Create our GetPot object.
   GetPot libMesh_inputfile( libMesh_input_filename );
 
+  GetPot command_line(argc,argv);
+
   // Initialize libMesh library.
   libMesh::LibMeshInit libmesh_init(argc, argv);
  
@@ -74,6 +76,7 @@ int main(int argc, char* argv[])
   sim_builder.attach_qoi_factory( qoi_factory );
   
   GRINS::Simulation grins( libMesh_inputfile,
+                           command_line,
 			   sim_builder,
                            libmesh_init.comm());
 
