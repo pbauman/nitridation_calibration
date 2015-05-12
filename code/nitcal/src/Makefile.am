@@ -9,6 +9,7 @@ bin_PROGRAMS += likelihood_test
 bin_PROGRAMS += nitsip
 bin_PROGRAMS += likelihood_sampling
 bin_PROGRAMS += nitmap
+bin_PROGRAMS += nit_interp
 
 lib_LTLIBRARIES = libnitcal.la
 
@@ -36,6 +37,9 @@ libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_power_gamma_cn_sip
 libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_constant_gamma_cn_sip.C
 libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_arrhenius_gamma_cn_sip.C
 libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_power_gamma_cn_sip.C
+libnitcal_la_SOURCES += inverse_problem/src/model_interpolation_builder.C
+libnitcal_la_SOURCES += inverse_problem/src/model_interface_base.C
+libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_cn_model.C
 
 # inverse_problem -likelihood stuff
 libnitcal_la_SOURCES += inverse_problem/src/likelihood_comm_handler.C
@@ -82,6 +86,9 @@ include_HEADERS += inverse_problem/include/arrhenius_gamma_n_power_gamma_cn_sip.
 include_HEADERS += inverse_problem/include/power_gamma_n_constant_gamma_cn_sip.h
 include_HEADERS += inverse_problem/include/power_gamma_n_arrhenius_gamma_cn_sip.h
 include_HEADERS += inverse_problem/include/power_gamma_n_power_gamma_cn_sip.h
+include_HEADERS += inverse_problem/include/model_interpolation_builder.h
+include_HEADERS += inverse_problem/include/model_interface_base.h
+include_HEADERS += inverse_problem/include/constant_gamma_cn_model.h
 
 # inverse_problem - likelihood stuff
 include_HEADERS += inverse_problem/include/likelihood_comm_handler.h
@@ -152,6 +159,12 @@ likelihood_sampling_LDADD = libnitcal.la
 #------------------------------------
 nitmap_SOURCES = apps/nitmap.C
 nitmap_LDADD = libnitcal.la
+
+#------------------------------------
+# Source for nitmap
+#------------------------------------
+nit_interp_SOURCES = apps/nit_interp.C
+nit_interp_LDADD = libnitcal.la
 
 #--------------------------------------
 #Local Directories to include for build
