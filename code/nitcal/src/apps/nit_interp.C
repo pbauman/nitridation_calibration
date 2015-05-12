@@ -32,7 +32,9 @@
 
 // NitCal
 #include <constant_gamma_cn_model.h>
+#include <constant_gamma_n_constant_gamma_cn_model.h>
 #include <model_interpolation_builder.h>
+
 
 #ifdef NITCAL_HAVE_QUESO
 // QUESO
@@ -58,7 +60,7 @@ int main(int argc, char* argv[])
     }
 
   std::string forward_run_input = argv[1];
-  std::string model_input = argv[2];
+  std::string model_inputfile = argv[2];
   std::string QUESO_input = argv[3];
 
   //************************************************
@@ -67,23 +69,42 @@ int main(int argc, char* argv[])
   MPI_Init(&argc,&argv);
 
   {
-    QUESO::FullEnvironment env( MPI_COMM_WORLD,
-                                QUESO_input.c_str(),
-                                "",
-                                NULL );
+    boost::scoped_ptr<QUESO::FullEnvironment>
+      env( new QUESO::FullEnvironment( MPI_COMM_WORLD,
+                                       QUESO_input.c_str(),
+                                       "",
+                                       NULL ) );
 
-    NitridationCalibration::ConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>
-      model(argc,argv,env,forward_run_input,model_input );
+    boost::scoped_ptr<NitridationCalibration::ModelInterfaceBase<QUESO::GslVector,QUESO::GslMatrix> >
+      model;
+
+    GetPot model_input( model_inputfile );
+
+    std::string model_type = model_input( "ModelType/model", "DIE!" );
+
+    if( model_type == std::string("constant_gamma_cn") )
+      model.reset( new NitridationCalibration::ConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(argc,argv,*env,forward_run_input,model_inputfile ) );
+
+    else if( model_type == std::string("constant_gamma_n_constant_gamma_cn") )
+      model.reset( new NitridationCalibration::ConstantGammaNConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(argc,argv,*env,forward_run_input,model_inputfile ) );
+
+    else
+      {
+        std::cerr << "Error: Invalid Model type! Found " << model_type << std::endl;
+        env.reset();
+        MPI_Finalize();
+        return 1;
+      }
 
     std::vector<unsigned int> n_points(1);
     n_points[0] = 101;
 
     unsigned int n_datasets = 2;
     QUESO::InterpolationSurrogateDataSet<QUESO::GslVector, QUESO::GslMatrix>
-      data(model.param_domain(),n_points,n_datasets);
+      data(model->param_domain(),n_points,n_datasets);
 
     NitridationCalibration::ModelInterpolationBuilder<QUESO::GslVector,QUESO::GslMatrix>
-      builder( data, model );
+      builder( data, *(model.get()) );
 
     // The expensive part. The builder will now evaluate the model for all the
     // desired points in parameter space. This will build both interpolants.
