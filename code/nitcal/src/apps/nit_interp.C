@@ -96,9 +96,26 @@ int main(int argc, char* argv[])
         return 1;
       }
 
-    std::vector<unsigned int> n_points(1);
-    n_points[0] = 101;
+    std::vector<unsigned int> n_points(model->param_domain().vectorSpace().dimGlobal());
 
+    unsigned int num_points = model_input.vector_variable_size( "ModelInterpolation/n_points");
+
+    if( n_points.size() != num_points )
+      {
+        std::cerr << "Error: Mismatch in n_points and parameter space dim!"
+                  << std::endl
+                  << "num_points = " << num_points << std::endl
+                  << "dim        = " << n_points.size()
+                  << std::endl;
+        env.reset();
+        MPI_Finalize();
+        return 1;
+      }
+
+    for( unsigned int n = 0; n < num_points; n++ )
+      n_points[n] = model_input( "ModelInterpolation/n_points", 0, n );
+
+    // Always two datasets: mass_loss, avg_N
     unsigned int n_datasets = 2;
     QUESO::InterpolationSurrogateDataSet<QUESO::GslVector, QUESO::GslMatrix>
       data(model->param_domain(),n_points,n_datasets);
