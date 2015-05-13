@@ -42,6 +42,7 @@ libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_n_constant_gamma_cn_m
 libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_constant_gamma_cn_model.C
 libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_arrhenius_gamma_cn_model.C
 libnitcal_la_SOURCES += inverse_problem/src/full_model_evaluator.C
+libnitcal_la_SOURCES += inverse_problem/src/queso_gaussian_likelihood_diagonal_covariance_interface.C
 
 # inverse_problem -likelihood stuff
 libnitcal_la_SOURCES += inverse_problem/src/likelihood_comm_handler.C
@@ -95,6 +96,7 @@ include_HEADERS += inverse_problem/include/arrhenius_gamma_n_constant_gamma_cn_m
 include_HEADERS += inverse_problem/include/arrhenius_gamma_n_arrhenius_gamma_cn_model.h
 include_HEADERS += inverse_problem/include/model_evaluator_base.h
 include_HEADERS += inverse_problem/include/full_model_evaluator.h
+include_HEADERS += inverse_problem/include/queso_gaussian_likelihood_diagonal_covariance_interface.h
 
 # inverse_problem - likelihood stuff
 include_HEADERS += inverse_problem/include/likelihood_comm_handler.h
