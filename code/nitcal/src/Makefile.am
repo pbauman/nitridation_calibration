@@ -41,6 +41,8 @@ libnitcal_la_SOURCES += inverse_problem/src/model_interpolation_builder.C
 libnitcal_la_SOURCES += inverse_problem/src/model_interface_base.C
 libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_cn_model.C
 libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_n_constant_gamma_cn_model.C
+libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_constant_gamma_cn_model.C
+libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_arrhenius_gamma_cn_model.C
 
 # inverse_problem -likelihood stuff
 libnitcal_la_SOURCES += inverse_problem/src/likelihood_comm_handler.C
@@ -91,6 +93,8 @@ include_HEADERS += inverse_problem/include/model_interpolation_builder.h
 include_HEADERS += inverse_problem/include/model_interface_base.h
 include_HEADERS += inverse_problem/include/constant_gamma_cn_model.h
 include_HEADERS += inverse_problem/include/constant_gamma_n_constant_gamma_cn_model.h
+include_HEADERS += inverse_problem/include/arrhenius_gamma_n_constant_gamma_cn_model.h
+include_HEADERS += inverse_problem/include/arrhenius_gamma_n_arrhenius_gamma_cn_model.h
 
 # inverse_problem - likelihood stuff
 include_HEADERS += inverse_problem/include/likelihood_comm_handler.h
