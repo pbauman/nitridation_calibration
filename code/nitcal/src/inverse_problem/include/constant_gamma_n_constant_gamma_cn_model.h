@@ -33,6 +33,10 @@ namespace NitridationCalibration
 
     double _gamma_N_nom;
 
+  private:
+
+    ConstantGammaNConstantGammaCNModel();
+
   };
 
 } // end namespace NitridationCalibration
