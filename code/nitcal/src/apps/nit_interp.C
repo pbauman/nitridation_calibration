@@ -33,6 +33,8 @@
 // NitCal
 #include <constant_gamma_cn_model.h>
 #include <constant_gamma_n_constant_gamma_cn_model.h>
+#include <arrhenius_gamma_n_constant_gamma_cn_model.h>
+#include <arrhenius_gamma_n_arrhenius_gamma_cn_model.h>
 #include <model_interpolation_builder.h>
 
 
@@ -87,6 +89,12 @@ int main(int argc, char* argv[])
 
     else if( model_type == std::string("constant_gamma_n_constant_gamma_cn") )
       model.reset( new NitridationCalibration::ConstantGammaNConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(argc,argv,*env,forward_run_input,model_inputfile ) );
+
+    else if( model_type == std::string("arrhenius_gamma_n_constant_gamma_cn") )
+      model.reset( new NitridationCalibration::ArrheniusGammaNConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(argc,argv,*env,forward_run_input,model_inputfile ) );
+
+    else if( model_type == std::string("arrhenius_gamma_n_constant_gamma_cn") )
+      model.reset( new NitridationCalibration::ArrheniusGammaNArrheniusGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(argc,argv,*env,forward_run_input,model_inputfile ) );
 
     else
       {
