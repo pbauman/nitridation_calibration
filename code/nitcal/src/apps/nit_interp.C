@@ -34,6 +34,7 @@
 #include <constant_gamma_n_constant_gamma_cn_model.h>
 #include <arrhenius_gamma_n_constant_gamma_cn_model.h>
 #include <arrhenius_gamma_n_arrhenius_gamma_cn_model.h>
+#include <full_model_evaluator.h>
 #include <model_interpolation_builder.h>
 
 
@@ -83,17 +84,14 @@ int main(int argc, char* argv[])
 
     std::string model_type = model_input( "ModelType/model", "DIE!" );
 
-    if( model_type == std::string("constant_gamma_cn") )
-      model.reset( new NitridationCalibration::ConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(argc,argv,*env,forward_run_input,model_inputfile ) );
-
-      model.reset( new NitridationCalibration::ConstantGammaNConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(argc,argv,*env,forward_run_input,model_inputfile ) );
     if( model_type == std::string("constant_gamma_n_constant_gamma_cn") )
+      model.reset( new NitridationCalibration::ConstantGammaNConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(*env, model_input) );
 
     else if( model_type == std::string("arrhenius_gamma_n_constant_gamma_cn") )
-      model.reset( new NitridationCalibration::ArrheniusGammaNConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(argc,argv,*env,forward_run_input,model_inputfile ) );
+      model.reset( new NitridationCalibration::ArrheniusGammaNConstantGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(*env, model_input) );
 
     else if( model_type == std::string("arrhenius_gamma_n_constant_gamma_cn") )
-      model.reset( new NitridationCalibration::ArrheniusGammaNArrheniusGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(argc,argv,*env,forward_run_input,model_inputfile ) );
+      model.reset( new NitridationCalibration::ArrheniusGammaNArrheniusGammaCNModel<QUESO::GslVector,QUESO::GslMatrix>(*env, model_input) );
 
     else
       {
@@ -102,6 +100,9 @@ int main(int argc, char* argv[])
         MPI_Finalize();
         return 1;
       }
+
+    NitridationCalibration::FullModelEvaluator<QUESO::GslVector,QUESO::GslMatrix>
+      model_evaluator(argc,argv,*env,forward_run_input,*(model.get()));
 
     std::vector<unsigned int> n_points(model->param_domain().vectorSpace().dimGlobal());
 
@@ -128,7 +129,7 @@ int main(int argc, char* argv[])
       data(model->param_domain(),n_points,n_datasets);
 
     NitridationCalibration::ModelInterpolationBuilder<QUESO::GslVector,QUESO::GslMatrix>
-      builder( data, *(model.get()) );
+      builder( data, model_evaluator );
 
     // The expensive part. The builder will now evaluate the model for all the
     // desired points in parameter space. This will build both interpolants.

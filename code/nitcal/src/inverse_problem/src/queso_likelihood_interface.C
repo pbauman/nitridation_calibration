@@ -21,7 +21,7 @@ namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
-  QuesoLikelihoodInterface<Vec,Mat>::QuesoLikelihoodInterface( const char* prefix, 
+  QuesoLikelihoodInterface<Vec,Mat>::QuesoLikelihoodInterface( const char* prefix,
                                                                const QUESO::VectorSet<Vec,Mat>& domain_set,
                                                                const bool returns_ln )
     : QUESO::BaseScalarFunction<Vec,Mat>( prefix, domain_set ),
@@ -38,10 +38,10 @@ namespace NitridationCalibration
 
 
   template<class Vec,class Mat>
-  double QuesoLikelihoodInterface<Vec,Mat>::actualValue( const Vec& domainVector, 
-                                                         const Vec* /*domainDirection*/, 
-                                                         Vec* /*gradVector*/, 
-                                                         Mat* /*hessianMatrix*/, 
+  double QuesoLikelihoodInterface<Vec,Mat>::actualValue( const Vec& domainVector,
+                                                         const Vec* /*domainDirection*/,
+                                                         Vec* /*gradVector*/,
+                                                         Mat* /*hessianMatrix*/,
                                                          Vec* /*hessianEffect*/ ) const
   {
     //********************************************************************
@@ -51,7 +51,7 @@ namespace NitridationCalibration
     unsigned int num_params = domainVector.sizeLocal();
 
     std::vector<double> param_values( num_params );
-  
+
     for(unsigned int i = 0; i < num_params; i++ )
       {
 	param_values[i] = domainVector[i];
@@ -74,10 +74,10 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  double QuesoLikelihoodInterface<Vec,Mat>::lnValue( const Vec& domainVector, 
-                                                     const Vec* /*domainDirection*/, 
-                                                     Vec* /*gradVector*/, 
-                                                     Mat* /*hessianMatrix*/, 
+  double QuesoLikelihoodInterface<Vec,Mat>::lnValue( const Vec& domainVector,
+                                                     const Vec* /*domainDirection*/,
+                                                     Vec* /*gradVector*/,
+                                                     Mat* /*hessianMatrix*/,
                                                      Vec* /*hessianEffect*/  ) const
   {
     //********************************************************************
@@ -87,7 +87,7 @@ namespace NitridationCalibration
     unsigned int num_params = domainVector.sizeLocal();
 
     std::vector<double> param_values( num_params );
-  
+
     for(unsigned int i = 0; i < num_params; i++ )
       {
 	param_values[i] = domainVector[i];

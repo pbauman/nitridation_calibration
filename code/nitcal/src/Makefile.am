@@ -38,7 +38,6 @@ libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_constant_gamma_cn_sip.
 libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_arrhenius_gamma_cn_sip.C
 libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_power_gamma_cn_sip.C
 libnitcal_la_SOURCES += inverse_problem/src/model_interpolation_builder.C
-libnitcal_la_SOURCES += inverse_problem/src/model_interface_base.C
 libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_n_constant_gamma_cn_model.C
 libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_constant_gamma_cn_model.C
 libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_arrhenius_gamma_cn_model.C
@@ -189,7 +188,7 @@ AM_CPPFLAGS += $(QUESO_CPPFLAGS)
 AM_CPPFLAGS += $(GSL_CPPFLAGS)
 AM_CPPFLAGS += $(GLPK_CPPFLAGS)
 
-if HDF5_ENABLED 
+if HDF5_ENABLED
   AM_CPPFLAGS += $(HDF5_CFLAGS)
 endif
 

@@ -18,17 +18,15 @@ namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
-  ConstantGammaNConstantGammaCNModel<Vec,Mat>::ConstantGammaNConstantGammaCNModel( int argc, char** argv,
-                                                                                   const QUESO::BaseEnvironment& queso_env,
-                                                                                   const GetPot& forward_run_input,
+  ConstantGammaNConstantGammaCNModel<Vec,Mat>::ConstantGammaNConstantGammaCNModel( const QUESO::BaseEnvironment& env,
                                                                                    const GetPot& model_input )
-    : ModelInterfaceBase<Vec,Mat>(argc,argv,queso_env,forward_run_input),
+    : ModelInterfaceBase<Vec,Mat>(),
     _gamma_CN_nom( model_input( "ModelBounds/gamma_CN_nominal_value", 1.0e-3 ) ),
     _gamma_N_nom( model_input( "ModelBounds/gamma_N_nominal_value", 1.0e-3 ) )
   {
     const unsigned int n_params = 2;
 
-    this->_param_space.reset( new QUESO::VectorSpace<Vec,Mat>( this->_queso_env,
+    this->_param_space.reset( new QUESO::VectorSpace<Vec,Mat>( env,
                                                                "param_",
                                                                n_params,
                                                                NULL ) );
@@ -55,7 +53,9 @@ namespace NitridationCalibration
   }
 
   template<class Vec,class Mat>
-  void ConstantGammaNConstantGammaCNModel<Vec,Mat>::update_parameters( const std::vector<double>& param_values )
+  void ConstantGammaNConstantGammaCNModel<Vec,Mat>::update_parameters( const std::vector<double>& param_values,
+                                                                       std::vector<double>& gamma_CN_params,
+                                                                       std::vector<double>& gamma_N_params ) const
   {
     if( param_values.size() != 2 )
       {
@@ -64,14 +64,11 @@ namespace NitridationCalibration
         libmesh_error();
       }
 
-    std::vector<libMesh::Real> gamma_CN_params(1);
+    gamma_CN_params.resize(1);
     gamma_CN_params[0] = param_values[0]*_gamma_CN_nom;
-    this->_interface.set_gamma_CN_params( gamma_CN_params );
 
-    std::vector<libMesh::Real> gamma_N_params(1);
+    gamma_N_params.resize(1);
     gamma_N_params[0] = param_values[1]*_gamma_N_nom;
-
-    this->_interface.set_gamma_N_params( gamma_N_params );
   }
 
   // Instantiate GSL version of this class

@@ -16,7 +16,7 @@ namespace NitridationCalibration
 {
   template<class Vec,class Mat>
   ModelInterpolationBuilder<Vec,Mat>::ModelInterpolationBuilder( QUESO::InterpolationSurrogateDataSet<Vec,Mat>& data,
-                                                                 ModelInterfaceBase<Vec,Mat>& model )
+                                                                 ModelEvaluatorBase<Vec,Mat>& model )
     : QUESO::InterpolationSurrogateBuilder<Vec,Mat>(data),
     _model(model),
     _count(0)
@@ -40,7 +40,7 @@ namespace NitridationCalibration
 	param_values[i] = domainVector[i];
       }
 
-    _model.solve( param_values, values );
+    _model.compute_values( param_values, values );
 
     _count++;
   }

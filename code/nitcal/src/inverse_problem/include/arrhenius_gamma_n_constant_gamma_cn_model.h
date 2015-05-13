@@ -18,16 +18,16 @@ namespace NitridationCalibration
   {
   public:
 
-    ArrheniusGammaNConstantGammaCNModel( int argc, char** argv,
-                                        const QUESO::BaseEnvironment& queso_env,
-                                        const GetPot& forward_run_input,
-                                        const GetPot& model_input );
+    ArrheniusGammaNConstantGammaCNModel( const QUESO::BaseEnvironment& env,
+                                         const GetPot& model_input );
 
     virtual ~ArrheniusGammaNConstantGammaCNModel(){};
 
-  protected:
+    virtual void update_parameters( const std::vector<double>& param_values,
+                                    std::vector<double>& gamma_CN_params,
+                                    std::vector<double>& gamma_N_params ) const;
 
-    virtual void update_parameters( const std::vector<double>& param_values );
+  protected:
 
     double _gamma_CN_nom;
 

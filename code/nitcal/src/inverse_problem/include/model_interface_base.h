@@ -25,14 +25,16 @@ namespace NitridationCalibration
   {
   public:
 
-    ModelInterfaceBase( int argc, char** argv,
-                        const QUESO::BaseEnvironment& queso_env,
-                        const GetPot& forward_run_input );
+    ModelInterfaceBase()
+      : _param_space(NULL),
+        _param_domain(NULL)
+    {}
 
     virtual ~ModelInterfaceBase(){};
 
-    void solve( const std::vector<double>& param_values,
-                std::vector<double>& values );
+    virtual void update_parameters( const std::vector<double>& param_values,
+                                    std::vector<double>& gamma_CN_params,
+                                    std::vector<double>& gamma_N_params ) const =0;
 
     const QUESO::VectorSpace<Vec,Mat>& param_space() const
     { return *(_param_space); }
@@ -42,18 +44,8 @@ namespace NitridationCalibration
 
   protected:
 
-    virtual void update_parameters( const std::vector<double>& param_values ) =0;
-
-    const QUESO::BaseEnvironment& _queso_env;
-
-    SimulationInterface _interface;
-
     boost::scoped_ptr<QUESO::VectorSpace<Vec,Mat> > _param_space;
     boost::scoped_ptr<QUESO::BoxSubset<Vec,Mat> > _param_domain;
-
-  private:
-
-    ModelInterfaceBase();
 
   };
 

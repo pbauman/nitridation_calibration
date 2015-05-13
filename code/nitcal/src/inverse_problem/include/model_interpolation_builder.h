@@ -9,7 +9,7 @@
 #ifdef NITCAL_HAVE_QUESO
 
 // NitCal
-#include "model_interface_base.h"
+#include "model_evaluator_base.h"
 
 // QUESO
 #include "queso/InterpolationSurrogateBuilder.h"
@@ -23,7 +23,7 @@ namespace NitridationCalibration
   public:
 
     ModelInterpolationBuilder( QUESO::InterpolationSurrogateDataSet<Vec,Mat>& data,
-                               ModelInterfaceBase<Vec,Mat>& model );
+                               ModelEvaluatorBase<Vec,Mat>& model );
 
     virtual ~ModelInterpolationBuilder(){};
 
@@ -32,7 +32,7 @@ namespace NitridationCalibration
 
   private:
 
-    ModelInterfaceBase<Vec,Mat>& _model;
+    ModelEvaluatorBase<Vec,Mat>& _model;
 
     unsigned int _count;
 
