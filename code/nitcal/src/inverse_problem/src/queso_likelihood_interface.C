@@ -66,11 +66,7 @@ namespace NitridationCalibration
 
     if(m_returns_ln) 
       {
-#ifdef QUESO_EXPECTS_LN_LIKELIHOOD_INSTEAD_OF_MINUS_2_LN
 	value = std::exp(value);
-#else
-	value = std::exp(-.5*value);
-#endif
       }
 
     return value;
@@ -106,12 +102,7 @@ namespace NitridationCalibration
     // Pulled this code from uqGenericScalarFunctionClass<V,M>::lnValue
     if(m_returns_ln == false) 
       {
-
-#ifdef QUESO_EXPECTS_LN_LIKELIHOOD_INSTEAD_OF_MINUS_2_LN
 	value = std::log(value);
-#else
-	value = -2.*std::log(value);
-#endif
       }
 
     return value;
