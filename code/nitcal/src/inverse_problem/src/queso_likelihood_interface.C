@@ -64,7 +64,8 @@ namespace NitridationCalibration
     //********************************************************************
     double value = this->evaluate_likelihood( );
 
-    if(m_returns_ln) 
+    // If evaluate_likelihood is computing the ln, then we need to exp
+    if(m_returns_ln)
       {
 	value = std::exp(value);
       }
@@ -99,8 +100,8 @@ namespace NitridationCalibration
     //********************************************************************
     double value = this->evaluate_likelihood( );
 
-    // Pulled this code from uqGenericScalarFunctionClass<V,M>::lnValue
-    if(m_returns_ln == false) 
+    // // If evaluate_likelihood is *not* computing the ln, then we need to log
+    if(m_returns_ln == false)
       {
 	value = std::log(value);
       }
