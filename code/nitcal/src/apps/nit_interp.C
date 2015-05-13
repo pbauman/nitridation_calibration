@@ -102,7 +102,11 @@ int main(int argc, char* argv[])
       }
 
     NitridationCalibration::FullModelEvaluator<QUESO::GslVector,QUESO::GslMatrix>
-      model_evaluator(argc,argv,*env,forward_run_input,*(model.get()));
+      model_evaluator(argc,argv,
+                      *env,
+                      forward_run_input,
+                      env->subComm().Comm(),
+                      *(model.get()));
 
     std::vector<unsigned int> n_points(model->param_domain().vectorSpace().dimGlobal());
 

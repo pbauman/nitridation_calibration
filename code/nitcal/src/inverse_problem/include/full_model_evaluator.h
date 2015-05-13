@@ -21,6 +21,7 @@ namespace NitridationCalibration
     FullModelEvaluator( int argc, char** argv,
                         const QUESO::BaseEnvironment& queso_env,
                         const GetPot& forward_run_input,
+                        MPI_Comm model_comm,
                         const ModelInterfaceBase<Vec,Mat>& model);
 
     virtual ~FullModelEvaluator(){};

@@ -19,10 +19,11 @@ namespace NitridationCalibration
   FullModelEvaluator<Vec,Mat>::FullModelEvaluator( int argc, char** argv,
                                                    const QUESO::BaseEnvironment& queso_env,
                                                    const GetPot& forward_run_input,
+                                                   MPI_Comm model_comm,
                                                    const ModelInterfaceBase<Vec,Mat>& model )
     : ModelEvaluatorBase<Vec,Mat>(model),
     _queso_env(queso_env),
-    _interface(argc,argv,queso_env.subComm().Comm(),forward_run_input)
+    _interface(argc,argv,model_comm,forward_run_input)
   {}
 
   template<class Vec,class Mat>
