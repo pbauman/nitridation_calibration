@@ -47,11 +47,11 @@ namespace NitridationCalibration
     // Get the dimension and convert to double
     double dim = this->m_observations.sizeGlobal();
 
-    const double pi = 3.1415926535897932384626433832795029L;
-    const double log_2_pi = std::log(2.0*pi);
+    //const double pi = 3.1415926535897932384626433832795029L;
+    //const double log_2_pi = std::log(2.0*pi);
 
     // Leading pi constant
-    ln_value -= dim/2.0*log_2_pi;
+    //ln_value -= dim/2.0*log_2_pi;
 
     // Since we have a diagonal covariance, the \det is just the
     // product of the covariances
@@ -62,7 +62,7 @@ namespace NitridationCalibration
         det_sigma *= this->m_covariance[i];
       }
 
-    ln_value -= 0.5*det_sigma;
+    //ln_value -= 0.5*std::log(det_sigma);
 
     return ln_value;
   }
