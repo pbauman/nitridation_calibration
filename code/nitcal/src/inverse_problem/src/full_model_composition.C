@@ -105,7 +105,7 @@ namespace NitridationCalibration
     // Now gather the local_values from all evaluated datasets
     // to be able to insert into the model_output vector.
     // First, we gather from processor 0 from each set of workers
-    queso_assert_equal_to( model_output.size(), _observations->sizeGlobal() );
+    queso_require_equal_to( model_output.size(), _observations->sizeGlobal() );
 
     // We can only call this if we're a member of inter_chain_0
     // By convention, inter0_rank is negative if this processor
