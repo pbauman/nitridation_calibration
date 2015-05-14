@@ -27,12 +27,6 @@ namespace NitridationCalibration
                                     std::vector<double>& gamma_CN_params,
                                     std::vector<double>& gamma_N_params ) const;
 
-  protected:
-
-    double _gamma_CN_nom;
-
-    double _gamma_N_nom;
-
   private:
 
     ConstantGammaNConstantGammaCNModel();

@@ -20,9 +20,7 @@ namespace NitridationCalibration
   template<class Vec,class Mat>
   ConstantGammaNConstantGammaCNModel<Vec,Mat>::ConstantGammaNConstantGammaCNModel( const QUESO::BaseEnvironment& env,
                                                                                    const GetPot& model_input )
-    : ModelInterfaceBase<Vec,Mat>(),
-    _gamma_CN_nom( model_input( "ModelBounds/gamma_CN_nominal_value", 1.0e-3 ) ),
-    _gamma_N_nom( model_input( "ModelBounds/gamma_N_nominal_value", 1.0e-3 ) )
+    : ModelInterfaceBase<Vec,Mat>()
   {
     const unsigned int n_params = 2;
 
@@ -32,11 +30,11 @@ namespace NitridationCalibration
                                                                NULL ) );
 
     // These are assuming normalized values
-    const double gamma_CN_min = model_input("ModelBounds/gamma_CN_min", 0.0);
-    const double gamma_N_min = model_input("ModelBounds/gamma_N_min", 0.0);
+    const double gamma_CN_min = model_input("ModelBounds/log_gamma_CN_min", 0.0);
+    const double gamma_N_min = model_input("ModelBounds/log_gamma_N_min", 0.0);
 
-    const double gamma_CN_max = model_input("ModelBounds/gamma_CN_max", 1000.0);
-    const double gamma_N_max = model_input("ModelBounds/gamma_N_max", 1000.0);
+    const double gamma_CN_max = model_input("ModelBounds/log_gamma_CN_max", 1000.0);
+    const double gamma_N_max = model_input("ModelBounds/log_gamma_N_max", 1000.0);
 
     Vec param_mins( this->_param_space->zeroVector() );
     param_mins[0] = gamma_CN_min;
@@ -65,10 +63,10 @@ namespace NitridationCalibration
       }
 
     gamma_CN_params.resize(1);
-    gamma_CN_params[0] = param_values[0]*_gamma_CN_nom;
+    gamma_CN_params[0] = std::pow(10, param_values[0]);
 
     gamma_N_params.resize(1);
-    gamma_N_params[0] = param_values[1]*_gamma_N_nom;
+    gamma_N_params[0] = std::pow(10, param_values[1]);
   }
 
   // Instantiate GSL version of this class
