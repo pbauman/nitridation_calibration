@@ -74,15 +74,12 @@ int main(int argc, char* argv[])
                                        "",
                                        NULL ) );
 
-    boost::scoped_ptr<NitridationCalibration::ModelInterfaceBase<QUESO::GslVector,QUESO::GslMatrix> >
-      model;
-
     GetPot model_input( model_inputfile );
 
     NitridationCalibration::FullModelComposition<QUESO::GslVector,QUESO::GslMatrix>
       full_model(argc,argv,*env,model_input);
 
-    std::vector<unsigned int> n_points(model->param_domain().vectorSpace().dimGlobal());
+    std::vector<unsigned int> n_points(full_model.get_model().param_domain().vectorSpace().dimGlobal());
 
     unsigned int num_points = model_input.vector_variable_size( "ModelInterpolation/n_points");
 
