@@ -7,6 +7,10 @@
 
 #include "queso_gaussian_likelihood_diagonal_covariance_interface.h"
 
+// QUESO
+#include <queso/GslVector.h>
+#include <queso/GslMatrix.h>
+
 namespace NitridationCalibration
 {
 
@@ -38,7 +42,7 @@ namespace NitridationCalibration
     constants. */
 
     // -1/2 || f(m) - d ||^2
-    double ln_value = QUESO::GaussianLikelihoodDiagonalCovariance<Vec,Mat>::lnValue(domainVector,domainDirection,gradVector,hessianMatrix,hessianMatrix);
+    double ln_value = QUESO::GaussianLikelihoodDiagonalCovariance<Vec,Mat>::lnValue(domainVector,domainDirection,gradVector,hessianMatrix,hessianEffect);
 
     // Get the dimension and convert to double
     double dim = this->m_observations.sizeGlobal();
@@ -62,6 +66,10 @@ namespace NitridationCalibration
 
     return ln_value;
   }
+
+  // Instantiate GSL version of this class
+  template class QuesoGaussianLikelihoodDiagonalCovarianceInterface<QUESO::GslVector,QUESO::GslMatrix>;
+
 } // end namespace NitridationCalibration
 
 #endif // NITCAL_HAVE_QUESO

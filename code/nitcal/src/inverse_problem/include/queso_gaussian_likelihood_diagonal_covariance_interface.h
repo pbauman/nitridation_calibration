@@ -5,10 +5,10 @@
 
 #ifdef NITCAL_HAVE_QUESO
 
-#include <queso/GaussianLikelihoodDiagonalCovariance.h>
-
 #ifndef NITCAL_QUESO_GAUSSIAN_LIKELIHOOD_DIAGONAL_COVARIANCE_INTERFACE_H
 #define NITCAL_QUESO_GAUSSIAN_LIKELIHOOD_DIAGONAL_COVARIANCE_INTERFACE_H
+
+#include <queso/GaussianLikelihoodDiagonalCovariance.h>
 
 namespace NitridationCalibration
 {
@@ -31,6 +31,10 @@ namespace NitridationCalibration
                             Vec* gradVector,
                             Mat* hessianMatrix,
                             Vec* hessianEffect ) const;
+
+  private:
+
+    QuesoGaussianLikelihoodDiagonalCovarianceInterface();
 
   };
 
