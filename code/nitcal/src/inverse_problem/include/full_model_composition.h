@@ -33,6 +33,18 @@ namespace NitridationCalibration
 
     ~FullModelComposition();
 
+    void compute_values( const std::vector<double>& param_values,
+                         std::vector<double>& model_output ) const;
+
+    const ModelInterfaceBase<Vec,Mat>& get_model() const
+    { return *(this->_model.get()); }
+
+    const Vec& get_observations() const
+    { return *(this->_observations.get()); }
+
+    const Vec& get_covariance() const
+    { return *(this->_covariance.get()); }
+
   protected:
 
     boost::scoped_ptr<ModelInterfaceBase<Vec,Mat> > _model;
@@ -42,6 +54,10 @@ namespace NitridationCalibration
     boost::scoped_ptr<GetPot> _forward_run_input;
 
     boost::scoped_ptr<ModelEvaluatorBase<Vec,Mat> > _model_evaluator;
+
+    boost::scoped_ptr<QUESO::GslVector> _observations;
+
+    boost::scoped_ptr<QUESO::GslVector> _covariance;
 
   private:
 
