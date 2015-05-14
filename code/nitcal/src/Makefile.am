@@ -42,6 +42,7 @@ libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_n_constant_gamma_cn_m
 libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_constant_gamma_cn_model.C
 libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_arrhenius_gamma_cn_model.C
 libnitcal_la_SOURCES += inverse_problem/src/full_model_evaluator.C
+libnitcal_la_SOURCES += inverse_problem/src/full_model_composition.C
 libnitcal_la_SOURCES += inverse_problem/src/queso_gaussian_likelihood_diagonal_covariance_interface.C
 libnitcal_la_SOURCES += inverse_problem/src/model_builder.C
 
@@ -97,6 +98,7 @@ include_HEADERS += inverse_problem/include/arrhenius_gamma_n_constant_gamma_cn_m
 include_HEADERS += inverse_problem/include/arrhenius_gamma_n_arrhenius_gamma_cn_model.h
 include_HEADERS += inverse_problem/include/model_evaluator_base.h
 include_HEADERS += inverse_problem/include/full_model_evaluator.h
+include_HEADERS += inverse_problem/include/full_model_composition.h
 include_HEADERS += inverse_problem/include/queso_gaussian_likelihood_diagonal_covariance_interface.h
 include_HEADERS += inverse_problem/include/model_builder.h
 
