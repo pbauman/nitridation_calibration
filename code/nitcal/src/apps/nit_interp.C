@@ -58,9 +58,8 @@ int main(int argc, char* argv[])
       exit(1); // TODO: something more sophisticated for parallel runs?
     }
 
-  std::string forward_run_input = argv[1];
-  std::string model_inputfile = argv[2];
-  std::string QUESO_input = argv[3];
+  std::string model_inputfile = argv[1];
+  std::string QUESO_input = argv[2];
 
   //************************************************
   // Initialize environments
