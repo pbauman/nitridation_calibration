@@ -5,6 +5,16 @@
 
 #ifdef NITCAL_HAVE_QUESO
 
+// This class
+#include "full_model_likelihood.h"
+
+// NitCal
+#include "full_model_composition.h"
+
+// QUESO
+#include <queso/GslVector.h>
+#include <queso/GslMatrix.h>
+
 namespace NitridationCalibration
 {
   template<class Vec,class Mat>
@@ -17,12 +27,12 @@ namespace NitridationCalibration
   {}
 
   template<class Vec,class Mat>
-  double FullModelLikelihood<Vec,Mat>::evaluate_model( const Vec& domainVector,
-                                                       const Vec* /*domainDirection*/,
-                                                       Vec& modelOutput,
-                                                       Vec* /*gradVector*/,
-                                                       Mat* /*hessianMatrix*/,
-                                                       Vec* /*hessianEffect*/ ) const
+  void FullModelLikelihood<Vec,Mat>::evaluateModel( const Vec& domainVector,
+                                                    const Vec* /*domainDirection*/,
+                                                    Vec& modelOutput,
+                                                    Vec* /*gradVector*/,
+                                                    Mat* /*hessianMatrix*/,
+                                                    Vec* /*hessianEffect*/ ) const
   {
     unsigned int n_params = domainVector.sizeGlobal();
     std::vector<double> param_values(n_params);
@@ -36,7 +46,7 @@ namespace NitridationCalibration
     _full_model.compute_values( param_values, model_output );
 
     for( unsigned int i = 0; i < n_observations; i++ )
-      model_values[i] = modelOutput[i];
+      modelOutput[i] = model_output[i];
   }
 
   // Instantiate GSL version of this class
