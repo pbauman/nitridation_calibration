@@ -39,6 +39,9 @@ namespace NitridationCalibration
       model_values[i] = modelOutput[i];
   }
 
+  // Instantiate GSL version of this class
+  template class FullModelLikelihood<QUESO::GslVector,QUESO::GslMatrix>;
+
 } // end namespace NitridationCalibration
 
 #endif // NITCAL_HAVE_QUESO
