@@ -26,7 +26,9 @@ namespace NitridationCalibration
   void ModelInterpolationBuilder<Vec,Mat>::evaluate_model( const Vec& domainVector,
                                                            std::vector<double>& values )
   {
-    std::cout << "ModelInterpolationBuilder evaluation " << _count << std::endl;
+    // Only print out progress indicator on rank 0
+    if( this->_model.get_model().param_space().env().fullRank() == 0 )
+      std::cout << "ModelInterpolationBuilder evaluation " << _count << std::endl;
 
     //********************************************************************
     // Copy contents of domainVector to std::vector.
