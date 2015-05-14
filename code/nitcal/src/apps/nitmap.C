@@ -31,14 +31,8 @@
 #include "boost/scoped_ptr.hpp"
 
 // NitCal
-#include "constant_gamma_cn_sip.h"
-#include "constant_gamma_n_constant_gamma_cn_sip.h"
-#include "arrhenius_gamma_n_constant_gamma_cn_sip.h"
-#include "power_gamma_n_constant_gamma_cn_sip.h"
-#include "arrhenius_gamma_n_arrhenius_gamma_cn_sip.h"
-#include "power_gamma_n_arrhenius_gamma_cn_sip.h"
-#include "arrhenius_gamma_n_power_gamma_cn_sip.h"
-#include "power_gamma_n_power_gamma_cn_sip.h"
+#include <full_model_composition.h>
+#include <full_model_likelihood.h>
 
 #ifdef NITCAL_HAVE_QUESO
 // QUESO
@@ -61,7 +55,7 @@ int main(int argc, char* argv[])
       exit(1); // TODO: something more sophisticated for parallel runs?
     }
 
-  std::string sip_input_filename = argv[1];
+  std::string model_inputfile = argv[1];
   std::string QUESO_input = argv[2];
 
   //************************************************
@@ -69,73 +63,32 @@ int main(int argc, char* argv[])
   //************************************************
   MPI_Init(&argc,&argv);
 
-  QUESO::FullEnvironment* env = new QUESO::FullEnvironment(MPI_COMM_WORLD,
-							   QUESO_input.c_str(),
-							   "",
-							   NULL );
-
   {
-    GetPot sip_input(sip_input_filename);
-    std::string sip_type = sip_input( "InverseProblem/sip_type", "DIE!" );
+    boost::scoped_ptr<QUESO::FullEnvironment>
+      env( new QUESO::FullEnvironment( MPI_COMM_WORLD,
+                                       QUESO_input.c_str(),
+                                       "",
+                                       NULL ) );
 
-    boost::scoped_ptr<NitridationCalibration::StatisticalInverseProblemBase<QUESO::GslVector,QUESO::GslMatrix> > sip(NULL);
 
-    if( sip_type == std::string("constant_gamma_cn") )
-      {
-        sip.reset( new NitridationCalibration::ConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
-      }
-    else if( sip_type == std::string("constant_gamma_n_constant_gamma_cn") )
-      {
-        sip.reset( new NitridationCalibration::ConstantGammaNConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
-      }
-    else if( sip_type == std::string("arrhenius_gamma_n_constant_gamma_cn") )
-      {
-        sip.reset( new NitridationCalibration::ArrheniusGammaNConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
-      }
-    else if( sip_type == std::string("power_gamma_n_constant_gamma_cn") )
-      {
-        sip.reset( new NitridationCalibration::PowerGammaNConstantGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
-      }
-    else if( sip_type == std::string("arrhenius_gamma_n_arrhenius_gamma_cn") )
-      {
-        sip.reset( new NitridationCalibration::ArrheniusGammaNArrheniusGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
-      }
-    else if( sip_type == std::string("power_gamma_n_arrhenius_gamma_cn") )
-      {
-        sip.reset( new NitridationCalibration::PowerGammaNArrheniusGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
-      }
-    else if( sip_type == std::string("arrhenius_gamma_n_power_gamma_cn") )
-      {
-        sip.reset( new NitridationCalibration::ArrheniusGammaNPowerGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
-      }
-    else if( sip_type == std::string("power_gamma_n_power_gamma_cn") )
-      {
-        sip.reset( new NitridationCalibration::PowerGammaNPowerGammaCNSIP<QUESO::GslVector,QUESO::GslMatrix>( env, "multilevel", argc, argv, sip_input_filename ) );
-      }
-    else
-      {
-        if( env->fullRank() == 0 )
-          {
-            std::cerr << "Error: Invalid SIP type! Found " << sip_type << std::endl;
-          }
-        delete env;
-        MPI_Finalize();
-        return 1;
-      }
+    GetPot model_input( model_inputfile );
 
-    QUESO::VectorSet<QUESO::GslVector,QUESO::GslMatrix>* solutionDomain =
-       QUESO::InstantiateIntersection(sip->get_prior_rv().pdf().domainSet(),sip->get_likelihood_func().domainSet());
+    NitridationCalibration::FullModelComposition<QUESO::GslVector,QUESO::GslMatrix>
+      full_model(argc,argv,*env,model_input);
 
-    QUESO::BayesianJointPdf<QUESO::GslVector,QUESO::GslMatrix>
-       raw_posterior( "post_",
-                      sip->get_prior_rv().pdf(),
-                      sip->get_likelihood_func(),
-                      1.,
-                      *solutionDomain );
+    // Initalize parameter vector
+    QUESO::GslVector params( full_model.get_model().param_space().zeroVector() );
 
-    QUESO::GslVector guess(raw_posterior.domainSet().vectorSpace().zeroVector());
+    // Initialize model output
+    QUESO::GslVector model_output( full_model.get_observations() );
+    model_output.cwSet(0.0);
 
-    unsigned int guess_size = sip_input.vector_variable_size("Optimizer/guess");
+    NitridationCalibration::FullModelLikelihood<QUESO::GslVector,QUESO::GslMatrix>
+      likelihood( full_model );
+
+    QUESO::GslVector guess(full_model.get_model().param_space().zeroVector());
+
+    unsigned int guess_size = model_input.vector_variable_size("Optimizer/guess");
 
     if( guess_size != guess.sizeLocal() )
       {
@@ -145,22 +98,22 @@ int main(int argc, char* argv[])
                       << "input guess size = " << guess_size << std::endl
                       << "sip guess size   = " << guess.sizeLocal() << std::endl;
           }
-        delete env;
+        env.reset();
         MPI_Finalize();
         return 1;
       }
 
     for( unsigned int i = 0; i < guess_size; i++ )
       {
-        guess[i] = sip_input("Optimizer/guess", 0.0, i);
+        guess[i] = model_input("Optimizer/guess", 0.0, i);
         if( env->fullRank() == 0 )
           {
             std::cout << "guess["<<i<<"] = " << guess[i] << std::endl;
           }
       }
 
-    QUESO::GslVector step_size(raw_posterior.domainSet().vectorSpace().zeroVector());
-    unsigned int step_size_size = sip_input.vector_variable_size("Optimizer/step_size");
+    QUESO::GslVector step_size(full_model.get_model().param_space().zeroVector());
+    unsigned int step_size_size = model_input.vector_variable_size("Optimizer/step_size");
     if( step_size_size != step_size.sizeLocal() )
       {
         if( env->fullRank() == 0 )
@@ -169,24 +122,24 @@ int main(int argc, char* argv[])
                       << "input step size size = " << step_size_size << std::endl
                       << "sip step size size   = " << step_size.sizeLocal() << std::endl;
           }
-        delete env;
+        env.reset();
         MPI_Finalize();
         return 1;
        }
 
     for( unsigned int i = 0; i < guess_size; i++ )
        {
-         step_size[i] = sip_input("Optimizer/step_size", 0.0, i);
+         step_size[i] = model_input("Optimizer/step_size", 0.0, i);
        }
 
-     QUESO::OptimizerMonitor monitor(raw_posterior.domainSet().env(),10000);
+     QUESO::OptimizerMonitor monitor(full_model.get_model().param_space().env(),10000);
      monitor.set_display_output(true,true);
 
-     QUESO::GslOptimizer optimizer(raw_posterior);
+     QUESO::GslOptimizer optimizer(likelihood);
 
-     std::string solver_type = sip_input("Optimizer/solver_type", "DIE");
+     std::string solver_type = model_input("Optimizer/solver_type", "DIE");
 
-     double h = sip_input("Optimizer/finite_difference_step_size", 1.0e-8);
+     double h = model_input("Optimizer/finite_difference_step_size", 1.0e-8);
      optimizer.set_solver_type(solver_type);
      optimizer.set_step_size(step_size);
      optimizer.setFiniteDifferenceStepSize(h);
@@ -214,13 +167,7 @@ int main(int argc, char* argv[])
              std::cout << "minimizer["<<i<<"] = " << minimizer[i] << std::endl;
            }
        }
-
   }
-
-  //************************************************
-  // Finalize environments
-  //************************************************
-  delete env;
 
   MPI_Finalize();
 
