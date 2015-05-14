@@ -29,6 +29,9 @@ namespace NitridationCalibration
     virtual void compute_values( const std::vector<double>& param_values,
                                  std::vector<double>& values ) const  =0;
 
+    const ModelInterfaceBase<Vec,Mat>& get_model() const
+    { return _model; }
+
   protected:
 
     const ModelInterfaceBase<Vec,Mat>& _model;
