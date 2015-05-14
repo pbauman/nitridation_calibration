@@ -31,13 +31,16 @@ namespace NitridationCalibration
                           const QUESO::BaseEnvironment& queso_env,
                           const GetPot& model_input );
 
-    ~FullModelComposition();
+    ~FullModelComposition(){};
 
     void compute_values( const std::vector<double>& param_values,
                          std::vector<double>& model_output ) const;
 
     const ModelInterfaceBase<Vec,Mat>& get_model() const
     { return *(this->_model.get()); }
+
+    const ModelEvaluatorBase<Vec,Mat>& get_model_evaluator() const
+    { return *(this->_model_evaluator.get()); }
 
     const Vec& get_observations() const
     { return *(this->_observations.get()); }

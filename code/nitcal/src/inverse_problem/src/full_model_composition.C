@@ -36,7 +36,7 @@ namespace NitridationCalibration
       }
 
     // This is the dataset the current set of processors is going to work on
-    int dataset_index = this->_comm_handler->get_dataset_index();
+    int dataset_index = this->_comm_handler.get_dataset_index();
 
     // Input for this dataset
     _forward_run_input.reset( new GetPot(datasets[dataset_index]) );
@@ -121,6 +121,9 @@ namespace NitridationCalibration
     MPI_Bcast( &model_output[0], _observations->sizeGlobal(), MPI_DOUBLE,
                0, _comm_handler.get_inter_chain_comm() );
   }
+
+  // Instantiate GSL version of this class
+  template class FullModelComposition<QUESO::GslVector,QUESO::GslMatrix>;
 
 } // end namespace NitridationCalibration
 
