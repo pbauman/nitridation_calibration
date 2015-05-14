@@ -16,7 +16,7 @@ namespace NitridationCalibration
 {
   template<class Vec,class Mat>
   ModelInterpolationBuilder<Vec,Mat>::ModelInterpolationBuilder( QUESO::InterpolationSurrogateDataSet<Vec,Mat>& data,
-                                                                 ModelEvaluatorBase<Vec,Mat>& model )
+                                                                 const ModelEvaluatorBase<Vec,Mat>& model )
     : QUESO::InterpolationSurrogateBuilder<Vec,Mat>(data),
     _model(model),
     _count(0)

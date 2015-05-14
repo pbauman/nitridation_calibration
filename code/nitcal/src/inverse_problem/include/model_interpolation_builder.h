@@ -23,7 +23,7 @@ namespace NitridationCalibration
   public:
 
     ModelInterpolationBuilder( QUESO::InterpolationSurrogateDataSet<Vec,Mat>& data,
-                               ModelEvaluatorBase<Vec,Mat>& model );
+                               const ModelEvaluatorBase<Vec,Mat>& model );
 
     virtual ~ModelInterpolationBuilder(){};
 
@@ -32,7 +32,7 @@ namespace NitridationCalibration
 
   private:
 
-    ModelEvaluatorBase<Vec,Mat>& _model;
+    const ModelEvaluatorBase<Vec,Mat>& _model;
 
     unsigned int _count;
 
