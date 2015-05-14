@@ -41,6 +41,9 @@ namespace NitridationCalibration
     return model_ptr;
   }
 
+  // Instantiate GSL version of this class
+  template class ModelBuilder<QUESO::GslVector,QUESO::GslMatrix>;
+
 } // end namespace NitridationCalibration
 
 #endif // NITCAL_HAVE_QUESO
