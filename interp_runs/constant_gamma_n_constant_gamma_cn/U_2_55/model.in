@@ -9,7 +9,7 @@
 []
 
 [ModelInterpolation]
-   n_points = '3 3'
+   n_points = '101 101'
 []
 
 [ModelBounds]
