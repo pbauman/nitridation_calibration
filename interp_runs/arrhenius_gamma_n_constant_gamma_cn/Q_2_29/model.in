@@ -1,0 +1,34 @@
+#
+#
+[ModelType]
+   model = 'arrhenius_gamma_n_constant_gamma_cn'
+[]
+
+[Likelihood]
+   datasets = 'Q_2_29.in'
+[]
+
+[ModelInterpolation]
+   n_points = '2 2 2'
+[]
+
+[ModelBounds]
+
+   log_gamma_CN_min = '-5.0'
+   log_gamma0_N_min = '-8.0'
+
+   log_gamma_CN_max = '-1.0'
+   log_gamma0_N_max = '-3.0'
+
+   Ta_N_nominal_value = '1000.0'
+
+   Ta_N_min = '0.0'
+   Ta_N_max = '10.0'
+
+[]
+
+#[Optimizer]
+#   solver_type = 'nelder_mead2'
+#   step_size = '1.0 1.0'
+#   guess = '-2.0 -4.0'
+#[]
