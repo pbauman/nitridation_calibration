@@ -21,8 +21,6 @@ namespace NitridationCalibration
   ArrheniusGammaNConstantGammaCNModel<Vec,Mat>::ArrheniusGammaNConstantGammaCNModel( const QUESO::BaseEnvironment& env,
                                                                                      const GetPot& model_input )
     : ModelInterfaceBase<Vec,Mat>(),
-    _gamma_CN_nom( model_input( "ModelBounds/gamma_CN_nominal_value", 1.0e-3 ) ),
-    _gamma0_N_nom( model_input( "ModelBounds/gamma0_N_nominal_value", 1.0e-3 ) ),
     _Ta_N_nom( model_input( "ModelBounds/Ta_N_nominal_value", 1.0e-3 ) )
   {
     const unsigned int n_params = 3;
@@ -33,12 +31,12 @@ namespace NitridationCalibration
                                                                NULL ) );
 
     // These are assuming normalized values
-    const double gamma_CN_min = model_input("ModelBounds/gamma_CN_min", 0.0);
-    const double gamma0_N_min = model_input("ModelBounds/gamma0_N_min", 0.0);
+    const double gamma_CN_min = model_input("ModelBounds/log_gamma_CN_min", 0.0);
+    const double gamma0_N_min = model_input("ModelBounds/log_gamma0_N_min", 0.0);
     const double Ta_N_min = model_input("ModelBounds/Ta_N_min", 0.0);
 
-    const double gamma_CN_max = model_input("ModelBounds/gamma_CN_max", 1000.0);
-    const double gamma0_N_max = model_input("ModelBounds/gamma0_N_max", 1000.0);
+    const double gamma_CN_max = model_input("ModelBounds/log_gamma_CN_max", 1000.0);
+    const double gamma0_N_max = model_input("ModelBounds/log_gamma0_N_max", 1000.0);
     const double Ta_N_max = model_input("ModelBounds/Ta_N_max", 1000.0);
 
     Vec param_mins( this->_param_space->zeroVector() );
@@ -70,10 +68,10 @@ namespace NitridationCalibration
       }
 
     gamma_CN_params.resize(1);
-    gamma_CN_params[0] = param_values[0]*_gamma_CN_nom;
+    gamma_CN_params[0] = std::pow(10, param_values[0]);
 
     gamma_N_params.resize(2);
-    gamma_N_params[0] = param_values[1]*_gamma0_N_nom;
+    gamma_N_params[0] = std::pow(10, param_values[1]);
     gamma_N_params[1] = param_values[2]*_Ta_N_nom;
   }
 

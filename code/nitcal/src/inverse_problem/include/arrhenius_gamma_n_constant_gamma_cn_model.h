@@ -29,9 +29,6 @@ namespace NitridationCalibration
 
   protected:
 
-    double _gamma_CN_nom;
-
-    double _gamma0_N_nom;
     double _Ta_N_nom;
 
   private:
