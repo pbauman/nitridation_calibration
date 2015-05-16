@@ -9,7 +9,7 @@
 []
 
 [ModelInterpolation]
-   n_points = '2 2 2'
+   n_points = '3 3 3'
 []
 
 [ModelBounds]
@@ -20,9 +20,9 @@
    log_gamma_CN_max = '-1.0'
    log_gamma0_N_max = '-3.0'
 
-   Ta_N_nominal_value = '1000.0'
+   Ta_N_nominal_value = '100.0'
 
-   Ta_N_min = '0.0'
+   Ta_N_min = '-10.0'
    Ta_N_max = '10.0'
 
 []

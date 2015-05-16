@@ -161,12 +161,9 @@ gamma_N_3 = '${MassLossLikelihood/gamma_nominal_value}'
 
 wall_catalytic_reactions_2 = 'N->N2'
 
-#gamma_N_2_type = 'arrhenius'
-#gamma0_N_2 = '4.e-4'
-#Ta_N_2 = '300'
-
-gamma_N_2_type = 'constant'
-gamma_N_2 = '${AverageNLikelihood/gamma_nominal_value}'
+gamma_N_2_type = 'arrhenius'
+gamma0_N_2 = '${AverageNLikelihood/gamma_nominal_value}'
+Ta_N_2 = '1000'
 
 enable_thermo_press_calc = 'false'
 pin_pressure = 'false'
