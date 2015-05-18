@@ -5,9 +5,7 @@ BUILT_SOURCES   = .license.stamp
 #----------------------------------------
 
 bin_PROGRAMS  = nitfp
-bin_PROGRAMS += likelihood_test
 bin_PROGRAMS += nitsip
-bin_PROGRAMS += likelihood_sampling
 bin_PROGRAMS += nitmap
 bin_PROGRAMS += nit_interp
 
@@ -28,15 +26,7 @@ libnitcal_la_SOURCES += interface/src/nitridation_simulation.C
 
 # inverse_problem - SIP stuff
 libnitcal_la_SOURCES += inverse_problem/src/queso_sip_interface.C
-libnitcal_la_SOURCES += inverse_problem/src/sip_base.C
-libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_cn_sip.C
-libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_n_constant_gamma_cn_sip.C
-libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_constant_gamma_cn_sip.C
-libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_arrhenius_gamma_cn_sip.C
-libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_power_gamma_cn_sip.C
-libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_constant_gamma_cn_sip.C
-libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_arrhenius_gamma_cn_sip.C
-libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_power_gamma_cn_sip.C
+libnitcal_la_SOURCES += inverse_problem/src/likelihood_comm_handler.C
 libnitcal_la_SOURCES += inverse_problem/src/model_interpolation_builder.C
 libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_n_constant_gamma_cn_model.C
 libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_constant_gamma_cn_model.C
@@ -46,22 +36,6 @@ libnitcal_la_SOURCES += inverse_problem/src/full_model_composition.C
 libnitcal_la_SOURCES += inverse_problem/src/model_builder.C
 libnitcal_la_SOURCES += inverse_problem/src/queso_gaussian_likelihood_diagonal_covariance_interface.C
 libnitcal_la_SOURCES += inverse_problem/src/full_model_likelihood.C
-
-# inverse_problem -likelihood stuff
-libnitcal_la_SOURCES += inverse_problem/src/likelihood_comm_handler.C
-libnitcal_la_SOURCES += inverse_problem/src/queso_likelihood_interface.C
-libnitcal_la_SOURCES += inverse_problem/src/likelihood_base.C
-libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_cn_likelihood.C
-libnitcal_la_SOURCES += inverse_problem/src/gamma_n_gamma_cn_likelihood_base.C
-libnitcal_la_SOURCES += inverse_problem/src/constant_gamma_n_constant_gamma_cn_likelihood.C
-libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_constant_gamma_cn_likelihood.C
-libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_arrhenius_gamma_cn_likelihood.C
-libnitcal_la_SOURCES += inverse_problem/src/arrhenius_gamma_n_power_gamma_cn_likelihood.C
-libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_constant_gamma_cn_likelihood.C
-libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_arrhenius_gamma_cn_likelihood.C
-libnitcal_la_SOURCES += inverse_problem/src/power_gamma_n_power_gamma_cn_likelihood.C
-libnitcal_la_SOURCES += inverse_problem/src/mass_loss_helper.C
-libnitcal_la_SOURCES += inverse_problem/src/average_N_helper.C
 
 # qoi
 libnitcal_la_SOURCES += qoi/src/qoi_factory.C
@@ -83,15 +57,7 @@ include_HEADERS += interface/include/nitridation_simulation.h
 
 # inverse_problem - SIP stuff
 include_HEADERS += inverse_problem/include/queso_sip_interface.h
-include_HEADERS += inverse_problem/include/sip_base.h
-include_HEADERS += inverse_problem/include/constant_gamma_cn_sip.h
-include_HEADERS += inverse_problem/include/constant_gamma_n_constant_gamma_cn_sip.h
-include_HEADERS += inverse_problem/include/arrhenius_gamma_n_constant_gamma_cn_sip.h
-include_HEADERS += inverse_problem/include/arrhenius_gamma_n_arrhenius_gamma_cn_sip.h
-include_HEADERS += inverse_problem/include/arrhenius_gamma_n_power_gamma_cn_sip.h
-include_HEADERS += inverse_problem/include/power_gamma_n_constant_gamma_cn_sip.h
-include_HEADERS += inverse_problem/include/power_gamma_n_arrhenius_gamma_cn_sip.h
-include_HEADERS += inverse_problem/include/power_gamma_n_power_gamma_cn_sip.h
+include_HEADERS += inverse_problem/include/likelihood_comm_handler.h
 include_HEADERS += inverse_problem/include/model_interpolation_builder.h
 include_HEADERS += inverse_problem/include/model_interface_base.h
 include_HEADERS += inverse_problem/include/constant_gamma_n_constant_gamma_cn_model.h
@@ -103,22 +69,6 @@ include_HEADERS += inverse_problem/include/full_model_composition.h
 include_HEADERS += inverse_problem/include/model_builder.h
 include_HEADERS += inverse_problem/include/queso_gaussian_likelihood_diagonal_covariance_interface.h
 include_HEADERS += inverse_problem/include/full_model_likelihood.h
-
-# inverse_problem - likelihood stuff
-include_HEADERS += inverse_problem/include/likelihood_comm_handler.h
-include_HEADERS += inverse_problem/include/queso_likelihood_interface.h
-include_HEADERS += inverse_problem/include/likelihood_base.h
-include_HEADERS += inverse_problem/include/constant_gamma_cn_likelihood.h
-include_HEADERS += inverse_problem/include/gamma_n_gamma_cn_likelihood_base.h
-include_HEADERS += inverse_problem/include/constant_gamma_n_constant_gamma_cn_likelihood.h
-include_HEADERS += inverse_problem/include/arrhenius_gamma_n_constant_gamma_cn_likelihood.h
-include_HEADERS += inverse_problem/include/arrhenius_gamma_n_arrhenius_gamma_cn_likelihood.h
-include_HEADERS += inverse_problem/include/arrhenius_gamma_n_power_gamma_cn_likelihood.h
-include_HEADERS += inverse_problem/include/power_gamma_n_constant_gamma_cn_likelihood.h
-include_HEADERS += inverse_problem/include/power_gamma_n_arrhenius_gamma_cn_likelihood.h
-include_HEADERS += inverse_problem/include/power_gamma_n_power_gamma_cn_likelihood.h
-include_HEADERS += inverse_problem/include/mass_loss_helper.h
-include_HEADERS += inverse_problem/include/average_N_helper.h
 
 # qoi
 include_HEADERS += qoi/include/qoi_names.h
@@ -148,25 +98,11 @@ nitfp_SOURCES = apps/nitfp.C
 nitfp_LDADD = libnitcal.la
 
 #------------------------------------
-# Source for likelihood_test
-#------------------------------------
-
-likelihood_test_SOURCES = apps/likelihood_test.C
-likelihood_test_LDADD = libnitcal.la
-
-#------------------------------------
 # Source for nitsip
 #------------------------------------
 
 nitsip_SOURCES = apps/nitsip.C
 nitsip_LDADD = libnitcal.la
-
-#------------------------------------
-# Source for likelihood_sampling
-#------------------------------------
-
-likelihood_sampling_SOURCES = apps/likelihood_sampling.C
-likelihood_sampling_LDADD = libnitcal.la
 
 #------------------------------------
 # Source for nitmap

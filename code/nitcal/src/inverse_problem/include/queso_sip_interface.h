@@ -30,48 +30,43 @@ namespace NitridationCalibration
   {
   public:
 
-    QuesoStatisticalInverseProblemInterface( QUESO::BaseEnvironment* env,
-                                             const std::string method );
+    QuesoStatisticalInverseProblemInterface( const QUESO::BaseEnvironment& env,
+                                             const std::string& method );
 
-    virtual ~QuesoStatisticalInverseProblemInterface();
+    virtual ~QuesoStatisticalInverseProblemInterface(){};
 
-    void solve();
-    
+    void solve( const Vec& initial_guess );
+
     const QUESO::VectorSpace<Vec,Mat>&  get_param_space() const;
     const QUESO::VectorSubset<Vec,Mat>&  get_param_domain() const;
     const QUESO::BaseVectorRV<Vec,Mat>& get_prior_rv() const;
     const QUESO::GenericVectorRV<Vec,Mat>&  get_posterior_rv() const;
     const QUESO::BaseScalarFunction<Vec,Mat>& get_likelihood_func() const;
 
-    const LikelihoodCommHandler& comm_handler() const;
-
   protected:
 
     void create_proposal_cov_mat();
-  
+
     void create_sip();
 
     void create_prior();
     void create_posterior();
 
-    QUESO::BaseEnvironment *_queso_env;
+    const QUESO::BaseEnvironment& _queso_env;
+
+    std::string _method;
 
     QUESO::VectorSpace<Vec,Mat> *_param_space;
     QUESO::VectorSubset<Vec,Mat> *_param_domain;
 
-    QUESO::BaseScalarFunction<Vec,Mat> *_likelihood;
+    boost::scoped_ptr<QUESO::BaseScalarFunction<Vec,Mat> > _likelihood;
 
-    QUESO::BaseVectorRV<Vec,Mat> *_prior;
-    QUESO::GenericVectorRV<Vec,Mat> *_posterior;
-  
-    QUESO::StatisticalInverseProblem<Vec,Mat>* _ip;
+    boost::scoped_ptr<QUESO::BaseVectorRV<Vec,Mat> > _prior;
+    boost::scoped_ptr<QUESO::GenericVectorRV<Vec,Mat> > _posterior;
 
-    Mat* _proposal_cov_mat;
-    Vec* _param_initials;
+    boost::scoped_ptr<QUESO::StatisticalInverseProblem<Vec,Mat> > _ip;
 
-    std::string _method;
-
-    boost::scoped_ptr<LikelihoodCommHandler> _comm_handler;
+    boost::scoped_ptr<Mat> _proposal_cov_mat;
 
   private:
 
@@ -114,13 +109,6 @@ namespace NitridationCalibration
   const QUESO::BaseScalarFunction<Vec,Mat>& QuesoStatisticalInverseProblemInterface<Vec,Mat>::get_likelihood_func() const
   {
     return *_likelihood;
-  }
-
-  template<class Vec,class Mat>
-  inline
-  const LikelihoodCommHandler& QuesoStatisticalInverseProblemInterface<Vec,Mat>::comm_handler() const
-  {
-    return *(_comm_handler.get());
   }
 
 } // end namespace NitridationCalibration

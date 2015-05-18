@@ -25,52 +25,47 @@ namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
-  QuesoStatisticalInverseProblemInterface<Vec,Mat>::QuesoStatisticalInverseProblemInterface( QUESO::BaseEnvironment *env,
-                                                                                             const std::string method )
+  QuesoStatisticalInverseProblemInterface<Vec,Mat>::QuesoStatisticalInverseProblemInterface( const QUESO::BaseEnvironment& env,
+                                                                                             const std::string& method )
     : _queso_env(env),
-      _method(method)
-  {
-    return;
-  }
-
-  template<class Vec,class Mat>
-  QuesoStatisticalInverseProblemInterface<Vec,Mat>::~QuesoStatisticalInverseProblemInterface( )
-  {
-    delete _ip;
-    
-    return;
-  }
+      _method(method),
+      _param_space(NULL),
+      _param_domain(NULL),
+      _likelihood(NULL),
+      _prior(NULL),
+      _posterior(NULL),
+      _ip(NULL),
+      _proposal_cov_mat(NULL)
+  {}
 
   template<class Vec,class Mat>
   void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_sip( )
   {
-    _ip = new QUESO::StatisticalInverseProblem<Vec,Mat>("", // No extra prefix before the default "ip_" prefix
-							NULL,
-							*_prior,
-							*_likelihood,
-							*_posterior);
-    
+    _ip.reset( new QUESO::StatisticalInverseProblem<Vec,Mat>("", // No extra prefix before the default "ip_" prefix
+                                                             NULL,
+                                                             *_prior,
+                                                             *_likelihood,
+                                                             *_posterior) );
+
     return;
   }
-  
+
   template<class Vec,class Mat>
-  void QuesoStatisticalInverseProblemInterface<Vec,Mat>::solve( )
+  void QuesoStatisticalInverseProblemInterface<Vec,Mat>::solve( const Vec& initial_guess )
   {
-    if (_queso_env->fullRank() == 0) 
+    if (_queso_env.fullRank() == 0)
       {
 	std::cout << "Beginning run of QUESO Statistical Inverse Problem using the "
 		  << _method << " method."
 		  << std::endl;
       }
-    
+
     //******************************************************
     // Solve the inverse problem
     //******************************************************
     if( _method == "metropolis_hastings")
-      {	
-	// FIXME: Should add options to control with of the methods
-	// FIXME: we use that are available in QUESO.
-	_ip->solveWithBayesMetropolisHastings( NULL, *_param_initials, _proposal_cov_mat);
+      {
+	_ip->solveWithBayesMetropolisHastings( NULL, initial_guess, _proposal_cov_mat.get());
       }
     else if( _method == "multilevel" )
       {
@@ -80,69 +75,10 @@ namespace NitridationCalibration
       {
 	//FIXME: Proper stopping needed here.
 	std::cout << "Invalid method " << _method << " for statistical inverse problem." << std::endl;
-	exit(1);
+	MPI_Abort(MPI_COMM_WORLD,1);
       }
-    
-    /*
-      
-      
-    //******************************************************
-    // Write data to disk, to be used by 'sip_plot.m' afterwards
-    //******************************************************
-    if (_queso_env->fullRank() == 0) {
-    std::cout << "Inverse problem solved. Writing data to disk now ...\n"
-    << std::endl;
-    }
-    
-    char varPrefixName[64+1];
-    std::set<unsigned int> auxSet;
-    auxSet.insert(0);
-    
-    sprintf(varPrefixName,"sip_appl_paramMeans");
-    paramMeans.subWriteContents(varPrefixName,
-    "outputData/appl_output",
-    auxSet);
-    sprintf(varPrefixName,"sip_appl_covMatrix");
-    covMatrix->subWriteContents(varPrefixName,
-    "outputData/appl_output",
-    auxSet);
-    sprintf(varPrefixName,"sip_appl_covMatrixInverse");
-    covMatrixInverse->subWriteContents(varPrefixName,
-    "outputData/appl_output",
-    auxSet);
 
-    //******************************************************
-    // Write weighted squared norm to disk, to be used by 'sip_plot.m' afterwards
-    //******************************************************
-    // Define auxVec
-    const QUESO::BaseVectorRealizer<Vec,Mat>& postRealizer = postRv.realizer();
-    QUESO::VectorSpace<Vec,Mat> auxSpace(env,"",postRealizer.subPeriod(),NULL);
-    Vec auxVec(auxSpace.zeroVector());
-
-    // Populate auxVec
-    Vec tmpVec (paramSpace.zeroVector());
-    Vec diffVec(paramSpace.zeroVector());
-    for (unsigned int i = 0; i < auxSpace.dimLocal(); ++i) {
-    postRealizer.realization(tmpVec);
-    diffVec = tmpVec - paramMeans;
-    auxVec[i] = scalarProduct(diffVec, *covMatrixInverse * diffVec);
-    }
-
-    // Write auxVec to disk
-    sprintf(varPrefixName,"sip_appl_d");
-    auxVec.subWriteContents(varPrefixName,
-    "outputData/appl_output",
-    auxSet);
-
-    //******************************************************
-    // Release memory before leaving routine.
-    //******************************************************
-    delete covMatrixInverse;
-    delete covMatrix;
-
-    */
-
-    if (_queso_env->fullRank() == 0) 
+    if (_queso_env.fullRank() == 0)
       {
 	std::cout << "Finishing run of QUESO Statistical Inverse Problem"
 		  << std::endl;
@@ -154,26 +90,21 @@ namespace NitridationCalibration
   template<class Vec,class Mat>
   void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_prior()
   {
-    this->_prior =
-      new QUESO::UniformVectorRV<Vec,Mat>("prior_", // Extra prefix before the default "rv_"
-					  *(this->_param_domain) );
+    this->_prior.reset( new QUESO::UniformVectorRV<Vec,Mat>("prior_", // Extra prefix before the default "rv_"
+                                                            *(this->_param_domain) ) );
 
-    return;
   }
 
   template<class Vec,class Mat>
   void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_posterior()
   {
-    this->_posterior =
-      new QUESO::GenericVectorRV<Vec,Mat>("post_", // Extra prefix before the default "rv_" prefix
-					  *(this->_param_space) );
-
-    return;
+    this->_posterior.reset( new QUESO::GenericVectorRV<Vec,Mat>("post_", // Extra prefix before the default "rv_" prefix
+                                                                *(this->_param_space) ) );
   }
 
   /* ------------------------- Instantiate -------------------------*/
   template class QuesoStatisticalInverseProblemInterface<QUESO::GslVector,QUESO::GslMatrix>;
-  
+
 } // end namespace NitridationCalibration
 
 #endif // NITCAL_HAVE_QUESO
