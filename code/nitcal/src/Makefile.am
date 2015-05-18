@@ -37,6 +37,7 @@ libnitcal_la_SOURCES += inverse_problem/src/model_builder.C
 libnitcal_la_SOURCES += inverse_problem/src/queso_gaussian_likelihood_diagonal_covariance_interface.C
 libnitcal_la_SOURCES += inverse_problem/src/full_model_likelihood.C
 libnitcal_la_SOURCES += inverse_problem/src/surrogate_model_composition.C
+libnitcal_la_SOURCES += inverse_problem/src/surrogate_model_likelihood.C
 
 # qoi
 libnitcal_la_SOURCES += qoi/src/qoi_factory.C
@@ -71,6 +72,7 @@ include_HEADERS += inverse_problem/include/model_builder.h
 include_HEADERS += inverse_problem/include/queso_gaussian_likelihood_diagonal_covariance_interface.h
 include_HEADERS += inverse_problem/include/full_model_likelihood.h
 include_HEADERS += inverse_problem/include/surrogate_model_composition.h
+include_HEADERS += inverse_problem/include/surrogate_model_likelihood.h
 
 # qoi
 include_HEADERS += qoi/include/qoi_names.h
