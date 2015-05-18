@@ -46,6 +46,9 @@ namespace NitridationCalibration
     void compute_values( const Vec& param_values,
                          Vec& model_output ) const;
 
+    const ModelInterfaceBase<Vec,Mat>& get_model() const
+    { return *(this->_model.get()); }
+
     const Vec& get_observations() const
     { return *(this->_observations.get()); }
 

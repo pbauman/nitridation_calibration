@@ -104,8 +104,25 @@ namespace NitridationCalibration
   {
     queso_require_equal_to( _observations->sizeGlobal(), model_output.sizeGlobal() );
 
-    for( unsigned int d = 0; d < model_output.sizeGlobal(); d++ )
-        model_output[d] = _interp_surrogate[d]->evaluate( param_values );
+    try
+      {
+        for( unsigned int d = 0; d < model_output.sizeGlobal(); d++ )
+          model_output[d] = _interp_surrogate[d]->evaluate( param_values );
+      }
+    catch(...)
+      {
+        std::cout << "Caught exception in SurrogateModelComposition::compute_values()" << std::endl
+                  << "param_values = " << param_values << std::endl
+                  << "dim = " << _interp_io[0]->data().dim() << std::endl
+                  << " x_min[0] = " << _interp_io[0]->data().x_min(0) << std::endl
+                  << " x_max[0] = " << _interp_io[0]->data().x_max(0) << std::endl
+                  << " x_min[1] = " << _interp_io[0]->data().x_min(1) << std::endl
+                  << " x_max[1] = " << _interp_io[0]->data().x_max(1) << std::endl
+                  << " spacing[0] = " << _interp_io[0]->data().spacing(0) << std::endl
+                  << " spacing[1] = " << _interp_io[0]->data().spacing(1) << std::endl;
+
+        MPI_Abort(MPI_COMM_WORLD,1);
+      }
   }
 
   // Instantiate GSL version of this class
