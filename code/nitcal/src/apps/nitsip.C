@@ -36,8 +36,9 @@
 #include "boost/scoped_ptr.hpp"
 
 // NitCal
-#include <full_model_composition.h>
-#include <full_model_likelihood.h>
+#include <surrogate_model_composition.h>
+#include <surrogate_model_likelihood.h>
+#include <queso_sip_interface.h>
 
 #ifdef NITCAL_HAVE_QUESO
 // QUESO
@@ -75,12 +76,30 @@ int main(int argc, char* argv[])
 
     GetPot model_input( model_inputfile );
 
-    NitridationCalibration::FullModelComposition<QUESO::GslVector,QUESO::GslMatrix>
-      full_model(argc,argv,*env,model_input);
+    NitridationCalibration::SurrogateModelComposition<QUESO::GslVector,QUESO::GslMatrix>
+      surrogate_model(*env,model_input);
 
-    QUESO::GslVector guess(full_model.get_model().param_space().zeroVector());
+    std::cout << "Parameter domain = " << surrogate_model.get_model().param_domain() << std::endl;
 
-    unsigned int guess_size = model_input.vector_variable_size("Optimizer/guess");
+    // Create prior
+    QUESO::UniformVectorRV<QUESO::GslVector,QUESO::GslMatrix>
+      prior("prior_", surrogate_model.get_model().param_domain() );
+
+
+
+    // Create likelihood
+    NitridationCalibration::SurrogateModelLikelihood<QUESO::GslVector,QUESO::GslMatrix>
+      likelihood(surrogate_model);
+
+    // Create inverse problem
+    std::string method = model_input("InverseProblem/solver_type", "DIE!");
+    NitridationCalibration::QuesoStatisticalInverseProblemInterface<QUESO::GslVector,QUESO::GslMatrix>
+      sip( method, *env, prior, likelihood );
+
+    // Starting guess, if we're using M-H
+    QUESO::GslVector guess(surrogate_model.get_model().param_space().zeroVector());
+
+    unsigned int guess_size = model_input.vector_variable_size("InverseProblem/guess");
 
     if( guess_size != guess.sizeLocal() )
       {
@@ -97,17 +116,19 @@ int main(int argc, char* argv[])
 
     for( unsigned int i = 0; i < guess_size; i++ )
       {
-        guess[i] = model_input("Optimizer/guess", 0.0, i);
+        guess[i] = model_input("InverseProblem/guess", 0.0, i);
         if( env->fullRank() == 0 )
           {
             std::cout << "guess["<<i<<"] = " << guess[i] << std::endl;
           }
       }
 
-    //************************************************
-    // Solve SIP and get back posterior RV
-    //************************************************
-    //sip->solve();
+    QUESO::GslVector prior_realization(surrogate_model.get_model().param_space().zeroVector());
+    prior.realizer().realization(prior_realization);
+    std::cout << "prior realization = " << prior_realization << std::endl;
+
+    // Solve statistical inverse problem
+    sip.solve(guess);
   }
 
   MPI_Finalize();
