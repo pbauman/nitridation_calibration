@@ -15,7 +15,7 @@ namespace NitridationCalibration
 
     LikelihoodCommHandler( MPI_Comm inter_chain_comm,
                            const int n_datasets  );
-    ~LikelihoodCommHandler();
+    ~LikelihoodCommHandler(){};
 
     MPI_Comm get_split_chain_comm() const;
     MPI_Comm get_inter_chain_comm() const;
