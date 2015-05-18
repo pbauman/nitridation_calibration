@@ -5,9 +5,22 @@
 
 [Likelihood]
    datasets = 'A_1_13a O_2_28 Q_2_29 U_2_55'
+   #datasets = 'A_1_13a'
 []
 
+[ModelBounds]
+
+   log_gamma_CN_min = '-5.0'
+   log_gamma_N_min = '-8.0'
+
+   log_gamma_CN_max = '-1.0'
+   log_gamma_N_max = '-3.0'
+
+[]
+
+
 [InverseProblem]
-   solver_type = 'multilevel'
+   #solver_type = 'multilevel'
+   solver_type = 'metropolis-hastings'
    guess = '-2.0 -4.0'
 []

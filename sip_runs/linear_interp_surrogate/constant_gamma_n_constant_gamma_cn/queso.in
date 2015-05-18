@@ -2,7 +2,7 @@
 # UQ Environment
 ###############################################
 #env_help                 = anything
-env_numSubEnvironments   = 1 
+env_numSubEnvironments   = 16
 env_subDisplayFileName   = outputData/display
 env_subDisplayAllowAll   = 0 
 env_subDisplayAllowedSet = 0
@@ -10,3 +10,214 @@ env_displayVerbosity     = 2
 env_syncVerbosity        = 0
 env_seed                 = -1 
 
+###############################################
+# Statistical inverse problem (ip)
+###############################################
+ip_help                 = anything
+ip_computeSolution      = 1
+ip_dataOutputFileName   = outputData/sipOutput
+ip_dataOutputAllowedSet = 0
+
+
+ip_ml_restartOutput_levelPeriod      = 1 # write restart files after each level
+ip_ml_restartOutput_baseNameForFiles = restart_output/restart
+
+
+###############################################
+# 'ip_': information for Multilevel algorithm
+###############################################
+#ip_ml_help                 = anything
+#ip_ml_restartInputFileName = outputData/rawChain_ml_input
+#ip_ml_restartChainSize     = 10000
+ip_ml_dataOutputFileName   = outputData/sipOutput_ml
+ip_ml_dataOutputAllowedSet = 0
+
+###############################################
+# All levels, unless otherwise specified
+###############################################
+#ip_ml_default_loadBalance = 0
+ip_ml_default_rawChain_size = 10000 # 5
+ip_ml_default_rawChain_dataOutputFileName = outputData/rawChain_ml
+
+#ip_ml_0_rawChain_dataOutputFileName = outputData/rawChain_ml
+
+#ip_ml_default_minEffectiveSizeRatio = 0.49
+#ip_ml_default_maxEffectiveSizeRatio = 0.51
+#ip_ml_default_minRejectionRate      = 0.24
+#ip_ml_default_maxRejectionRate      = 0.4
+#ip_ml_default_putOutOfBoundsInChain = 0
+
+###############################################
+# Level 3
+###############################################
+#ip_ml_3_dr_maxNumExtraStages          = 1
+#ip_ml_3_dr_listOfScalesForExtraStages = 3.333
+
+
+###############################################
+# Last level (level 4 for 'example_gsl' executable)
+###############################################
+ip_ml_last_dataOutputFileName                  = outputData/sipOutput_ml
+ip_ml_last_dataOutputAllowedSet                = 0
+
+#ip_ml_last_loadBalance                         = 0
+ip_ml_last_rawChain_size                       = 100000
+ip_ml_last_rawChain_dataOutputFileName         = outputData/rawChain_ml
+ip_ml_last_rawChain_dataOutputAllowedSet       = 1
+ip_ml_last_rawChain_computeStats               = 1
+ip_ml_last_rawChain_stats_kde_compute          = 1
+ip_ml_last_rawChain_stats_kde_numEvalPositions = 250
+ip_ml_last_rawChain_stats_covMatrix_compute    = 1
+ip_ml_last_rawChain_stats_corrMatrix_compute   = 1
+
+ip_ml_last_filteredChain_generate                   = 1
+ip_ml_last_filteredChain_lag                        = 2
+ip_ml_last_filteredChain_dataOutputFileName         = outputData/filtChain_ml
+ip_ml_last_filteredChain_dataOutputAllowedSet       = 0
+ip_ml_last_filteredChain_computeStats               = 1
+ip_ml_last_filteredChain_stats_kde_compute          = 1
+ip_ml_last_filteredChain_stats_kde_numEvalPositions = 250
+ip_ml_last_filteredChain_stats_covMatrix_compute    = 1
+ip_ml_last_filteredChain_stats_corrMatrix_compute   = 1
+
+ip_ml_last_dr_maxNumExtraStages                = 1
+ip_ml_last_dr_listOfScalesForExtraStages       = 5.
+
+ip_ml_last_minEffectiveSizeRatio = 0.49
+ip_ml_last_maxEffectiveSizeRatio = 0.51
+ip_ml_last_minRejectionRate      = 0.24
+ip_ml_last_maxRejectionRate      = 0.4
+#ip_ml_last_putOutOfBoundsInChain = 0
+
+
+
+
+
+###############################################
+# 'ip_': information for Metropolis-Hastings algorithm
+#
+# '_sizes' examples 16K   128K   1M      2M      16M
+#                   16384 131072 1048576 2097152 16777216
+###############################################
+ip_mh_help                 = anything
+ip_mh_dataOutputFileName   = outputData/sipOutput
+ip_mh_dataOutputAllowedSet = 0 1
+
+ip_mh_enableBrooksGelmanConvMonitor = 0
+ip_mh_BrooksGelmanLag               = 40
+
+ip_mh_rawChain_dataInputFileName    = . # outputData/file_sip_raw_input
+ip_mh_rawChain_size                 = 100000 
+ip_mh_rawChain_generateExtra        = 0
+ip_mh_rawChain_displayPeriod        = 5000
+ip_mh_rawChain_measureRunTimes      = 1
+ip_mh_rawChain_dataOutputFileName   = outputData/file_sip_raw_mh
+ip_mh_rawChain_dataOutputAllowedSet = 0 1
+ip_mh_rawChain_computeStats         = 1
+
+ip_mh_displayCandidates             = 0
+ip_mh_putOutOfBoundsInChain         = 1
+ip_mh_tk_useLocalHessian            = 0
+ip_mh_tk_useNewtonComponent         = 1
+
+# dr = delayed rejection
+ip_mh_dr_maxNumExtraStages          = 1
+ip_mh_dr_listOfScalesForExtraStages = 5. 4. 3.
+
+# Controls Adaptive Metroplis proposal covariance 
+ip_mh_am_initialNonAdaptInterval    = 1 
+ip_mh_am_adaptInterval              = 1
+
+# parameters for DRAM
+ip_mh_am_eta                        = 1.44
+ip_mh_am_epsilon                    = 1.e-3
+
+# Options controlling the chain filtering
+ip_mh_filteredChain_generate             = 0
+ip_mh_filteredChain_discardedPortion     = 0.
+ip_mh_filteredChain_lag                  = 20
+ip_mh_filteredChain_dataOutputFileName   = .
+ip_mh_filteredChain_dataOutputAllowedSet = 0 1
+ip_mh_filteredChain_computeStats         = 1
+
+#ip_mh_rawChain_stats_help                      = anything
+ip_mh_rawChain_stats_initialDiscardedPortions  = 0. .05 .10 .15 .20 .25 .30 .35 .40
+ip_mh_rawChain_stats_bmm_run                   = 0
+ip_mh_rawChain_stats_bmm_lengths               = 50 100 200 250
+ip_mh_rawChain_stats_fft_compute               = 0
+ip_mh_rawChain_stats_fft_paramId               = 0
+ip_mh_rawChain_stats_fft_size                  = 2048
+ip_mh_rawChain_stats_fft_testInversion         = 1
+ip_mh_rawChain_stats_fft_write                 = 1
+ip_mh_rawChain_stats_psd_compute               = 0
+ip_mh_rawChain_stats_psd_numBlocks             = 8
+ip_mh_rawChain_stats_psd_hopSizeRatio          = .5
+ip_mh_rawChain_stats_psd_paramId               = 0
+ip_mh_rawChain_stats_psd_write                 = 1
+ip_mh_rawChain_stats_psdAtZero_compute         = 0
+ip_mh_rawChain_stats_psdAtZero_numBlocks       = 32
+ip_mh_rawChain_stats_psdAtZero_hopSizeRatio    = .5
+ip_mh_rawChain_stats_psdAtZero_display         = 1
+ip_mh_rawChain_stats_psdAtZero_write           = 1
+ip_mh_rawChain_stats_geweke_compute            = 0
+ip_mh_rawChain_stats_geweke_naRatio            = .1
+ip_mh_rawChain_stats_geweke_nbRatio            = .5
+ip_mh_rawChain_stats_geweke_display            = 1
+ip_mh_rawChain_stats_geweke_write              = 1
+ip_mh_rawChain_stats_autoCorr_computeViaDef    = 0
+ip_mh_rawChain_stats_autoCorr_computeViaFft    = 0
+ip_mh_rawChain_stats_autoCorr_secondLag        = 2
+ip_mh_rawChain_stats_autoCorr_lagSpacing       = 2
+ip_mh_rawChain_stats_autoCorr_numLags          = 15
+ip_mh_rawChain_stats_autoCorr_display          = 1
+ip_mh_rawChain_stats_autoCorr_write            = 1
+ip_mh_rawChain_stats_meanStacc_compute         = 0
+ip_mh_rawChain_stats_hist_compute              = 1 
+ip_mh_rawChain_stats_hist_numInternalBins      = 250
+ip_mh_rawChain_stats_cdfStacc_compute          = 0
+ip_mh_rawChain_stats_cdfStacc_numEvalPositions = 33
+ip_mh_rawChain_stats_kde_compute               = 1
+ip_mh_rawChain_stats_kde_numEvalPositions      = 250
+ip_mh_rawChain_stats_covMatrix_compute         = 1
+ip_mh_rawChain_stats_corrMatrix_compute        = 1
+
+#ip_mh_filteredChain_stats_help                      = anything
+ip_mh_filteredChain_stats_initialDiscardedPortions  = 0.
+ip_mh_filteredChain_stats_bmm_run                   = 0
+ip_mh_filteredChain_stats_bmm_lengths               = 50 100 200 250
+ip_mh_filteredChain_stats_fft_compute               = 0
+ip_mh_filteredChain_stats_fft_paramId               = 0
+ip_mh_filteredChain_stats_fft_size                  = 2048
+ip_mh_filteredChain_stats_fft_testInversion         = 1
+ip_mh_filteredChain_stats_fft_write                 = 1
+ip_mh_filteredChain_stats_psd_compute               = 0
+ip_mh_filteredChain_stats_psd_numBlocks             = 8
+ip_mh_filteredChain_stats_psd_hopSizeRatio          = .5
+ip_mh_filteredChain_stats_psd_paramId               = 0
+ip_mh_filteredChain_stats_psd_write                 = 1
+ip_mh_filteredChain_stats_psdAtZero_compute         = 0
+ip_mh_filteredChain_stats_psdAtZero_numBlocks       = 32
+ip_mh_filteredChain_stats_psdAtZero_hopSizeRatio    = .5
+ip_mh_filteredChain_stats_psdAtZero_display         = 1
+ip_mh_filteredChain_stats_psdAtZero_write           = 1
+ip_mh_filteredChain_stats_geweke_compute            = 0
+ip_mh_filteredChain_stats_geweke_naRatio            = .1
+ip_mh_filteredChain_stats_geweke_nbRatio            = .5
+ip_mh_filteredChain_stats_geweke_display            = 1
+ip_mh_filteredChain_stats_geweke_write              = 1
+ip_mh_filteredChain_stats_autoCorr_computeViaDef    = 0
+ip_mh_filteredChain_stats_autoCorr_computeViaFft    = 0
+ip_mh_filteredChain_stats_autoCorr_secondLag        = 2
+ip_mh_filteredChain_stats_autoCorr_lagSpacing       = 2
+ip_mh_filteredChain_stats_autoCorr_numLags          = 15
+ip_mh_filteredChain_stats_autoCorr_display          = 1
+ip_mh_filteredChain_stats_autoCorr_write            = 1
+ip_mh_filteredChain_stats_meanStacc_compute         = 0
+ip_mh_filteredChain_stats_hist_compute              = 0
+ip_mh_filteredChain_stats_hist_numInternalBins      = 250
+ip_mh_filteredChain_stats_cdfStacc_compute          = 0
+ip_mh_filteredChain_stats_cdfStacc_numEvalPositions = 33
+ip_mh_filteredChain_stats_kde_compute               = 1
+ip_mh_filteredChain_stats_kde_numEvalPositions      = 250
+ip_mh_filteredChain_stats_covMatrix_compute         = 1
+ip_mh_filteredChain_stats_corrMatrix_compute        = 1
