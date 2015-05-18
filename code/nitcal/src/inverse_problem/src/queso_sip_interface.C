@@ -19,35 +19,37 @@
 // QUESO
 #include "queso/GslVector.h"
 #include "queso/GslMatrix.h"
-#include "queso/UniformVectorRV.h"
 
 namespace NitridationCalibration
 {
 
   template<class Vec,class Mat>
-  QuesoStatisticalInverseProblemInterface<Vec,Mat>::QuesoStatisticalInverseProblemInterface( const QUESO::BaseEnvironment& env,
-                                                                                             const std::string& method )
-    : _queso_env(env),
-      _method(method),
-      _param_space(NULL),
-      _param_domain(NULL),
-      _likelihood(NULL),
-      _prior(NULL),
+  QuesoStatisticalInverseProblemInterface<Vec,Mat>::QuesoStatisticalInverseProblemInterface( const std::string& method,
+                                                                                             const QUESO::BaseEnvironment& queso_env,
+                                                                                             const QUESO::BaseVectorRV<Vec,Mat>& prior,
+                                                                                             const QUESO::BaseScalarFunction<Vec,Mat>& likelihood )
+    : _method(method),
+      _queso_env(queso_env),
       _posterior(NULL),
       _ip(NULL),
       _proposal_cov_mat(NULL)
-  {}
-
-  template<class Vec,class Mat>
-  void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_sip( )
   {
+    // First create posterior
+    this->_posterior.reset( new QUESO::GenericVectorRV<Vec,Mat>("post_", // Extra prefix before the default "rv_" prefix
+                                                                prior.imageSet().vectorSpace() ) );
+
+    // Now instantiate inverse problem
     _ip.reset( new QUESO::StatisticalInverseProblem<Vec,Mat>("", // No extra prefix before the default "ip_" prefix
                                                              NULL,
-                                                             *_prior,
-                                                             *_likelihood,
+                                                             prior,
+                                                             likelihood,
                                                              *_posterior) );
 
-    return;
+
+    _proposal_cov_mat.reset( prior.imageSet().vectorSpace().newDiagMatrix(1.0) );
+
+    (*_proposal_cov_mat)(0,0) = 2.0;
+    (*_proposal_cov_mat)(1,1) = 4.0;
   }
 
   template<class Vec,class Mat>
@@ -63,7 +65,7 @@ namespace NitridationCalibration
     //******************************************************
     // Solve the inverse problem
     //******************************************************
-    if( _method == "metropolis_hastings")
+    if( _method == "metropolis-hastings")
       {
 	_ip->solveWithBayesMetropolisHastings( NULL, initial_guess, _proposal_cov_mat.get());
       }
@@ -85,21 +87,6 @@ namespace NitridationCalibration
       }
 
     return;
-  }
-
-  template<class Vec,class Mat>
-  void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_prior()
-  {
-    this->_prior.reset( new QUESO::UniformVectorRV<Vec,Mat>("prior_", // Extra prefix before the default "rv_"
-                                                            *(this->_param_domain) ) );
-
-  }
-
-  template<class Vec,class Mat>
-  void QuesoStatisticalInverseProblemInterface<Vec,Mat>::create_posterior()
-  {
-    this->_posterior.reset( new QUESO::GenericVectorRV<Vec,Mat>("post_", // Extra prefix before the default "rv_" prefix
-                                                                *(this->_param_space) ) );
   }
 
   /* ------------------------- Instantiate -------------------------*/
