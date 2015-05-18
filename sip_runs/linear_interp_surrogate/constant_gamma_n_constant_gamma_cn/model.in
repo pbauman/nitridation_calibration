@@ -1,0 +1,13 @@
+#
+[ModelType]
+   model = 'constant_gamma_n_constant_gamma_cn'
+[]
+
+[Likelihood]
+   datasets = 'A_1_13a O_2_28 Q_2_29 U_2_55'
+[]
+
+[InverseProblem]
+   solver_type = 'multilevel'
+   guess = '-2.0 -4.0'
+[]
