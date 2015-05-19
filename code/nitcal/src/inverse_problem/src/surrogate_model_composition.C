@@ -52,8 +52,11 @@ namespace NitridationCalibration
         (*_observations)[2*d]   = (*_forward_model_inputs[d])("MassLossLikelihood/data_value", 0.0);
         (*_observations)[2*d+1] = (*_forward_model_inputs[d])("AverageNLikelihood/data_value", 0.0);
 
-        (*_covariance)[2*d]   = (*_forward_model_inputs[d])("MassLossLikelihood/sigma", 0.0);
-        (*_covariance)[2*d+1] = (*_forward_model_inputs[d])("AverageNLikelihood/sigma", 0.0);
+        double mass_loss_sigma = (*_forward_model_inputs[d])("MassLossLikelihood/sigma", 0.0);
+        double avg_N_sigma = (*_forward_model_inputs[d])("AverageNLikelihood/sigma", 0.0);
+
+        (*_covariance)[2*d]   = mass_loss_sigma*mass_loss_sigma;
+        (*_covariance)[2*d+1] = avg_N_sigma*avg_N_sigma;
       }
 
     // Now setup IO classes. These will hold the InterpolationSurrodateData we need for evaluation
