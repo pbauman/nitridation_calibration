@@ -1,0 +1,28 @@
+#
+#
+[ModelType]
+   model = 'constant_gamma_n_constant_gamma_cn'
+[]
+
+[Likelihood]
+   datasets = 'U_2_55.in'
+[]
+
+[ModelInterpolation]
+   n_points = '101 101'
+[]
+
+[ModelBounds]
+
+   log_gamma_CN_min = '-3.5'
+   log_gamma_CN_max = '-2.5'
+
+   log_gamma_N_min = '-5.0'
+   log_gamma_N_max = '-3.5'
+
+[]
+#[Optimizer]
+#   solver_type = 'nelder_mead2'
+#   step_size = '1.0 1.0'
+#   guess = '-2.0 -4.0'
+#[]
