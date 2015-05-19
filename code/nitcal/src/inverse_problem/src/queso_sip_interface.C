@@ -45,11 +45,6 @@ namespace NitridationCalibration
                                                              likelihood,
                                                              *_posterior) );
 
-
-    _proposal_cov_mat.reset( prior.imageSet().vectorSpace().newDiagMatrix(1.0) );
-
-    (*_proposal_cov_mat)(0,0) = 2.0;
-    (*_proposal_cov_mat)(1,1) = 4.0;
   }
 
   template<class Vec,class Mat>
@@ -67,6 +62,14 @@ namespace NitridationCalibration
     //******************************************************
     if( _method == "metropolis-hastings")
       {
+        _proposal_cov_mat.reset( _ip->priorRv().imageSet().vectorSpace().newDiagMatrix(1.0) );
+
+        queso_require_equal_to( initial_guess.sizeGlobal(), _proposal_cov_mat->numRowsGlobal() );
+        queso_require_equal_to( initial_guess.sizeGlobal(), _proposal_cov_mat->numCols() );
+
+        for( unsigned int i = 0; i < initial_guess.sizeGlobal(); i++ )
+          (*_proposal_cov_mat)(i,i) = initial_guess[i];
+
 	_ip->solveWithBayesMetropolisHastings( NULL, initial_guess, _proposal_cov_mat.get());
       }
     else if( _method == "multilevel" )
