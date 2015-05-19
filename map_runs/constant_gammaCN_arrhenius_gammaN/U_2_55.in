@@ -3,25 +3,25 @@
 
 [SimulationParameters]
 
-wall_temps = '298.0 330.0 1073.0 1073.0 500.0 375.0' # [K]
+wall_temps = '298.0 370.0 1373.0 1373.0 550.0 425.0' # [K]
 
-mdot = '10.2' # [mg/s]
+mdot = '6.5' # [mg/s]
 
-p_inlet = '320.0' # [Pa]
+p_inlet = '266.6' # [Pa]
 
-p_outlet = '263.3' # [Pa]
+p_outlet = '201.3' # [Pa]
 
-T_sample = '1073.0' #[K]
+T_sample = '1373.0' #[K]
 
-inlet_N = '0.273' #[% mole fraction]
+inlet_N = '0.231' #[% mole fraction]
 
-outlet_N = '0.117' #[% mole fraction]
+outlet_N = '0.046' #[% mole fraction]
 
-mesh_file = 'Q_2_29_9adapt.xda'                                                                                                                                                                                                              
+mesh_file = 'U_2_55_9adapt.xda'                                                                                                                                                                                                              
 
-delta_t = '300'  #[min]
+delta_t = '133'  #[min]
 
-mass_loss_data = '0.61' #[mg]                                                                                                                                                                                                                
+mass_loss_data = '2.04' #[mg]                                                                                                                                                                                                                
 
 []
 
@@ -47,7 +47,7 @@ data_value = '${* ${SimulationParameters/outlet_N} 1.0e-2}' # [mole fraction]
 # 15% of data value
 sigma = '${* 0.15 ${AverageNLikelihood/data_value} }'
 
-#gamma_nominal_value = '1.0e-4'
+gamma_nominal_value = '1.0e-4'
 
 []
 
@@ -98,7 +98,6 @@ is_axisymmetric = 'true'
 
 species   = 'N2 N C CN'
 chem_file = './nitridation.xml'
-mixture   = 'air4sp'
 
 [../Antioch]
 
@@ -163,14 +162,13 @@ gamma_N_3 = '${MassLossLikelihood/gamma_nominal_value}'
 wall_catalytic_reactions_2 = 'N->N2'
 
 gamma_N_2_type = 'arrhenius'
-gamma0_N_2 = '4.e-4'
-Ta_N_2 = '300'
-
-#gamma_N_2_type = 'constant'
-#gamma_N_2 = '${AverageNLikelihood/gamma_nominal_value}'
+gamma0_N_2 = '${AverageNLikelihood/gamma_nominal_value}'
+Ta_N_2 = '1000'
 
 enable_thermo_press_calc = 'false'
 pin_pressure = 'false'
+
+output_vars = 'rho mole_fractions mu k'
 
 []
 
@@ -186,7 +184,7 @@ mesh_filename = '${SimulationParameters/mesh_file}'
 
 [restart-options]                                                                                                                                                                                                                            
 
-restart_file = 'Q_2_29_restart.xdr'
+restart_file = 'restart_U_2_55.xdr'
 
 []
 
@@ -205,7 +203,7 @@ verify_analytic_jacobians = '0.0'
 
 initial_linear_tolerance = '1.0e-10'
 
-relative_residual_tolerance = '1.0e-7'
+relative_residual_tolerance = '1.0e-10'
 
 use_numerical_jacobians_only = 'true'
 
@@ -213,16 +211,14 @@ use_numerical_jacobians_only = 'true'
 
 # Visualization options
 [vis-options]
-output_vis = 'false'
+output_vis = 'true'
 
 vis_output_file_prefix = 'nitridation' 
 
 output_residual = 'false'
 
-output_format = 'xdr ExodusII'
+output_format = 'xdr'
 
-#output_vars = 'cp_mix h_s rho_mix mole_fractions omega_dot'
-output_vars = 'rho_mix mole_fractions mu_mix k_mix'
 
 # Options for print info to the screen
 [screen-options]
@@ -237,9 +233,8 @@ solver_quiet = 'true'
 
 print_element_jacobians = 'false'
 
-print_qoi = 'false'
+print_qoi = 'true'
 echo_qoi = 'false'
-echo_physics = 'false'
 
 []
 
