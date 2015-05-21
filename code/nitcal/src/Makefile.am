@@ -8,6 +8,7 @@ bin_PROGRAMS  = nitfp
 bin_PROGRAMS += nitsip
 bin_PROGRAMS += nitmap
 bin_PROGRAMS += nit_interp
+bin_PROGRAMS += nit_data
 
 lib_LTLIBRARIES = libnitcal.la
 
@@ -119,6 +120,12 @@ nitmap_LDADD = libnitcal.la
 #------------------------------------
 nit_interp_SOURCES = apps/nit_interp.C
 nit_interp_LDADD = libnitcal.la
+
+#------------------------------------
+# Source for nitmap
+#------------------------------------
+nit_data_SOURCES = apps/nit_data.C
+nit_data_LDADD = libnitcal.la
 
 #--------------------------------------
 #Local Directories to include for build
