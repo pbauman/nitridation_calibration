@@ -45,7 +45,7 @@ namespace NitridationCalibration
     double ln_value = QUESO::GaussianLikelihoodDiagonalCovariance<Vec,Mat>::lnValue(domainVector,domainDirection,gradVector,hessianMatrix,hessianEffect);
 
     // Get the dimension and convert to double
-    double dim = this->m_observations.sizeGlobal();
+    //double dim = this->m_observations.sizeGlobal();
 
     //const double pi = 3.1415926535897932384626433832795029L;
     //const double log_2_pi = std::log(2.0*pi);
@@ -55,13 +55,14 @@ namespace NitridationCalibration
 
     // Since we have a diagonal covariance, the \det is just the
     // product of the covariances
+    /*
     double det_sigma = 1.0;
     for( unsigned int i = 0; i < dim; i++ )
       {
         queso_assert_greater( this->m_covariance[i], 0.0 );
         det_sigma *= this->m_covariance[i];
       }
-
+    */
     //ln_value -= 0.5*std::log(det_sigma);
 
     return ln_value;
