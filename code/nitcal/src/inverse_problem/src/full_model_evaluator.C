@@ -62,6 +62,8 @@ namespace NitridationCalibration
         values[1] = 0.0;
 
         this->_interface.reset_initial_guess();
+
+        return;
       }
 
     values[0] = this->_interface.computed_mass_loss();
