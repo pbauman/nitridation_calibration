@@ -10,19 +10,17 @@
 #include "simulation_interface.h"
 
 // NitCal
-#include "nitcal_bc_factory.h"
 #include "qoi_factory.h"
 
 // GRINS
 #include "grins/simulation_builder.h"
-#include "grins/bc_factory.h"
 #include "grins/qoi_factory.h"
 
 namespace NitridationCalibration
 {
   // Function for getting initial temperature field
   libMesh::Real initial_values( const libMesh::Point& p,
-				const libMesh::Parameters &params, 
+				const libMesh::Parameters &params,
 				const std::string& system_name,
 				const std::string& unknown_name );
 
@@ -34,34 +32,30 @@ namespace NitridationCalibration
       _command_line( new GetPot(argc,argv) )
   {
     GRINS::SimulationBuilder sim_builder;
-    
-    std::tr1::shared_ptr<GRINS::BoundaryConditionsFactory> bc_factory( new NitridationCalibration::BoundaryConditionsFactory(input) );
 
-    sim_builder.attach_bc_factory( bc_factory );
-    
     std::tr1::shared_ptr<GRINS::QoIFactory> qoi_factory( new NitridationCalibration::QoIFactory );
-    
+
     sim_builder.attach_qoi_factory( qoi_factory );
 
-    _simulation = new NitridationSimulation( input, *(_command_line.get()), sim_builder, _libmesh_init.comm() );
+    _simulation.reest( new NitridationSimulation( input, *(_command_line.get()), sim_builder, _libmesh_init.comm() ) );
 
     // Project initial solution
     std::string restart_file = input( "restart-options/restart_file", "none" );
 
     std::tr1::shared_ptr<NitridationCalibration::TubeTempBC> wall_temp;
-  
+
     if( restart_file == "none" )
       {
 	// Asssign initial temperature value
 	std::string system_name = input( "screen-options/system_name", "GRINS" );
 	std::tr1::shared_ptr<libMesh::EquationSystems> es = _simulation->get_equation_system();
 	const libMesh::System& system = es->get_system(system_name);
-      
+
         libMesh::Parameters &params = es->parameters;
 
 	libMesh::Real& w_N2 = params.set<libMesh::Real>( "w_N2" );
 	w_N2 = input( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0, 0 );
-      
+
 	libMesh::Real& w_N = params.set<libMesh::Real>( "w_N" );
 	w_N = input( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0, 1 );
 
@@ -85,40 +79,28 @@ namespace NitridationCalibration
 
 	*(_cached_initial_guess.get()) = *(system.solution.get());
       }
-
-    return;
-  }
-
-  SimulationInterface::~SimulationInterface()
-  {
-    delete _simulation;
-    return;
   }
 
   void SimulationInterface::set_gamma_CN_params( const std::vector<double>& gamma_CN_params ) const
   {
     _simulation->set_gamma_CN_params(gamma_CN_params);
-    return;
   }
 
   void SimulationInterface::set_gamma_N_params( const std::vector<double>& gamma_N_params ) const
   {
     _simulation->set_gamma_N_params(gamma_N_params);
-    return;
   }
 
   void SimulationInterface::reset_initial_guess() const
   {
     _simulation->reset_initial_guess( *_cached_initial_guess );
-    return;
   }
 
   void SimulationInterface::solve() const
   {
     _simulation->solve();
-    return;
   }
-  
+
   double SimulationInterface::computed_mass_loss() const
   {
     return _simulation->computed_mass_loss();
@@ -130,7 +112,7 @@ namespace NitridationCalibration
   }
 
   libMesh::Real initial_values( const libMesh::Point& p,
-				const libMesh::Parameters &params, 
+				const libMesh::Parameters &params,
 				const std::string& ,
 				const std::string& unknown_name )
   {

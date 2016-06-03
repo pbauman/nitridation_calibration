@@ -24,7 +24,7 @@ namespace NitridationCalibration
 			   GRINS::SimulationBuilder& sim_builder,
                            const libMesh::Parallel::Communicator& comm );
 
-    virtual ~NitridationSimulation();
+    virtual ~NitridationSimulation(){};
 
     void set_gamma_CN_params( const std::vector<double>& gamma_CN_params );
 
@@ -43,6 +43,9 @@ namespace NitridationCalibration
     unsigned int _mass_loss_catalytic_qoi_index;
 
     unsigned int _average_n_qoi_index;
+
+    unsigned int _gas_recomb_idx;
+    unsigned int _gas_solid_idx;
 
   };
 

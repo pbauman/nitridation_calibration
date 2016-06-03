@@ -24,7 +24,7 @@ namespace NitridationCalibration
 
     SimulationInterface( int argc, char** argv, MPI_Comm mpi_comm,
 			 const GetPot& input );
-    ~SimulationInterface();
+    ~SimulationInterface(){};
 
     void set_gamma_CN_params( const std::vector<double>& gamma_CN_params ) const;
 
@@ -33,7 +33,7 @@ namespace NitridationCalibration
     void reset_initial_guess() const;
 
     void solve() const;
-    
+
     double computed_mass_loss() const;
 
     double computed_average_n() const;
@@ -42,11 +42,11 @@ namespace NitridationCalibration
 
     libMesh::LibMeshInit _libmesh_init;
 
-    NitridationSimulation* _simulation;
+    libMesh::UniquePtr<NitridationSimulation> _simulation;
 
-    libMesh::AutoPtr<libMesh::NumericVector<libMesh::Real> > _cached_initial_guess;
+    libMesh::UniquePtr<libMesh::NumericVector<libMesh::Real> > _cached_initial_guess;
 
-    boost::scoped_ptr<GetPot> _command_line;
+    libMesh::UniquePtr<GetPot> _command_line;
 
   };
 

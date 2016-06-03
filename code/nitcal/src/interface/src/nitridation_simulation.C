@@ -28,7 +28,9 @@ namespace NitridationCalibration
                                                 GetPot& command_line,
 					        GRINS::SimulationBuilder& sim_builder,
                                                 const libMesh::Parallel::Communicator& comm )
-    : GRINS::Simulation(input,command_line,sim_builder,comm)
+    : GRINS::Simulation(input,command_line,sim_builder,comm),
+      _gas_recomb_idx(std::numeric_limits<unsigned int>::max()),
+      _gas_solid_idx(std::numeric_limits<unsigned int>::max())
   {
     /* Search for the QoI's and cache their indices for later use */
     // First get the DifferentiableQoI and cast to CompositeQoI
@@ -40,70 +42,63 @@ namespace NitridationCalibration
     for( unsigned int q = 0; q < n_qois; q++ )
       {
         const GRINS::QoIBase& qoi = qois->get_qoi(q);
-
         const std::string& qoi_name = qoi.name();
 
         if( qoi_name == average_N_mole_fraction )
-          {
-            _average_n_qoi_index = q;
-          }
-        else if( qoi_name == mass_loss_catalytic )
-          {
-            _mass_loss_catalytic_qoi_index = q;
-          }
-        else
-          {
-            std::cerr << "Error: Invalid qoi_name " << qoi_name << std::endl;
-            libmesh_error();
-          }
-      }
-    
-    return;
-  }
+          _average_n_qoi_index = q;
 
-  NitridationSimulation::~NitridationSimulation()
-  {
-    return;
+        else if( qoi_name == mass_loss_catalytic )
+          _mass_loss_catalytic_qoi_index = q;
+
+        else
+          libmesh_error_msg("Error: Invalid qoi_name " << qoi_name << std::endl);
+      }
+
+    // Get the Neumann BCs and search for the boundary id corresponding to
+    // each of the catalytic walls and cache the index later for resetting
+    // the parameters
+    const std::vector<GRINS::SharedPtr<GRINS::NeumannBCContainer> > & neumann_bcs =
+      this->_multiphysics_system->get_neumann_bcs();
+
+    for( unsigned int i = 0; i < neumann_bcs.size(); i++ )
+      {
+        if( neumann_bcs[i].has_bc_id(2) )
+          _gas_recomb_idx = i;
+
+        if( neumann_bcs[i].has_bc_id(3) )
+          _gas_solid_idx = i;
+      }
+
+    if( _gas_recomb_idx == std::numeric_limits<unsigned int>::max() )
+      libmesh_error_msg("ERROR: Could not find idx for GasRecomb BC!");
+
+    if( _gas_solid_idx == std::numeric_limits<unsigned int>::max() )
+      libmesh_error_msg("ERROR: Could not find idx for GasSolid BC!");
   }
 
   void NitridationSimulation::set_gamma_CN_params( const std::vector<double>& gamma_CN_params )
   {
-    std::tr1::shared_ptr<GRINS::Physics> physics = this->_multiphysics_system->get_physics( GRINS::reacting_low_mach_navier_stokes );
+    std::vector<GRINS::SharedPtr<GRINS::NeumannBCContainer> > & neumann_bcs =
+      this->_multiphysics_system->get_neumann_bcs();
 
-    GRINS::BCHandlingBase* bc_handler_base = physics->get_bc_handler();
+    GRINS::SharedPtr<GRINS::NeumannBCAbstract> bc_base = neumann_bcs[_gas_solid_idx].get_func();
 
-    GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>* bc_handler =
-      libMesh::libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
-    
-    /*! \todo Need to generalize to more than 1 bc */
-    
-    const unsigned int bc_id = 3;
+    GRINS::GasSolidCatalyticWall* wall = libMesh::cast_ptr<GRINS::GasSolidCatalyticWall>( bc_base.get() );
 
-    GRINS::CatalyticWallBase<GRINS::AntiochChemistry>* func = bc_handler->get_catalytic_wall( bc_id );
-
-    func->set_catalycity_params( gamma_CN_params );
-
-    return;
+    wall->set_catalycity_params( gamma_CN_params );
   }
 
   void NitridationSimulation::set_gamma_N_params( const std::vector<double>& gamma_N_params )
   {
-    std::tr1::shared_ptr<GRINS::Physics> physics = this->_multiphysics_system->get_physics( GRINS::reacting_low_mach_navier_stokes );
+    std::vector<GRINS::SharedPtr<GRINS::NeumannBCContainer> > & neumann_bcs =
+      this->_multiphysics_system->get_neumann_bcs();
 
-    GRINS::BCHandlingBase* bc_handler_base = physics->get_bc_handler();
+    GRINS::SharedPtr<GRINS::NeumannBCAbstract> bc_base = neumann_bcs[_gas_recomb_idx].get_func();
 
-    GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>* bc_handler =
-      libMesh::libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
-    
-    /*! \todo Need to generalize to more than 1 bc */
-    
-    const unsigned int bc_id = 2;
+    GRINS::GasRecombinationCatalyticWall* wall =
+      libMesh::cast_ptr<GRINS::GasRecombinationCatalyticWall>( bc_base.get() );
 
-    GRINS::CatalyticWallBase<GRINS::AntiochChemistry>* func = bc_handler->get_catalytic_wall( bc_id );
-
-    func->set_catalycity_params( gamma_N_params );
-
-    return;
+    wall->set_catalycity_params( gamma_N_params );
   }
 
   void NitridationSimulation::reset_initial_guess( const libMesh::NumericVector<libMesh::Real>& solution )
@@ -114,21 +109,17 @@ namespace NitridationCalibration
 
     (*((this->_multiphysics_system)->solution)).close();
     (*((this->_multiphysics_system)->current_local_solution)).close();
-
-    return;
   }
 
   void NitridationSimulation::solve()
   {
     this->_multiphysics_system->solve();
-
-    return;
   }
 
   double NitridationSimulation::computed_mass_loss()
   {
     _multiphysics_system->assemble_qoi( libMesh::QoISet( *_multiphysics_system ) );
-    
+
     /* Absolute value because this will be a negative quantity, but the data
        to which we are comparing are all given as postive values */
     return std::fabs(this->get_qoi_value(_mass_loss_catalytic_qoi_index));
