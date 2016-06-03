@@ -29,6 +29,18 @@ namespace NitridationCalibration
                                                                n_params,
                                                                NULL ) );
 
+    if( !input.have_variable("ModelBounds/log_gamma_CN_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_CN_min");
+
+    if( !input.have_variable("ModelBounds/log_gamma_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_N_min");
+
+    if( !input.have_variable("ModelBounds/log_gamma_CN_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_CN_max");
+
+    if( !input.have_variable("ModelBounds/log_gamma_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_N_max");
+
     // These are assuming normalized values
     const double gamma_CN_min = model_input("ModelBounds/log_gamma_CN_min", 0.0);
     const double gamma_N_min = model_input("ModelBounds/log_gamma_N_min", 0.0);

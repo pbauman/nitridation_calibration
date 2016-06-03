@@ -21,14 +21,35 @@ namespace NitridationCalibration
   ArrheniusGammaNConstantGammaCNModel<Vec,Mat>::ArrheniusGammaNConstantGammaCNModel( const QUESO::BaseEnvironment& env,
                                                                                      const GetPot& model_input )
     : ModelInterfaceBase<Vec,Mat>(),
-    _Ta_N_nom( model_input( "ModelBounds/Ta_N_nominal_value", 1.0e-3 ) )
+    _Ta_N_nom( model_input( "ModelBounds/Ta_N_nominal_value", 0.0 ) )
   {
+    if( !input.have_variable("ModelBounds/Ta_N_nominal_value") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/Ta_N_nominal_value");
+
     const unsigned int n_params = 3;
 
     this->_param_space.reset( new QUESO::VectorSpace<Vec,Mat>( env,
                                                                "param_",
                                                                n_params,
                                                                NULL ) );
+
+    if( !input.have_variable("ModelBounds/log_gamma_CN_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_CN_min");
+
+    if( !input.have_variable("ModelBounds/log_gamma_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_N_min");
+
+    if( !input.have_variable("ModelBounds/Ta_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/Ta_N_min");
+
+    if( !input.have_variable("ModelBounds/log_gamma_CN_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_CN_max");
+
+    if( !input.have_variable("ModelBounds/log_gamma_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_N_max");
+
+    if( !input.have_variable("ModelBounds/Ta_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/Ta_N_max");
 
     // These are assuming normalized values
     const double gamma_CN_min = model_input("ModelBounds/log_gamma_CN_min", 0.0);

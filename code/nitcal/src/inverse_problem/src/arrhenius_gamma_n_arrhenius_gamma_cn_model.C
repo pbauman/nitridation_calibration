@@ -21,11 +21,23 @@ namespace NitridationCalibration
   ArrheniusGammaNArrheniusGammaCNModel<Vec,Mat>::ArrheniusGammaNArrheniusGammaCNModel( const QUESO::BaseEnvironment& env,
                                                                                        const GetPot& model_input )
   : ModelInterfaceBase<Vec,Mat>(),
-    _gamma0_CN_nom( model_input( "ModelBounds/gamma0_CN_nominal_value", 1.0e-3 ) ),
-    _Ta_CN_nom( model_input( "ModelBounds/Ta_CN_nominal_value", 1.0e-3 ) ),
-    _gamma0_N_nom( model_input( "ModelBounds/gamma0_N_nominal_value", 1.0e-3 ) ),
-    _Ta_N_nom( model_input( "ModelBounds/Ta_N_nominal_value", 1.0e-3 ) )
+    _gamma0_CN_nom( model_input( "ModelBounds/gamma0_CN_nominal_value", 0.0 ) ),
+    _Ta_CN_nom( model_input( "ModelBounds/Ta_CN_nominal_value", 0.0 ) ),
+    _gamma0_N_nom( model_input( "ModelBounds/gamma0_N_nominal_value", 0.0 ) ),
+    _Ta_N_nom( model_input( "ModelBounds/Ta_N_nominal_value", 0.0 ) )
   {
+    if( !input.have_variable("ModelBounds/gamma0_CN_nominal_value") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/gamma0_CN_nominal_value");
+
+    if( !input.have_variable("ModelBounds/Ta_CN_nominal_value") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/Ta_CN_nominal_value");
+
+    if( !input.have_variable("ModelBounds/gamma0_N_nominal_value") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/gamma0_N_nominal_value");
+
+    if( !input.have_variable("ModelBounds/Ta_N_nominal_value") )
+      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/Ta_N_nominal_value");
+
     const unsigned int n_params = 4;
 
     this->_param_space.reset( new QUESO::VectorSpace<Vec,Mat>( env,
