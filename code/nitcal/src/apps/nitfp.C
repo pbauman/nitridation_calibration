@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------bl-
 //--------------------------------------------------------------------------
-// 
-// NitCal - Nitridation Calibration 
+//
+// NitCal - Nitridation Calibration
 //
 // Copyright (C) 2012-2013 The PECOS Development Team
 //
@@ -20,11 +20,6 @@
 // 02110-1301 USA
 //
 //-----------------------------------------------------------------------el-
-//
-// $Id$
-//
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
 #include "nitcal_config.h"
 
 #include <iostream>
@@ -37,11 +32,11 @@
 #include "libmesh/parallel.h"
 
 // NitCal
-#include "nitcal_bc_factory.h"
 #include "qoi_factory.h"
+#include "tube_twall.h"
 
 // Function for getting initial temperature field
-libMesh::Real initial_values( const libMesh::Point& p, const libMesh::Parameters &params, 
+libMesh::Real initial_values( const libMesh::Point& p, const libMesh::Parameters &params,
                               const std::string& system_name, const std::string& unknown_name );
 
 int main(int argc, char* argv[])
@@ -56,7 +51,7 @@ int main(int argc, char* argv[])
 
   // libMesh input file should be first argument
   std::string libMesh_input_filename = argv[1];
-  
+
   // Create our GetPot object.
   GetPot libMesh_inputfile( libMesh_input_filename );
 
@@ -64,55 +59,24 @@ int main(int argc, char* argv[])
 
   // Initialize libMesh library.
   libMesh::LibMeshInit libmesh_init(argc, argv);
- 
+
   GRINS::SimulationBuilder sim_builder;
 
-  std::tr1::shared_ptr<GRINS::BoundaryConditionsFactory> bc_factory( new NitridationCalibration::BoundaryConditionsFactory(libMesh_inputfile) );
-
-  sim_builder.attach_bc_factory( bc_factory );
-
-  std::tr1::shared_ptr<GRINS::QoIFactory> qoi_factory( new NitridationCalibration::QoIFactory );
+  GRINS::SharedPtr<GRINS::QoIFactory> qoi_factory( new NitridationCalibration::QoIFactory );
 
   sim_builder.attach_qoi_factory( qoi_factory );
-  
+
   GRINS::Simulation grins( libMesh_inputfile,
                            command_line,
 			   sim_builder,
                            libmesh_init.comm());
-
-  //FIXME: We need to move this to within the Simulation object somehow...
-  std::string restart_file = libMesh_inputfile( "restart-options/restart_file", "none" );
-
-  std::tr1::shared_ptr<NitridationCalibration::TubeTempBC> wall_temp;
-  
-  if( restart_file == "none" )
-    {
-      // Asssign initial temperature value
-      std::string system_name = libMesh_inputfile( "screen-options/system_name", "GRINS" );
-      std::tr1::shared_ptr<libMesh::EquationSystems> es = grins.get_equation_system();
-      const libMesh::System& system = es->get_system(system_name);
-      
-      libMesh::Parameters &params = es->parameters;
-
-      libMesh::Real& w_N2 = params.set<libMesh::Real>( "w_N2" );
-      w_N2 = libMesh_inputfile( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0, 0 );
-      
-      libMesh::Real& w_N = params.set<libMesh::Real>( "w_N" );
-      w_N = libMesh_inputfile( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0, 1 );
-
-      wall_temp.reset( new NitridationCalibration::TubeTempBC( libMesh_inputfile ) );
-      std::tr1::shared_ptr<NitridationCalibration::TubeTempBC>& dummy = params.set<std::tr1::shared_ptr<NitridationCalibration::TubeTempBC> >( "wall_temp" );
-      dummy = wall_temp;
-
-      system.project_solution( initial_values, NULL, params );
-    }
 
   grins.run();
 
   return 0;
 }
 
-libMesh::Real initial_values( const libMesh::Point& p, const libMesh::Parameters &params, 
+libMesh::Real initial_values( const libMesh::Point& p, const libMesh::Parameters &params,
                               const std::string& , const std::string& unknown_name )
 {
   libMesh::Real value = 0.0;
@@ -125,7 +89,7 @@ libMesh::Real initial_values( const libMesh::Point& p, const libMesh::Parameters
 
   else if( unknown_name == "T" )
     {
-      value = (*params.get<std::tr1::shared_ptr<NitridationCalibration::TubeTempBC> >( "wall_temp" ))(p);
+      value = (*params.get<GRINS::SharedPtr<NitridationCalibration::TubeTempBC> >( "wall_temp" ))(p);
       //value = 1200.0;
     }
 

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------bl-
 //--------------------------------------------------------------------------
-// 
-// NitCal - Nitridation Calibration 
+//
+// NitCal - Nitridation Calibration
 //
 // Copyright (C) 2012-2013 The PECOS Development Team
 //
@@ -20,11 +20,6 @@
 // 02110-1301 USA
 //
 //-----------------------------------------------------------------------el-
-//
-// $Id$
-//
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
 
 #ifndef NITCAL_AVERAGE_N_MOLE_FRACTION_H
 #define NITCAL_AVERAGE_N_MOLE_FRACTION_H
@@ -45,7 +40,7 @@ namespace NitridationCalibration
 
     AverageNMoleFraction( const std::string& qoi_name );
 
-    virtual ~AverageNMoleFraction();
+    virtual ~AverageNMoleFraction(){};
 
     virtual GRINS::QoIBase* clone() const;
 
@@ -53,7 +48,9 @@ namespace NitridationCalibration
 
     virtual bool assemble_on_sides() const;
 
-    virtual void init( const GetPot& input, const GRINS::MultiphysicsSystem& system );
+    virtual void init( const GetPot& input,
+                       const GRINS::MultiphysicsSystem& system,
+                       unsigned int qoi_num );
 
     virtual void init_context( GRINS::AssemblyContext& context );
 

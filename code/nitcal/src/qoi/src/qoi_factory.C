@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------bl-
 //--------------------------------------------------------------------------
-// 
-// NitCal - Nitridation Calibration 
+//
+// NitCal - Nitridation Calibration
 //
 // Copyright (C) 2012-2013 The PECOS Development Team
 //
@@ -55,14 +55,14 @@ namespace NitridationCalibration
 
   void QoIFactory::add_qoi( const GetPot& input,
 			    const std::string& qoi_name,
-			    std::tr1::shared_ptr<GRINS::CompositeQoI>& qois )
+			    GRINS::SharedPtr<GRINS::CompositeQoI>& qois )
   {
     if( qoi_name == average_N_mole_fraction )
       {
         GRINS::QoIBase* qoi = new AverageNMoleFraction( average_N_mole_fraction );
         qois->add_qoi(*qoi);
       }
-    
+
     else if( qoi_name == mass_loss_catalytic  )
       {
         GRINS::QoIBase* qoi = new MassLossCatalytic( mass_loss_catalytic );

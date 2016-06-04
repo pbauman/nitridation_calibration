@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------bl-
 //--------------------------------------------------------------------------
-// 
-// NitCal - Nitridation Calibration 
+//
+// NitCal - Nitridation Calibration
 //
 // Copyright (C) 2012-2013 The PECOS Development Team
 //
@@ -35,8 +35,7 @@
 #include "grins/variable_name_defaults.h"
 #include "grins/math_constants.h"
 #include "grins/assembly_context.h"
-#include "grins/bc_handling_base.h"
-#include "grins/reacting_low_mach_navier_stokes_bc_handling.h"
+#include "grins/physics_naming.h"
 
 // libMesh
 #include "libmesh/quadrature.h"
@@ -47,27 +46,27 @@ namespace NitridationCalibration
     : QoIBase(qoi_name),
       _physics(NULL),
       _chem_mixture(NULL),
-      _omega_dot(NULL)
-  {
-    return;
-  }
-
-  MassLossCatalytic::~MassLossCatalytic()
-  {
-    return;
-  }
+      _omega_dot(NULL),
+      _gas_solid_idx(std::numeric_limits<unsigned int>::max())
+  {}
 
   GRINS::QoIBase* MassLossCatalytic::clone() const
   {
     return new MassLossCatalytic( *this );
   }
 
-  void MassLossCatalytic::init( const GetPot& input, const GRINS::MultiphysicsSystem& system )
+  void MassLossCatalytic::init( const GetPot& input,
+                                const GRINS::MultiphysicsSystem& system,
+                                unsigned int /*qoi_num*/ )
   {
-    
-    const unsigned int n_species = input.vector_variable_size("Physics/Chemistry/species");
+    if( !input.have_variable("QoI/MassLossCatalytic/material") )
+      libmesh_error_msg("ERROR: Could not find QoI/MassLossCatalytic/material!");
 
-    _chem_mixture =  new GRINS::AntiochChemistry(input);
+    std::string material = input("QoI/MassLossCatalytic/material","DIE!");
+
+    _chem_mixture = new GRINS::AntiochChemistry(input,material);
+
+    unsigned int n_species = _chem_mixture->n_species();
 
     // Read boundary ids for which we want to compute
     int num_bcs =  input.vector_variable_size("QoI/MassLossCatalytic/bc_ids");
@@ -79,7 +78,7 @@ namespace NitridationCalibration
                   << "Found: " << num_bcs << std::endl;
         libmesh_error();
       }
-    
+
      /*! \todo Need to generalize to more than 1 bc */
     if( num_bcs > 1 )
       {
@@ -90,26 +89,20 @@ namespace NitridationCalibration
       }
 
     for( int i = 0; i < num_bcs; i++ )
-      {
-        _bc_ids.insert( input("QoI/"+_qoi_name+"/bc_ids", -1, i ) );
-      }
+      _bc_ids.insert( input("QoI/"+_qoi_name+"/bc_ids", -1, i ) );
 
     libMesh::Real delta_t = input("QoI/"+_qoi_name+"/delta_t", 0.0 );
-    
+
     // convert from mins to seconds
     delta_t *= 60;
 
     // delta_t*\int d\theta
     this->_factor = delta_t*GRINS::Constants::two_pi;
 
-    std::tr1::shared_ptr<GRINS::Physics> base_physics = system.get_physics( GRINS::reacting_low_mach_navier_stokes );
+    GRINS::SharedPtr<GRINS::Physics> base_physics = system.get_physics( GRINS::PhysicsNaming::reacting_low_mach_navier_stokes() );
     _physics = libMesh::libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesAbstract* >( base_physics.get() );
 
-    // Grab temperature variable index
-    std::string T_var_name = input("Physics/VariableNames/Temperature",
-                                   GRINS::T_var_name_default);
-
-    this->_T_var = system.variable_number(T_var_name);
+    this->_T_var = system.variable_number("T");
 
     _species_vars.resize( n_species );
     for( unsigned int s = 0; s < n_species; s++ )
@@ -121,16 +114,25 @@ namespace NitridationCalibration
     _N_index = _chem_mixture->species_index(std::string("N"));
     _CN_index = _chem_mixture->species_index(std::string("CN"));
 
-    GRINS::BCHandlingBase* bc_handler_base = base_physics->get_bc_handler();
+    // Get the Neumann BCs and search for the boundary id corresponding to
+    // each of the catalytic walls and cache the index later for resetting
+    // the parameters
+    const std::vector<GRINS::SharedPtr<GRINS::NeumannBCContainer> > & neumann_bcs =
+      system.get_neumann_bcs();
 
-    GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>* bc_handler =
-      libMesh::libmesh_cast_ptr<GRINS::ReactingLowMachNavierStokesBCHandling<GRINS::AntiochChemistry>*>(bc_handler_base);
-    
-    /*! \todo Need to generalize to more than 1 bc */
-    GRINS::CatalyticWallBase<GRINS::AntiochChemistry>* base_wall_ptr  = bc_handler->get_catalytic_wall( (*_bc_ids.begin()) );
-    _omega_dot = libMesh::libmesh_cast_ptr<GRINS::GasSolidCatalyticWall<GRINS::AntiochChemistry>*>( base_wall_ptr );
+    for( unsigned int i = 0; i < neumann_bcs.size(); i++ )
+      {
+        if( neumann_bcs[i]->has_bc_id(3) )
+          _gas_solid_idx = i;
+      }
 
-    return;
+    if( _gas_solid_idx == std::numeric_limits<unsigned int>::max() )
+      libmesh_error_msg("ERROR: Could not find idx for GasSolid BC!");
+
+    GRINS::SharedPtr<GRINS::NeumannBCAbstract> bc_base =
+      neumann_bcs[_gas_solid_idx]->get_func();
+
+    _omega_dot = libMesh::libmesh_cast_ptr<GRINS::GasSolidCatalyticWall<GRINS::AntiochChemistry>*>( bc_base.get() );
   }
 
   void MassLossCatalytic::init_context( GRINS::AssemblyContext& context )
@@ -163,7 +165,7 @@ namespace NitridationCalibration
             unsigned int n_qpoints = context.get_side_qrule().n_points();
 
             const std::vector<libMesh::Point>& qpoint = side_fe->get_xyz();
-            
+
             libMesh::Number& qoi = context.get_qois()[qoi_index];
 
             const unsigned int n_species = _physics->n_species();
@@ -174,16 +176,16 @@ namespace NitridationCalibration
             for (unsigned int qp = 0; qp != n_qpoints; qp++)
               {
                 const libMesh::Real T =  context.side_value(_T_var, qp);
-                
+
                 const libMesh::Real r = qpoint[qp](0);
 
                 for( unsigned int s = 0; s < n_species; s++ )
                   {
                     context.side_value( _species_vars[s], qp, Y[s] );
                   }
-                
+
                 const libMesh::Real p0 = _physics->get_p0_steady_side(context, qp);
-                
+
                 const libMesh::Real R = _chem_mixture->R_mix( Y );
 
                 const libMesh::Real rho = _physics->rho(T, p0, R);
@@ -253,16 +255,16 @@ void MassLossCatalytic::side_qoi_derivative( GRINS::AssemblyContext& context,
             for (unsigned int qp = 0; qp != n_qpoints; qp++)
               {
                 const libMesh::Real T =  context.side_value(_T_var, qp);
-                
+
                 const libMesh::Real r = qpoint[qp](0);
 
                 for( unsigned int s = 0; s < n_species; s++ )
                   {
                     context.side_value( _species_vars[s], qp, Y[s] );
                   }
-                
+
                 const libMesh::Real p0 = _physics->get_p0_steady_side(context, qp);
-                
+
                 const libMesh::Real R = _chem_mixture->R_mix( Y );
 
                 const libMesh::Real rho = _physics->rho(T, p0, R);

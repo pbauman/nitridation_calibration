@@ -11,7 +11,7 @@ AX_PREFIX_CONFIG_H(nitcal_config.h,NITCAL,nitcal_config.h.tmp)
 
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CANONICAL_TARGET()
-AM_INIT_AUTOMAKE([dist-bzip2 tar-ustar 1.11 no-define color-tests parallel-tests])
+AM_INIT_AUTOMAKE([dist-bzip2 tar-ustar 1.11 no-define color-tests parallel-tests subdir-objects ])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES(yes)]) # use silent rules where available - automake 1.11
 
 LT_INIT

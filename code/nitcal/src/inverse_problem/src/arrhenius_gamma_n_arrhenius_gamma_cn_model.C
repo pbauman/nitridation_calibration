@@ -26,17 +26,17 @@ namespace NitridationCalibration
     _gamma0_N_nom( model_input( "ModelBounds/gamma0_N_nominal_value", 0.0 ) ),
     _Ta_N_nom( model_input( "ModelBounds/Ta_N_nominal_value", 0.0 ) )
   {
-    if( !input.have_variable("ModelBounds/gamma0_CN_nominal_value") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/gamma0_CN_nominal_value");
+    if( !model_input.have_variable("ModelBounds/gamma0_CN_nominal_value") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/gamma0_CN_nominal_value");
 
-    if( !input.have_variable("ModelBounds/Ta_CN_nominal_value") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/Ta_CN_nominal_value");
+    if( !model_input.have_variable("ModelBounds/Ta_CN_nominal_value") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/Ta_CN_nominal_value");
 
-    if( !input.have_variable("ModelBounds/gamma0_N_nominal_value") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/gamma0_N_nominal_value");
+    if( !model_input.have_variable("ModelBounds/gamma0_N_nominal_value") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/gamma0_N_nominal_value");
 
-    if( !input.have_variable("ModelBounds/Ta_N_nominal_value") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/Ta_N_nominal_value");
+    if( !model_input.have_variable("ModelBounds/Ta_N_nominal_value") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/Ta_N_nominal_value");
 
     const unsigned int n_params = 4;
 

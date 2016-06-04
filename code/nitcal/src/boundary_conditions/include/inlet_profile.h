@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------bl-
 //--------------------------------------------------------------------------
-// 
-// NitCal - Nitridation Calibration 
+//
+// NitCal - Nitridation Calibration
 //
 // Copyright (C) 2012-2013 The PECOS Development Team
 //
@@ -20,11 +20,6 @@
 // 02110-1301 USA
 //
 //-----------------------------------------------------------------------el-
-//
-// $Id$
-//
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
 
 #ifndef NITCAL_INLET_PROFILE_H
 #define NITCAL_INLET_PROFILE_H
@@ -46,16 +41,19 @@ namespace NitridationCalibration
   {
   public:
 
-    InletProfile( const GetPot& input );
-    virtual ~InletProfile();
+    InletProfile( libMesh::Real r0,
+                  libMesh::Real mdot,
+                  libMesh::Real rho );
 
-    virtual libMesh::AutoPtr<libMesh::FunctionBase<libMesh::Real> > clone() const;
+    virtual ~InletProfile(){};
+
+    virtual libMesh::UniquePtr<libMesh::FunctionBase<libMesh::Real> > clone() const;
 
     virtual libMesh::Real operator()( const libMesh::Point& p, const libMesh::Real time = 0. );
 
     virtual libMesh::Real operator()( const libMesh::Point& p, const libMesh::Real time = 0. ) const;
 
-    virtual void operator()( const libMesh::Point& p, const libMesh::Real time, 
+    virtual void operator()( const libMesh::Point& p, const libMesh::Real time,
                              libMesh::DenseVector<libMesh::Real>& output );
 
   protected:

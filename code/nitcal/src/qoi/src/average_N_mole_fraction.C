@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------bl-
 //--------------------------------------------------------------------------
-// 
-// NitCal - Nitridation Calibration 
+//
+// NitCal - Nitridation Calibration
 //
 // Copyright (C) 2012-2013 The PECOS Development Team
 //
@@ -46,14 +46,7 @@ namespace NitridationCalibration
 {
   AverageNMoleFraction::AverageNMoleFraction( const std::string& qoi_name )
     : QoIBase(qoi_name)
-  {
-    return;
-  }
-
-  AverageNMoleFraction::~AverageNMoleFraction()
-  {
-    return;
-  }
+  {}
 
   GRINS::QoIBase* AverageNMoleFraction::clone() const
   {
@@ -61,18 +54,20 @@ namespace NitridationCalibration
   }
 
   void AverageNMoleFraction::init( const GetPot& input,
-                                   const GRINS::MultiphysicsSystem& system )
+                                   const GRINS::MultiphysicsSystem& system,
+                                   unsigned int /*qoi_num*/ )
   {
-    const unsigned int n_species = input.vector_variable_size("Physics/Chemistry/species");
+    if( !input.have_variable("QoI/AverageNMoleFraction/material") )
+      libmesh_error_msg("ERROR: Could not find QoI/AverageNMoleFraction/material!");
 
-    std::vector<std::string> species_list(n_species);
+    std::string material = input("QoI/AverageNMoleFraction/material","DIE!");
 
-    for( unsigned int s = 0; s < n_species; s++ )
-      {
-        species_list[s] = input( "Physics/Chemistry/species", "DIE!", s );
-      }
+    std::vector<std::string> species_list;
+    GRINS::MaterialsParsing::parse_chemical_species(input,material,species_list);
 
     _chem_mixture =  new Antioch::ChemicalMixture<libMesh::Real>( species_list );
+
+    unsigned int n_species = _chem_mixture->n_species();
 
     // Read boundary ids for which we want to compute
     int num_bcs =  input.vector_variable_size("QoI/AverageNMoleFraction/bc_ids");
@@ -86,9 +81,7 @@ namespace NitridationCalibration
       }
 
     for( int i = 0; i < num_bcs; i++ )
-      {
-	_bc_ids.insert( input("QoI/AverageNMoleFraction/bc_ids", -1, i ) );
-      }
+      _bc_ids.insert( input("QoI/AverageNMoleFraction/bc_ids", -1, i ) );
 
     libMesh::Real radius = input("QoI/AverageNMoleFraction/channel_radius", 0.0 );
 
@@ -103,8 +96,6 @@ namespace NitridationCalibration
       }
 
     _N_index = _chem_mixture->active_species_name_map().find(std::string("N"))->second;
-
-    return;
   }
 
   void AverageNMoleFraction::init_context( GRINS::AssemblyContext& context )
@@ -115,8 +106,6 @@ namespace NitridationCalibration
 
     N_fe->get_phi();
     N_fe->get_JxW();
-
-    return;
   }
 
   void AverageNMoleFraction::side_qoi( GRINS::AssemblyContext& context,
@@ -133,7 +122,7 @@ namespace NitridationCalibration
 	    const std::vector<libMesh::Real> &JxW = side_fe->get_JxW();
 
 	    unsigned int n_qpoints = context.get_side_qrule().n_points();
-	    
+
             const std::vector<libMesh::Point>& qpoint = side_fe->get_xyz();
 
 	    libMesh::Number& qoi = context.get_qois()[qoi_index];
@@ -151,7 +140,7 @@ namespace NitridationCalibration
                   {
                     context.side_value( _species_vars[s], qp, Y[s] );
                   }
-                
+
                 const libMesh::Real M = _chem_mixture->M( Y );
 
                 const libMesh::Real Y_N = Y[_N_index];
@@ -164,8 +153,6 @@ namespace NitridationCalibration
 
 	  } // end check on boundary id
       }
-
-    return;
   }
 
   void AverageNMoleFraction::side_qoi_derivative( GRINS::AssemblyContext& context,
@@ -188,10 +175,10 @@ namespace NitridationCalibration
 	    const std::vector<libMesh::Real> &JxW = side_fe->get_JxW();
 
 	    unsigned int n_qpoints = context.get_side_qrule().n_points();
-	    
+
             const std::vector<libMesh::Point>& qpoint = side_fe->get_xyz();
 
-	    
+
 
             const unsigned int n_species = _chem_mixture->n_species();
 
@@ -206,7 +193,7 @@ namespace NitridationCalibration
                   {
                     context.side_value( _species_vars[s], qp, Y[s] );
                   }
-                
+
                 const libMesh::Real M = _chem_mixture->M( Y );
 
                 for( unsigned int s = 0; s < n_species; s++ )
@@ -214,9 +201,9 @@ namespace NitridationCalibration
                     libMesh::DenseSubVector<libMesh::Number>& dQ_dYs = context.get_qoi_derivatives(qoi_index, _species_vars[s]);
 
                     const libMesh::Real M_s = _chem_mixture->M( s );
-                    
+
                     const libMesh::Real Y_s = Y[s];
-                    
+
                     libMesh::Real dXN_dYs = M*(1.0 - M*Y_s/M_s);
 
                     for( unsigned int i = 0; i != n_s_dofs; i++ )
@@ -229,8 +216,6 @@ namespace NitridationCalibration
 
 	  } // end check on boundary id
       }
-
-    return;
   }
 
 } // end namespace NitridationCalibration

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------bl-
 //--------------------------------------------------------------------------
-// 
-// NitCal - Nitridation Calibration 
+//
+// NitCal - Nitridation Calibration
 //
 // Copyright (C) 2012-2013 The PECOS Development Team
 //
@@ -46,16 +46,18 @@ namespace NitridationCalibration
   {
   public:
 
-    TubeTempBC( const GetPot& input );
-    virtual ~TubeTempBC();
+    TubeTempBC( const std::vector<libMesh::Real>& wall_tc_locs,
+                const std::vector<libMesh::Real>& wall_temps );
 
-    virtual libMesh::AutoPtr<libMesh::FunctionBase<libMesh::Real> > clone() const;
+    virtual ~TubeTempBC(){}
+
+    virtual libMesh::UniquePtr<libMesh::FunctionBase<libMesh::Real> > clone() const;
 
     virtual libMesh::Real operator()(const libMesh::Point& p, const libMesh::Real time=0.);
 
     virtual libMesh::Real operator()(const libMesh::Point& p, const libMesh::Real time=0.) const;
 
-    virtual void operator()(const libMesh::Point& p, const libMesh::Real time, 
+    virtual void operator()(const libMesh::Point& p, const libMesh::Real time,
 			    libMesh::DenseVector<libMesh::Real>& output);
 
   protected:
@@ -73,6 +75,6 @@ namespace NitridationCalibration
 
   };
 
-} // namespace NitridationCalibration
+} // end namespace NitridationCalibration
 
 #endif //NITCAL_TUBE_TWALL_H

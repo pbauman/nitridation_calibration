@@ -23,8 +23,8 @@ namespace NitridationCalibration
     : ModelInterfaceBase<Vec,Mat>(),
     _Ta_N_nom( model_input( "ModelBounds/Ta_N_nominal_value", 0.0 ) )
   {
-    if( !input.have_variable("ModelBounds/Ta_N_nominal_value") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/Ta_N_nominal_value");
+    if( !model_input.have_variable("ModelBounds/Ta_N_nominal_value") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/Ta_N_nominal_value");
 
     const unsigned int n_params = 3;
 
@@ -33,23 +33,23 @@ namespace NitridationCalibration
                                                                n_params,
                                                                NULL ) );
 
-    if( !input.have_variable("ModelBounds/log_gamma_CN_min") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_CN_min");
+    if( !model_input.have_variable("ModelBounds/log_gamma_CN_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/log_gamma_CN_min");
 
-    if( !input.have_variable("ModelBounds/log_gamma_N_min") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_N_min");
+    if( !model_input.have_variable("ModelBounds/log_gamma_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/log_gamma_N_min");
 
-    if( !input.have_variable("ModelBounds/Ta_N_min") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/Ta_N_min");
+    if( !model_input.have_variable("ModelBounds/Ta_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/Ta_N_min");
 
-    if( !input.have_variable("ModelBounds/log_gamma_CN_min") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_CN_max");
+    if( !model_input.have_variable("ModelBounds/log_gamma_CN_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/log_gamma_CN_max");
 
-    if( !input.have_variable("ModelBounds/log_gamma_N_min") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/log_gamma_N_max");
+    if( !model_input.have_variable("ModelBounds/log_gamma_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/log_gamma_N_max");
 
-    if( !input.have_variable("ModelBounds/Ta_N_min") )
-      libmesh_error_msg("ERROR: Could not find input parameter "+"ModelBounds/Ta_N_max");
+    if( !model_input.have_variable("ModelBounds/Ta_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/Ta_N_max");
 
     // These are assuming normalized values
     const double gamma_CN_min = model_input("ModelBounds/log_gamma_CN_min", 0.0);

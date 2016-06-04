@@ -20,36 +20,39 @@
 // 02110-1301 USA
 //
 //-----------------------------------------------------------------------el-
-//
-// $Id$
-//
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
 
-#ifndef NITCAL_QOI_FACTORY_H
-#define NITCAL_QOI_FACTORY_H
+#ifndef NITCAL_TUBE_TWALL_BC_FACTORY_H
+#define NITCAL_TUBE_TWALL_BC_FACTORY_H
 
 // GRINS
-#include "grins/qoi_factory.h"
+#include "grins/dirichlet_bc_factory_function_base.h"
+
+namespace GRINS
+{
+  class MultiphysicsSystem;
+}
 
 namespace NitridationCalibration
 {
-  class QoIFactory : public GRINS::QoIFactory
+  class TubeWallBCFactory : public GRINS::DirichletBCFactoryFunctionBase<libMesh::FunctionBase<libMesh::Real> >
   {
   public:
 
-    QoIFactory();
+    TubeWallBCFactory(const std::string& bc_type_name)
+      : GRINS::DirichletBCFactoryFunctionBase<libMesh::FunctionBase<libMesh::Real> >(bc_type_name)
+    {}
 
-    virtual ~QoIFactory();
+    virtual ~TubeWallBCFactory(){}
 
   protected:
 
-    virtual void add_qoi( const GetPot& input,
-			  const std::string& qoi_name,
-			  GRINS::SharedPtr<GRINS::CompositeQoI>& qois );
-
+    virtual libMesh::UniquePtr<libMesh::FunctionBase<libMesh::Real> >
+    build_func( const GetPot& input,
+                GRINS::MultiphysicsSystem& system,
+                std::vector<std::string>& var_names,
+                const std::string &section );
   };
 
 } // end namespace NitridationCalibration
 
-#endif // NITCAL_QOI_FACTORY_H
+#endif // NITCAL_TUBE_TWALL_BC_FACTORY_H

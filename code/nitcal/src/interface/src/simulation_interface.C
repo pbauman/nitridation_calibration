@@ -11,6 +11,7 @@
 
 // NitCal
 #include "qoi_factory.h"
+#include "tube_twall.h"
 
 // GRINS
 #include "grins/simulation_builder.h"
@@ -33,46 +34,21 @@ namespace NitridationCalibration
   {
     GRINS::SimulationBuilder sim_builder;
 
-    std::tr1::shared_ptr<GRINS::QoIFactory> qoi_factory( new NitridationCalibration::QoIFactory );
+    GRINS::SharedPtr<GRINS::QoIFactory> qoi_factory( new NitridationCalibration::QoIFactory );
 
     sim_builder.attach_qoi_factory( qoi_factory );
 
-    _simulation.reest( new NitridationSimulation( input, *(_command_line.get()), sim_builder, _libmesh_init.comm() ) );
+    _simulation.reset( new NitridationSimulation( input, *(_command_line.get()), sim_builder, _libmesh_init.comm() ) );
 
     // Project initial solution
     std::string restart_file = input( "restart-options/restart_file", "none" );
 
-    std::tr1::shared_ptr<NitridationCalibration::TubeTempBC> wall_temp;
+    GRINS::SharedPtr<TubeTempBC> wall_temp;
 
-    if( restart_file == "none" )
-      {
-	// Asssign initial temperature value
-	std::string system_name = input( "screen-options/system_name", "GRINS" );
-	std::tr1::shared_ptr<libMesh::EquationSystems> es = _simulation->get_equation_system();
-	const libMesh::System& system = es->get_system(system_name);
-
-        libMesh::Parameters &params = es->parameters;
-
-	libMesh::Real& w_N2 = params.set<libMesh::Real>( "w_N2" );
-	w_N2 = input( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0, 0 );
-
-	libMesh::Real& w_N = params.set<libMesh::Real>( "w_N" );
-	w_N = input( "Physics/ReactingLowMachNavierStokes/bound_species_1", 0.0, 1 );
-
-	wall_temp.reset( new NitridationCalibration::TubeTempBC( input ) );
-	std::tr1::shared_ptr<NitridationCalibration::TubeTempBC>& dummy = params.set<std::tr1::shared_ptr<NitridationCalibration::TubeTempBC> >( "wall_temp" );
-	dummy = wall_temp;
-
-	system.project_solution( initial_values, NULL, params );
-
-	_cached_initial_guess->init( *(system.solution.get()), true );
-
-	*(_cached_initial_guess.get()) = *(system.solution.get());
-      }
-    else
+    if( restart_file != "none" )
       {
         std::string system_name = input( "screen-options/system_name", "GRINS" );
-	std::tr1::shared_ptr<libMesh::EquationSystems> es = _simulation->get_equation_system();
+	GRINS::SharedPtr<libMesh::EquationSystems> es = _simulation->get_equation_system();
 	const libMesh::System& system = es->get_system(system_name);
 
         _cached_initial_guess->init( *(system.solution.get()), true );
@@ -126,7 +102,7 @@ namespace NitridationCalibration
 
     else if( unknown_name == "T" )
       {
-	value = (*params.get<std::tr1::shared_ptr<NitridationCalibration::TubeTempBC> >( "wall_temp" ))(p);
+	value = (*params.get<GRINS::SharedPtr<NitridationCalibration::TubeTempBC> >( "wall_temp" ))(p);
 	//value = 1200.0;
       }
 

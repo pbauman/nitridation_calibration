@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------bl-
 //--------------------------------------------------------------------------
-// 
-// NitCal - Nitridation Calibration 
+//
+// NitCal - Nitridation Calibration
 //
 // Copyright (C) 2012-2013 The PECOS Development Team
 //
@@ -54,7 +54,11 @@ namespace NitridationCalibration
   public:
 
     MassLossCatalytic( const std::string& qoi_name );
-    virtual ~MassLossCatalytic();
+
+    virtual ~MassLossCatalytic()
+    {
+      delete _chem_mixture;
+    }
 
     virtual GRINS::QoIBase* clone() const;
 
@@ -62,7 +66,9 @@ namespace NitridationCalibration
 
     virtual bool assemble_on_sides() const;
 
-    virtual void init( const GetPot& input, const GRINS::MultiphysicsSystem& system );
+    virtual void init( const GetPot& input,
+                       const GRINS::MultiphysicsSystem& system,
+                       unsigned int qoi_num );
 
     virtual void init_context( GRINS::AssemblyContext& context );
 
@@ -93,12 +99,14 @@ namespace NitridationCalibration
 
     GRINS::GasSolidCatalyticWall<GRINS::AntiochChemistry>* _omega_dot;
 
+    unsigned int _gas_solid_idx;
+
   private:
 
     MassLossCatalytic();
 
   };
-  
+
   inline
   bool MassLossCatalytic::assemble_on_interior() const
   {

@@ -14,9 +14,11 @@
 
 // GRINS
 #include "grins/simulation_builder.h"
-#include "grins/bc_handling_base.h"
-#include "grins/reacting_low_mach_navier_stokes_bc_handling.h"
 #include "grins/catalytic_wall_base.h"
+#include "grins/antioch_chemistry.h"
+#include "grins/neumann_bc_container.h"
+#include "grins/gas_solid_catalytic_wall.h"
+#include "grins/gas_recombination_catalytic_wall.h"
 #include "grins/antioch_chemistry.h"
 
 // Antioch
@@ -62,10 +64,10 @@ namespace NitridationCalibration
 
     for( unsigned int i = 0; i < neumann_bcs.size(); i++ )
       {
-        if( neumann_bcs[i].has_bc_id(2) )
+        if( neumann_bcs[i]->has_bc_id(2) )
           _gas_recomb_idx = i;
 
-        if( neumann_bcs[i].has_bc_id(3) )
+        if( neumann_bcs[i]->has_bc_id(3) )
           _gas_solid_idx = i;
       }
 
@@ -81,9 +83,11 @@ namespace NitridationCalibration
     std::vector<GRINS::SharedPtr<GRINS::NeumannBCContainer> > & neumann_bcs =
       this->_multiphysics_system->get_neumann_bcs();
 
-    GRINS::SharedPtr<GRINS::NeumannBCAbstract> bc_base = neumann_bcs[_gas_solid_idx].get_func();
+    GRINS::SharedPtr<GRINS::NeumannBCAbstract> bc_base =
+      neumann_bcs[_gas_solid_idx]->get_func();
 
-    GRINS::GasSolidCatalyticWall* wall = libMesh::cast_ptr<GRINS::GasSolidCatalyticWall>( bc_base.get() );
+    GRINS::GasSolidCatalyticWall<GRINS::AntiochChemistry>* wall =
+      libMesh::cast_ptr<GRINS::GasSolidCatalyticWall<GRINS::AntiochChemistry>*>( bc_base.get() );
 
     wall->set_catalycity_params( gamma_CN_params );
   }
@@ -93,10 +97,11 @@ namespace NitridationCalibration
     std::vector<GRINS::SharedPtr<GRINS::NeumannBCContainer> > & neumann_bcs =
       this->_multiphysics_system->get_neumann_bcs();
 
-    GRINS::SharedPtr<GRINS::NeumannBCAbstract> bc_base = neumann_bcs[_gas_recomb_idx].get_func();
+    GRINS::SharedPtr<GRINS::NeumannBCAbstract> bc_base =
+      neumann_bcs[_gas_recomb_idx]->get_func();
 
-    GRINS::GasRecombinationCatalyticWall* wall =
-      libMesh::cast_ptr<GRINS::GasRecombinationCatalyticWall>( bc_base.get() );
+    GRINS::GasRecombinationCatalyticWall<GRINS::AntiochChemistry>* wall =
+      libMesh::cast_ptr<GRINS::GasRecombinationCatalyticWall<GRINS::AntiochChemistry>*>( bc_base.get() );
 
     wall->set_catalycity_params( gamma_N_params );
   }

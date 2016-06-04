@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------bl-
 //--------------------------------------------------------------------------
-// 
-// NitCal - Nitridation Calibration 
+//
+// NitCal - Nitridation Calibration
 //
 // Copyright (C) 2012-2013 The PECOS Development Team
 //
@@ -26,50 +26,30 @@
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
-#ifndef NITCAL_BC_FACTORY_H
-#define NITCAL_BC_FACTORY_H
-
-#include <string>
-
-// libMesh
-#include "libmesh/getpot.h"
-#include "libmesh/equation_systems.h"
-#include "libmesh/system.h"
-#include "libmesh/zero_function.h"
-
-// GRINS
-#include "grins/bc_types.h"
-#include "grins/bc_factory.h"
-
-// NitridationCalibration
-//#include "nitcal_catalytic_wall.h"
-#include "tube_twall.h"
+#ifndef NITCAL_TUBE_TWALL_BC_FACTORY_H
+#define NITCAL_TUBE_TWALL_BC_FACTORY_H
 
 namespace NitridationCalibration
 {
-  //! Object for constructing NitridationCalibration specific boundary condition function objects.
-  class BoundaryConditionsFactory : public GRINS::BoundaryConditionsFactory
+  class TubeWallBCFactory : public GRINS::DirichletBCFactoryFunctionBase<libMesh::FunctionBase<libMesh::Real> >
   {
   public:
-    
-    BoundaryConditionsFactory( const GetPot& input );
 
-    virtual ~BoundaryConditionsFactory();
-    
-    //! Builds the NitridationCalibration::
-    virtual std::multimap< GRINS::PhysicsName, GRINS::DBCContainer > build_dirichlet( );
+    TubeWallBCFactory(const std::string& bc_type_name)
+      : GRINS::DirichletBCFactoryFunctionBase<libMesh::FunctionBase<libMesh::Real> >(bc_type_name)
+    {}
+
+    virtual ~TubeWallBCFactory(){}
 
   protected:
 
-    const GetPot& _input;
-
-    std::vector<std::string> _species_names;
-
-    const std::string _T_var_name;
-    const std::string _system_name;
-
-  }; // class BoundaryConditionsFactory
+    virtual libMesh::UniquePtr<libMesh::FunctionBase<libMesh::Real> >
+    build_func( const GetPot& input,
+                MultiphysicsSystem& system,
+                std::vector<std::string>& var_names,
+                const std::string &section );
+  };
 
 } // namespace NitridationCalibration
 
-#endif //NITCAL_BC_FACTORY_H
+#endif // NITCAL_TUBE_TWALL_BC_FACTORY_H

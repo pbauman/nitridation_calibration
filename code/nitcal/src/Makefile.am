@@ -15,11 +15,13 @@ lib_LTLIBRARIES = libnitcal.la
 #----------------------------------------
 # Source files for libnitcal
 #----------------------------------------
+libnitcal_la_SOURCES =
 
 # boundary_conditions
-libnitcal_la_SOURCES  = boundary_conditions/src/nitcal_bc_factory.C
 libnitcal_la_SOURCES += boundary_conditions/src/tube_twall.C
+libnitcal_la_SOURCES += boundary_conditions/src/tube_wall_bc_factory.C
 libnitcal_la_SOURCES += boundary_conditions/src/inlet_profile.C
+libnitcal_la_SOURCES += boundary_conditions/src/inlet_profile_bc_factory.C
 
 #interface
 libnitcal_la_SOURCES += interface/src/simulation_interface.C
@@ -48,11 +50,13 @@ libnitcal_la_SOURCES += qoi/src/average_N_mole_fraction.C
 #----------------------------------------
 # Header files for libnitcal
 #----------------------------------------
+include_HEADERS =
 
 # boundary_conditions
-include_HEADERS  = boundary_conditions/include/nitcal_bc_factory.h
 include_HEADERS += boundary_conditions/include/tube_twall.h
+include_HEADERS += boundary_conditions/include/tube_wall_bc_factory.h
 include_HEADERS += boundary_conditions/include/inlet_profile.h
+include_HEADERS += boundary_conditions/include/inlet_profile_bc_factory.h
 
 #interface
 include_HEADERS += interface/include/simulation_interface.h
