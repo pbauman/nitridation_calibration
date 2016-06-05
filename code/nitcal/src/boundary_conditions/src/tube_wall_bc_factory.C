@@ -41,16 +41,22 @@ namespace NitridationCalibration
     if( section.find("Temperature") == std::string::npos )
       libmesh_error_msg("ERROR: TubeTempBC is only valid for Temperature vars!");
 
-    std::string tc_loc_str("BoundaryConditions/TubeWall/tc_locs");
+    if( !input.have_variable(section+"/tc_locs") )
+      libmesh_error_msg("ERROR: Could not find "+section+"/tc_locs in input!");
+
+    std::string tc_loc_str(section+"/tc_locs");
     unsigned int tc_size =
       input.vector_variable_size(tc_loc_str);
 
     std::vector<libMesh::Real> wall_tc_locs(tc_size);
 
     for( unsigned int i = 0; i < tc_size; i++ )
-      wall_tc_locs.push_back( input(tc_loc_str, 0.0, i ) );
+      wall_tc_locs[i] = input(tc_loc_str, 0.0, i );
 
-    std::string wall_temp_str("BoundaryConditions/TubeWall/wall_temps");
+    if( !input.have_variable(section+"/wall_temps") )
+      libmesh_error_msg("ERROR: Could not find "+section+"/wall_temps in input!");
+
+    std::string wall_temp_str(section+"/wall_temps");
     unsigned int temp_size = input.vector_variable_size(wall_temp_str);
 
     if( temp_size != tc_size )
@@ -59,11 +65,14 @@ namespace NitridationCalibration
     std::vector<libMesh::Real> wall_temps(temp_size);
 
     for( unsigned int i = 0; i < temp_size; i++ )
-      wall_temps.push_back( input(wall_temp_str, 0.0, i ) );
+      wall_temps[i] = input(wall_temp_str, 0.0, i );
 
     libMesh::UniquePtr<libMesh::FunctionBase<libMesh::Real> >
       func( new TubeTempBC(wall_tc_locs,wall_temps) );
 
     return func;
   }
+
+  TubeWallBCFactory nitcal_tube_temp_bc_factory("nitridation_temp_bc");
+
 } // end namespace NitridationCalibration

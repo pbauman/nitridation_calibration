@@ -36,7 +36,9 @@ namespace NitridationCalibration
     : libMesh::FunctionBase<libMesh::Real>(),
     _wall_tc_locs(wall_tc_locs),
     _wall_temps(wall_temps)
-  {}
+  {
+    libmesh_assert_equal_to(wall_tc_locs.size(),wall_temps.size());
+  }
 
   libMesh::UniquePtr<libMesh::FunctionBase<libMesh::Real> > TubeTempBC::clone() const
   {
@@ -67,7 +69,7 @@ namespace NitridationCalibration
   libMesh::Real TubeTempBC::linear_interp( const libMesh::Real x ) const
   {
     // Find the bin
-    unsigned int index = -1;
+    unsigned int index = std::numeric_limits<unsigned int>::max();
 
     // This is a stupid linear search. Should do a binary search.
     for( unsigned int i = 1; i < _wall_tc_locs.size(); i++ )
@@ -80,7 +82,11 @@ namespace NitridationCalibration
 	  }
       }
 
-    libmesh_assert( index != static_cast<unsigned int>(-1) );
+    if( index == std::numeric_limits<unsigned int>::max() )
+      libmesh_error_msg("ERROR: Could not find valid temperature interval!");
+
+    libmesh_assert_less( index, _wall_tc_locs.size() );
+    libmesh_assert_less( index, _wall_temps.size() );
 
     // Interpolate
     const libMesh::Real x0 = _wall_tc_locs[index-1];
@@ -89,7 +95,9 @@ namespace NitridationCalibration
     const libMesh::Real T0 = _wall_temps[index-1];
     const libMesh::Real T1 = _wall_temps[index];
 
-    return T0 + (T1-T0)/(x1-x0)*(x-x0);
+    libMesh::Real value = T0 + (T1-T0)/(x1-x0)*(x-x0);
+
+    return value;
   }
 
 } // namespace NitridationCalibration

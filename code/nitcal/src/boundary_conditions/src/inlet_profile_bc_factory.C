@@ -32,16 +32,21 @@
 
 // GRINS
 #include "grins/multiphysics_sys.h"
-#include "grins/species_mass_fracs_fe_variables.h"
+#include "grins/multicomponent_variable.h"
 #include "grins/variable_warehouse.h"
 #include "grins/variables_parsing.h"
 #include "grins/string_utils.h"
+#include "grins/materials_parsing.h"
+
+// libMesh
+#include "libmesh/composite_function.h"
+#include "libmesh/zero_function.h"
 
 namespace NitridationCalibration
 {
   libMesh::UniquePtr<libMesh::FunctionBase<libMesh::Real> >
   InletProfileBCFactory::build_func( const GetPot& input,
-                                     GRINS::MultiphysicsSystem& /*system*/,
+                                     GRINS::MultiphysicsSystem& system,
                                      std::vector<std::string>& var_names,
                                      const std::string& section )
   {
@@ -67,20 +72,21 @@ namespace NitridationCalibration
 
     // This only makes sense for SpeciesMassFractionsFEVariables
     // in the VariableWarehouse. This call will error out if it's not there.
-    const GRINS::SpeciesMassFractionsFEVariables& species_fe_var =
-      GRINS::GRINSPrivate::VariableWarehouse::get_variable_subclass<GRINS::SpeciesMassFractionsFEVariables>
+    const GRINS::SpeciesMassFractionsVariable& species_fe_var =
+      GRINS::GRINSPrivate::VariableWarehouse::get_variable_subclass<GRINS::SpeciesMassFractionsVariable>
       (GRINS::VariablesParsing::species_mass_fractions_section());
 
-    unsigned int n_species = var_names.size();
-    std::vector<std::string> mole_fracs_names(n_species);
-    std::vector<std::string> species_names(n_species);
+    std::string material = species_fe_var.material();
 
-    const std::string& prefix = species_fe_var.prefix();
+    std::vector<std::string> species_names;
+    GRINS::MaterialsParsing::parse_chemical_species(input,material,species_names);
+
+    unsigned int n_species = species_names.size();
+
+    std::vector<std::string> mole_fracs_names(n_species);
+
     for( unsigned int v = 0; v < n_species; v++ )
-      {
-        this->extract_species_name(var_names[v],prefix,species_names[v]);
-        mole_fracs_names[v] = "X_"+species_names[v];
-      }
+      mole_fracs_names[v] = "X_"+species_names[v];
 
     Antioch::ChemicalMixture<libMesh::Real> chem_mixture( species_names );
 
@@ -105,8 +111,21 @@ namespace NitridationCalibration
 
     libMesh::Real r0 = input( section+"/r0", 0.0 );
 
+    libMesh::UniquePtr<libMesh::CompositeFunction<libMesh::Real> > composite_func(new libMesh::CompositeFunction<libMesh::Real>);
+
+    GRINS::VariableIndex u_idx = system.variable_number(var_names[0]);
+    GRINS::VariableIndex v_idx = system.variable_number(var_names[1]);
+
+    std::vector<GRINS::VariableIndex> uvec(1,u_idx);
+    std::vector<GRINS::VariableIndex> vvec(1,v_idx);
+
+    InletProfile inlet(r0,mdot,rho);
+
+    composite_func->attach_subfunction(libMesh::ZeroFunction<libMesh::Real>(),uvec);
+    composite_func->attach_subfunction(inlet,vvec);
+
     libMesh::UniquePtr<libMesh::FunctionBase<libMesh::Real> >
-      func( new InletProfile(r0,mdot,rho) );
+      func( composite_func.release() );
 
     return func;
   }
@@ -142,5 +161,7 @@ namespace NitridationCalibration
 
     species_name = split_name[0];
   }
+
+  InletProfileBCFactory nitcal_inlet_profile_bc_factory("nitridation_inlet_profile");
 
 } // end namespace NitridationCalibration
