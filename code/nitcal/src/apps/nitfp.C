@@ -20,6 +20,7 @@
 // 02110-1301 USA
 //
 //-----------------------------------------------------------------------el-
+
 #include "nitcal_config.h"
 
 #include <iostream>
@@ -70,6 +71,59 @@ int main(int argc, char* argv[])
                            command_line,
 			   sim_builder,
                            libmesh_init.comm());
+
+  //FIXME: We need to move this to within the Simulation object somehow...
+  std::string restart_file = libMesh_inputfile( "restart-options/restart_file", "none" );
+
+
+
+  if( restart_file == "none" )
+    {
+      // Asssign initial temperature value
+      std::string system_name = libMesh_inputfile( "screen-options/system_name", "GRINS" );
+      GRINS::SharedPtr<libMesh::EquationSystems> es = grins.get_equation_system();
+      const libMesh::System& system = es->get_system(system_name);
+
+      libMesh::Parameters &params = es->parameters;
+
+      libMesh::Real& w_N2 = params.set<libMesh::Real>( "w_N2" );
+      w_N2 = libMesh_inputfile( "BoundaryConditions/Inlet/SpeciesMassFractions/X_N2", 0.0);
+
+      libMesh::Real& w_N = params.set<libMesh::Real>( "w_N" );
+      w_N = libMesh_inputfile( "BoundaryConditions/Inlet/SpeciesMassFractions/X_N", 0.0);
+
+
+      GRINS::SharedPtr<NitridationCalibration::TubeTempBC> wall_temp;
+
+      std::string tc_loc_str("BoundaryConditions/OuterWall/Temperature/tc_locs");
+      unsigned int tc_size =
+      libMesh_inputfile.vector_variable_size(tc_loc_str);
+
+      std::vector<libMesh::Real> wall_tc_locs(tc_size);
+
+      for( unsigned int i = 0; i < tc_size; i++ )
+        wall_tc_locs[i] = libMesh_inputfile(tc_loc_str, 0.0, i );
+
+      if( !libMesh_inputfile.have_variable("BoundaryConditions/OuterWall/Temperature/wall_temps") )
+        libmesh_error_msg("ERROR: Could not find BoundaryConditions/OuterWall/Temperature/wall_temps in input!");
+
+      std::string wall_temp_str("BoundaryConditions/OuterWall/Temperature/wall_temps");
+      unsigned int temp_size = libMesh_inputfile.vector_variable_size(wall_temp_str);
+
+      if( temp_size != tc_size )
+        libmesh_error_msg("Error: Must be same number of wall temp locations and wall temps.");
+
+      std::vector<libMesh::Real> wall_temps(temp_size);
+
+      for( unsigned int i = 0; i < temp_size; i++ )
+        wall_temps[i] = libMesh_inputfile(wall_temp_str, 0.0, i );
+
+      wall_temp.reset( new NitridationCalibration::TubeTempBC(wall_tc_locs,wall_temps) );
+      GRINS::SharedPtr<NitridationCalibration::TubeTempBC>& dummy = params.set<GRINS::SharedPtr<NitridationCalibration::TubeTempBC> >( "wall_temp" );
+      dummy = wall_temp;
+
+      system.project_solution( initial_values, NULL, params );
+    }
 
   grins.run();
 
