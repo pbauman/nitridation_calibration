@@ -1,0 +1,274 @@
+#
+#
+
+[SimulationParameters]
+
+   wall_temps = '298.0 350.0 1273.0 1273.0 525.0 400.0' # [K]
+
+   mdot = '2.5' # [mg/s]
+
+   p_inlet = '166.7' # [Pa]
+
+   p_outlet = '135.1' # [Pa]
+
+   T_sample = '1273.0' #[K]
+
+   inlet_N = '0.216' #[% mole fraction]
+
+   outlet_N = '0.133' #[% mole fraction]
+
+   mesh_file = 'A_1_13a_9adapt.xda'
+
+   delta_t = '120'  #[min]
+
+   mass_loss_data = '0.76' #[mg]
+
+[]
+
+#########################################################
+## Change nothing below!
+#########################################################
+
+[MassLossLikelihood]
+
+   sigma = '2.0e-8' # [kg]
+
+   data_value = '${* ${SimulationParameters/mass_loss_data} 1.0e-6}' # [kg]
+
+   gamma_nominal_value = '4.789860e-03'
+
+[]
+
+[AverageNLikelihood]
+
+   data_value = '${* ${SimulationParameters/outlet_N} 1.0e-2}' # [mole fraction]
+
+   # 15% of data value
+   sigma = '${* 0.15 ${AverageNLikelihood/data_value} }'
+
+   gamma_nominal_value = '7.928807e-06'
+
+[]
+
+[restart-options]
+   restart_file = 'restart.xdr'
+[]
+
+[QoI]
+
+   enabled_qois = 'MassLossCatalytic AverageNMoleFraction'
+
+   [./MassLossCatalytic]
+      bc_ids = '3'
+      delta_t = '${SimulationParameters/delta_t}'
+      material = 'NitridationGas'
+   [../]
+
+   [./AverageNMoleFraction]
+      bc_ids = '5'
+      channel_radius = '0.011' #[m]
+      material = 'NitridationGas'
+   [../]
+[]
+
+[Materials]
+   [./NitridationGas]
+      [./GasMixture]
+        thermochemistry_library = 'antioch'
+        species   = 'N2 N C CN'
+        kinetics_data = './nitridation.xml'
+
+        [./Antioch]
+           transport_model = 'mixture_averaged'
+           thermo_model = 'stat_mech'
+           viscosity_model = 'blottner'
+           thermal_conductivity_model = 'eucken'
+           mass_diffusivity_model = 'constant_lewis'
+        [../]
+     [../]
+
+     [./ThermodynamicPressure]
+        value = '${SimulationParameters/p_outlet}' #[Pa]
+     [../]
+
+     [./LewisNumber]
+        value = '1.4'
+     [../]
+  [../]
+[]
+
+[Physics]
+
+   enabled_physics = 'ReactingLowMachNavierStokes'
+   is_axisymmetric = 'true'
+
+  [./ReactingLowMachNavierStokes]
+
+     material = 'NitridationGas'
+
+      # Gravity vector
+      g = '0.0 0.0' #[m/s^2]
+
+      enable_thermo_press_calc = 'false'
+      pin_pressure = 'false'
+
+#      ic_ids = '0'
+#      ic_types = 'parsed'
+#      ic_variables = 'T:w_N:w_N2'
+#      ic_values = '{298}{0.00216}{0.99784}'
+[]
+
+[Mesh]
+   [./Read]
+      filename = '${SimulationParameters/mesh_file}'
+   [../]
+[]
+
+[BoundaryConditions]
+
+   bc_ids = '1 2 3 4 5 6'
+   bc_id_name_map = 'Inlet OuterWall Specimen Holder Outflow Axisymmetric'
+
+   [./Inlet]
+      [./Velocity]
+         type = 'nitridation_inlet_profile'
+         mdot = '${SimulationParameters/mdot}' # [mg/s]
+         p_inlet = '${SimulationParameters/p_inlet}' # [Pa]
+         r0 = '0.011'
+      [../]
+      [./Temperature]
+         type = 'isothermal'
+         T = '298'
+      [../]
+      [./SpeciesMassFractions]
+         type = 'mole_fractions'
+         X_N = '${* ${SimulationParameters/inlet_N} 1.0e-2}'
+         X_N2 = '${- 1 ${* ${SimulationParameters/inlet_N} 1.0e-2}}'
+      [../]
+   [../]
+
+   [./OuterWall]
+      [./Velocity]
+         type = 'no_slip'
+      [../]
+      [./Temperature]
+         type = 'nitridation_temp_bc'
+         tc_locs = '0.0 0.244 0.324 0.639 0.709 0.869'
+         wall_temps = '${SimulationParameters/wall_temps}'
+      [../]
+      [./SpeciesMassFractions]
+         type = 'gas_recombination_catalytic_wall'
+         catalytic_reaction = 'N->N2'
+         catalycity_type = 'arrhenius'
+         [./ArrheniusCatalycity]
+            gamma0 = '${AverageNLikelihood/gamma_nominal_value}'
+            Ta = '1000'
+         [../]
+      [../]
+   [../]
+
+   [./Specimen]
+      [./Velocity]
+         type = 'no_slip'
+      [../]
+      [./Temperature]
+         type = 'isothermal'
+         T = '${SimulationParameters/T_sample}'
+      [../]
+      [./SpeciesMassFractions]
+         type = 'gas_solid_catalytic_wall'
+         catalytic_reaction = 'N+C(s)->CN'
+         catalycity_type = 'constant'
+         [./ConstantCatalycity]
+            gamma = '${MassLossLikelihood/gamma_nominal_value}'
+         [../]
+      [../]
+   [../]
+
+   [./Holder]
+      [./Velocity]
+         type = 'no_slip'
+      [../]
+      [./Temperature]
+         type = 'isothermal'
+         T = '${SimulationParameters/T_sample}'
+      [../]
+      [./SpeciesMassFractions]
+         type = 'homogeneous_neumann'
+      [../]
+   [../]
+
+   [./Outflow]
+      [./Velocity]
+         type = 'homogeneous_neumann'
+      [../]
+      [./Temperature]
+         type = 'adiabatic'
+      [../]
+      [./SpeciesMassFractions]
+         type = 'homogeneous_neumann'
+      [../]
+   [../]
+
+   [./Axisymmetric]
+      type = 'axisymmetric'
+   [../]
+[]
+
+[Variables]
+   [./Velocity]
+      names = 'u v'
+      fe_family = 'LAGRANGE'
+      order = 'SECOND'
+   [../]
+   [./Pressure]
+      names = 'p'
+      fe_family = 'LAGRANGE'
+      order = 'FIRST'
+   [../]
+   [./Temperature]
+      names = 'T'
+      fe_family = 'LAGRANGE'
+      order = 'SECOND'
+   [../]
+   [./SpeciesMassFractions]
+      names = 'w_'
+      fe_family = 'LAGRANGE'
+      order = 'SECOND'
+      material = 'NitridationGas'
+   [../]
+[]
+
+[Mesh]
+   [./Read]
+      filename = '${SimulationParameters/mesh_file}'
+   [../]
+[]
+
+[linear-nonlinear-solver]
+   max_nonlinear_iterations = '2'
+   max_linear_iterations = '500'
+   verify_analytic_jacobians = '0.0'
+   initial_linear_tolerance = '1.0e-10'
+   relative_residual_tolerance = '1.0e-10'
+   use_numerical_jacobians_only = 'true'
+   continue_after_max_iterations = 'true'
+[]
+
+[vis-options]
+   output_vis = 'false'
+   vis_output_file_prefix = 'nitridation'
+   output_residual = 'false'
+   output_format = 'xdr'
+[]
+
+[screen-options]
+   system_name = 'Nitridation'
+   print_equation_system_info = 'true'
+   print_mesh_info = 'true'
+   print_log_info = 'false'
+   solver_verbose = 'true'
+   solver_quiet = 'false'
+   print_qoi = 'true'
+   echo_qoi = 'false'
+[]
