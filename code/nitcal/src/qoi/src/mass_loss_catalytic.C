@@ -64,7 +64,7 @@ namespace NitridationCalibration
 
     std::string material = input("QoI/MassLossCatalytic/material","DIE!");
 
-    _chem_mixture = new GRINS::AntiochChemistry(input,material);
+    _chem_mixture.reset( new GRINS::AntiochChemistry(input,material) );
 
     unsigned int n_species = _chem_mixture->n_species();
 

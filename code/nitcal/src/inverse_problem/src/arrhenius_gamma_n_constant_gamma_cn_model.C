@@ -36,8 +36,8 @@ namespace NitridationCalibration
     if( !model_input.have_variable("ModelBounds/log_gamma_CN_min") )
       libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/log_gamma_CN_min");
 
-    if( !model_input.have_variable("ModelBounds/log_gamma_N_min") )
-      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/log_gamma_N_min");
+    if( !model_input.have_variable("ModelBounds/log_gamma0_N_min") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/log_gamma0_N_min");
 
     if( !model_input.have_variable("ModelBounds/Ta_N_min") )
       libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/Ta_N_min");
@@ -45,8 +45,8 @@ namespace NitridationCalibration
     if( !model_input.have_variable("ModelBounds/log_gamma_CN_min") )
       libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/log_gamma_CN_max");
 
-    if( !model_input.have_variable("ModelBounds/log_gamma_N_min") )
-      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/log_gamma_N_max");
+    if( !model_input.have_variable("ModelBounds/log_gamma0_N_max") )
+      libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/log_gamma0_N_max");
 
     if( !model_input.have_variable("ModelBounds/Ta_N_min") )
       libmesh_error_msg("ERROR: Could not find input parameter ModelBounds/Ta_N_max");

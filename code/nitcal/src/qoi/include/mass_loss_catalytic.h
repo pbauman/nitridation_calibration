@@ -55,10 +55,7 @@ namespace NitridationCalibration
 
     MassLossCatalytic( const std::string& qoi_name );
 
-    virtual ~MassLossCatalytic()
-    {
-      delete _chem_mixture;
-    }
+    virtual ~MassLossCatalytic(){}
 
     virtual GRINS::QoIBase* clone() const;
 
@@ -95,7 +92,7 @@ namespace NitridationCalibration
     //! Scales mass flux to mass loss in kg
     libMesh::Real _factor;
 
-    GRINS::AntiochChemistry* _chem_mixture;
+    GRINS::SharedPtr<GRINS::AntiochChemistry> _chem_mixture;
 
     GRINS::GasSolidCatalyticWall<GRINS::AntiochChemistry>* _omega_dot;
 
